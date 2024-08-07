@@ -4,8 +4,6 @@ using Documenter,elastoPlasm
 format = Documenter.HTML()
 pages  = [
     "Home" => "index.md",
-    "Getting Started" => "getting_started.md",
-    "Functions" => "function.md",
 ]
 @info "Making documentation..."
 makedocs(
