@@ -17,7 +17,6 @@ makedocs(
 deploydocs(
     repo = "github.com/ewyser/elastoPlasm.jl.git",
     branch = "gh-pages",
-    devbranch = "$(getBranch())",
+    devbranch = "main",
     target = "docs",
-    forcepush = true,
 )
