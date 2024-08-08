@@ -113,24 +113,24 @@ function plast!(mpD,cmParam,cmType,fwrkDeform)
     end
     return ηmax::Int64
 end
-@views function elastoplast!(mpD,meD,cmParam,cmType,Δt,ϕ∂ϕType,isΔFbar,fwrkDeform,plastOn)
+@views function elastoplast!(mpD,meD,cmParam,cmType,Δt,instr)
     # get incremental deformation tensor & strains
     deform!(mpD,meD,Δt)
     # update material point's domain
-    ϕ∂ϕType == :gimpm ? domainUpd!(mpD) : nothing
+    instr[:shpfun] == :gimpm ? domainUpd!(mpD) : nothing
     # volumetric locking correction
-    isΔFbar ? ΔFbar!(mpD,meD) : nothing
+    instr[:vollock] ? ΔFbar!(mpD,meD) : nothing
     # update kirchoff/cauchy stresses
     @isdefined(elastK!) ? nothing : elastK! = kernel_elast(CPU())
-    elastK!(mpD,cmParam.Del,fwrkDeform; ndrange=mpD.nmp);sync(CPU())
+    elastK!(mpD,cmParam.Del,instr[:fwrk]; ndrange=mpD.nmp);sync(CPU())
     # plastic corrector
-    if plastOn 
-        ηmax = plast!(mpD,cmParam,cmType,fwrkDeform) 
+    if instr[:plast] 
+        ηmax = plast!(mpD,cmParam,cmType,instr[:fwrk]) 
     else 
         ηmax = 0 
     end
     # get cauchy stresses
-    if fwrkDeform == :finite
+    if instr[:fwrk] == :finite
         for p ∈ 1:mpD.nmp
             mpD.σ[:,p] .= mpD.τ[:,p]./mpD.J[p]
         end

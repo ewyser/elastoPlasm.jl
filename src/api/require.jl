@@ -8,12 +8,13 @@ function require(in::Symbol)
         return path
     elseif in == :instr
         instr = Dict(
-            :dtype      => Float32, # set the arithmetic precision
-            :ϕ∂ϕType    => :bsmpm
-            :fwrkDeform => :finite
-            :trsfrAp    => :mUSL
-            :isΔFbar    => true
-            :isGRF      => false
+            :dtype   => Float32, # set the arithmetic precision
+            :shpfun  => :bsmpm,
+            :fwrk    => :finite,
+            :trsfr   => :mUSL,
+            :vollock => true,
+            :GRF     => false,
+            :plast   => false,
         )
         return instr
     else

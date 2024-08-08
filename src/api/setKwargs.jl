@@ -50,4 +50,3 @@ function setKwargs(type::Symbol,kwargs)
         return Dict(zip(key,value)) #return (;zip(Tuple(Symbol(x) for x in key),value)...)
     end
 end
-export setKwargs
