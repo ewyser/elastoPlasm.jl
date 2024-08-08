@@ -1,9 +1,21 @@
-# activate project
-using Pkg
-if splitpath(Base.active_project())[end-1]!="ep2DeJu"
-    Pkg.activate(".")
+function superInc(DIR)
+	msg,included = ["method(s) sucessfully included:"],[]
+	for (root, dirs, files) in walkdir(DIR)
+		for file in files
+			f = joinpath(root, file) # path to files
+            include(f)
+            push!(included,f)
+            push!(msg   ,"\n\t(✓) "*file)
+		end
+	end
+	return included
 end
 
+# activate project
+using Pkg
+if splitpath(Base.active_project())[end-1]!="elastoPlasm"
+    Pkg.activate(".")
+end
 # include dependencies & function call(s)
 try 
     using LinearAlgebra, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter
