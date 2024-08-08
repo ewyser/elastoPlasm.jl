@@ -27,7 +27,7 @@ The solver relies on random gaussian fields to generate initial fields $\psi(\bo
 ### How to ```plasmazing``` ?  
 
 0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
-1. ``cd`` to the local repo ```./elastoPlasm ``` 
+1. ``cd`` to the local repo ```./ep2DeJu ``` 
 2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal)
 ```julia
 % julia --project  
@@ -40,13 +40,13 @@ The solver relies on random gaussian fields to generate initial fields $\psi(\bo
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 ```
-3. Enter pkg mode ``` ] ```, then ``activate .`` the project ``elastoPlasm`` and ``instantiate`` its environment and related packages. You can ``st`` to check package status.
+3. Enter pkg mode ``` ] ```, then ``activate .`` the project ``ep2DeJu`` and ``instantiate`` its environment and related packages. You can ``st`` to check package status.
 ```julia
 (ep2DeJu) pkg> activate .
 (ep2DeJu) pkg> instantiate 
 (ep2DeJu) pkg> st
-Project elastoPlasm v0.3.0
-Status `./elastoPlasm/Project.toml`
+Project ep2DeJu v0.1.0
+Status `./ep2DeJu/Project.toml`
   [6e4b80f9] BenchmarkTools v1.3.2
   [b964fa9f] LaTeXStrings v1.3.0
   [91a5bcdd] Plots v1.39.0
@@ -54,7 +54,7 @@ Status `./elastoPlasm/Project.toml`
   [37e2e46d] LinearAlgebra
   [44cfe95a] Pkg v1.8.0
 
-(elastoPlasm) pkg>
+(ep2DeJu) pkg>
 ```
 4. Code ``include()`` and execute method ``ϵp23De(nel,varPlot,cmType; kwargs...)``. It should result in the following:
 ```julia
