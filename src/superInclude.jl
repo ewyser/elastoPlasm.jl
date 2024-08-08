@@ -39,6 +39,9 @@ if isdir(path_test)==false mkdir(path_test) end
 # include doc for: help?> ϵp2De()
 include("./misc/doc.jl")
 
+# include api
+include("./api/require.jl")
+include("./api/setKwargs.jl")
 # include init
 include("./misc/types.jl")
 include("./misc/utilities.jl")
