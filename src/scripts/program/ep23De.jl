@@ -57,4 +57,4 @@ end
 # include("./src/scripts/program/ep23De.jl")
 # e.g., L = [64.1584,12.80] or L = [64.1584,5.0,12.80]                                                                                        
 # ϵp23De(L,40,"P","DP";shpfun=:bsmpm,fwrk=:finite,trsf=:mUSL,vollock=true)
-# ϵp23De([64.1584,12.80],40,"P","DP";shpfun=:bsmpm,fwrk=:infinitesimal,trsf=:mUSL,vollock=true)
+# ϵp23De([64.1584,12.80],40,"P","DP";shpfun=:bsmpm,fwrk=:infinitesimal,trsfr=:mUSL,vollock=true)
