@@ -101,7 +101,7 @@ end
     if !nonlocal
         return mpD.ϵpII
     else
-        w = zeros(mpD.nmp,mpD.nmp)
+        W,w = zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
         #=         =#
         for p ∈ 1:mpD.nmp
             ps = findall(x->x==mpD.p2e[p],mpD.p2e)
@@ -111,6 +111,7 @@ end
                     η = (mpD.x[i,2]-mpD.x[j,2])
                     d = sqrt(ξ^2+η^2)
                     w[i,j] = d/ls*exp(-(d/ls)^2)
+                    W[i]  += w[i,j]
                 end
             end
         end
@@ -127,7 +128,10 @@ end
         w    = w./sum(w,dims=2)
         ϵpII = zeros(mpD.nmp)
         for p ∈ 1:mpD.nmp
-            ϵpII[p] = sum(w[p,:].*(mpD.ϵpII))
+            for k ∈ 1:mpD.nmp
+                #ϵpII[p]+= (w[p,k]/W[k])*mpD.ϵpII[k]
+                ϵpII[p]+= (w[p,k]     )*mpD.ϵpII[k]
+            end
         end
         return ϵpII
     end
