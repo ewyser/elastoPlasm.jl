@@ -4,11 +4,12 @@
     else
         w = zeros(mpD.nmp,mpD.nmp)
         for i ∈ 1:mpD.nmp
-            for j ∈ 1:mpD.nmp
+            for j ∈ i:mpD.nmp
                 ξ = (mpD.x[i,1]-mpD.x[j,1]) 
                 η = (mpD.x[i,2]-mpD.x[j,2])
                 d = sqrt(ξ^2+η^2)
                 w[i,j] = d/ls*exp(-(d/ls)^2)
+                w[j,i] = d/ls*exp(-(d/ls)^2)
             end
         end
         w    = w./sum(w,dims=2)
