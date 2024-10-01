@@ -19,7 +19,7 @@ function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; k
     t,te,tg = 15.0,10.0,15.0/1.5                                                # simulation time [s], elastic loading [s], gravity load
     # mp setup
     mpD     = pointSetup(meD,L,c0,cr,ϕ0,ϕr,ρ0,instr[:GRF],typeD)                      # material point geometry setup
-    Hp      = -60.0e3*meD.h[1]                                                  # softening modulus
+    Hp      = -60.0e3                                                  # softening modulus
     # constitutive model param.
     cmParam = (E = E, ν = ν, Kc = K, Gc = G, Del = Del, Hp = Hp,)
     # plot & time stepping parameters

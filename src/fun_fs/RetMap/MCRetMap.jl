@@ -1,4 +1,24 @@
+@views function getϵII0(mpD,ls=0.5,nonlocal=true)
+    if !nonlocal
+        return mpD.ϵpII
+    else
+        w = zeros(mpD.nmp,mpD.nmp)
+        for i ∈ 1:mpD.nmp
+            for j ∈ 1:mpD.nmp
+                ξ = (mpD.x[i,1]-mpD.x[j,1]) 
+                η = (mpD.x[i,2]-mpD.x[j,2])
+                d = sqrt(ξ^2+η^2)
+                w[i,j] = d/ls*exp(-(d/ls)^2)
+            end
+        end
+        w    = w./sum(w,dims=2)
+        ϵpII = w*(mpD.ϵpII)
+        return ϵpII
+    end
+end
+
 @views function MCRetMap!(mpD,cmParam,fwrkDeform)
+    ϵIIp           = getϵII0(mpD)
     ftol,ηtol,ηmax = 1e-6,1e4,0
     ψ              = 0.5*π/180.0
     # create an alias
@@ -8,7 +28,7 @@
         σ = mpD.σ
     end
     @threads for p ∈ 1:mpD.nmp
-        ϕ,H,ϵII0 = mpD.ϕ[p],cos(mpD.ϕ[p])*cmParam.Hp,mpD.ϵpII[p]
+        ϕ,H,ϵII0 = mpD.ϕ[p],cos(mpD.ϕ[p])*cmParam.Hp,ϵIIp[p]
         c0,cr    = mpD.c0[p]+cmParam.Hp*ϵII0,mpD.cr[p]
         if c0<cr c0 = cr end
         σm,τII   = 0.5*(σ[1,p]+σ[2,p]),sqrt(0.25*(σ[1,p]-σ[2,p])^2+σ[3,p]^2)
