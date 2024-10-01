@@ -117,13 +117,15 @@ end
     end
 end
 function plast!(mpD,cmParam,cmType,fwrkDeform)
+    # nonlocal regularization
+    ϵIIp = getϵII0(mpD)
     # plastic return-mapping dispatcher
     if cmType == "MC"
-        ηmax = MCRetMap!(mpD,cmParam,fwrkDeform)
+        ηmax = MCRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
     elseif cmType == "DP"        
-        ηmax = DPRetMap!(mpD,cmParam,fwrkDeform)
+        ηmax = DPRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
     elseif cmType == "J2"
-        ηmax = J2RetMap!(mpD,cmParam,fwrkDeform)
+        ηmax = J2RetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
     elseif cmType == "camC"
         ηmax = camCRetMap!(mpD,cmParam,fwrkDeform)
     else

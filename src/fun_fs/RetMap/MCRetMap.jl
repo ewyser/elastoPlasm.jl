@@ -1,5 +1,4 @@
-@views function MCRetMap!(mpD,cmParam,fwrkDeform)
-    ϵIIp           = getϵII0(mpD)
+@views function MCRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
     ftol,ηtol,ηmax = 1e-6,1e4,0
     ψ              = 0.5*π/180.0
     # create an alias
