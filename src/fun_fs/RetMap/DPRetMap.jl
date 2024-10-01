@@ -39,8 +39,9 @@ end
         σ = mpD.σ
     end
     # closed-form solution return-mapping for D-P
+    ϵIIp = getϵII0(mpD)
     for p ∈ 1:mpD.nmp
-        c   = mpD.c0[p]+cmParam.Hp*mpD.ϵpII[p]
+        c   = mpD.c0[p]+cmParam.Hp*ϵIIp[p]
         if c<mpD.cr[p] c = mpD.cr[p] end
         P,τ0,τII = σTr(σ[:,p],nstr)
         η,ηB,ξ   = materialParam(mpD.ϕ[p],ψ,c,nstr)
