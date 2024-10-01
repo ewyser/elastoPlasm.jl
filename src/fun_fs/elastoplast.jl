@@ -97,28 +97,44 @@ end
         end   
     end
 end
-@views function getϵII0(mpD,ls=0.5,nonlocal=true)
+@views function ϵII0(mpD,ls=0.5,nonlocal=true)
     if !nonlocal
         return mpD.ϵpII
     else
         w = zeros(mpD.nmp,mpD.nmp)
+        #=         =#
+        for p ∈ 1:mpD.nmp
+            ps = findall(x->x==mpD.p2e[p],mpD.p2e)
+            for i ∈ ps
+                for j ∈ ps
+                    ξ = (mpD.x[i,1]-mpD.x[j,1]) 
+                    η = (mpD.x[i,2]-mpD.x[j,2])
+                    d = sqrt(ξ^2+η^2)
+                    w[i,j] = d/ls*exp(-(d/ls)^2)
+                end
+            end
+        end
+        #=
         for i ∈ 1:mpD.nmp
-            for j ∈ i:mpD.nmp
+            for j ∈ 1:mpD.nmp
                 ξ = (mpD.x[i,1]-mpD.x[j,1]) 
                 η = (mpD.x[i,2]-mpD.x[j,2])
                 d = sqrt(ξ^2+η^2)
                 w[i,j] = d/ls*exp(-(d/ls)^2)
-                w[j,i] = d/ls*exp(-(d/ls)^2)
             end
         end
+        =#
         w    = w./sum(w,dims=2)
-        ϵpII = w*(mpD.ϵpII)
+        ϵpII = zeros(mpD.nmp)
+        for p ∈ 1:mpD.nmp
+            ϵpII[p] = sum(w[p,:].*(mpD.ϵpII))
+        end
         return ϵpII
     end
 end
 function plast!(mpD,cmParam,cmType,fwrkDeform)
     # nonlocal regularization
-    ϵIIp = getϵII0(mpD)
+    ϵIIp = ϵII0(mpD)
     # plastic return-mapping dispatcher
     if cmType == "MC"
         ηmax = MCRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
