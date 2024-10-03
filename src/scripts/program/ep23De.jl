@@ -21,7 +21,7 @@ function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; k
     mpD     = pointSetup(meD,L,c0,cr,ϕ0,ϕr,ρ0,instr[:GRF],typeD)                      # material point geometry setup
     Hp      = -60.0e3                                                  # softening modulus
     # constitutive model param.
-    cmParam = (E = E, ν = ν, Kc = K, Gc = G, Del = Del, Hp = Hp,)
+    cmParam = (E = E, ν = ν, Kc = K, Gc = G, Del = Del, Hp = Hp, nonlocal = (cond=1,ls=2.5,))
     # plot & time stepping parameters
     tw,tC,it,ctr,ηmax,ηtot = 0.0,1.0,0,0,0,0    
     # action

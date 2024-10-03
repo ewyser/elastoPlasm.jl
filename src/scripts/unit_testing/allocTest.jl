@@ -1,4 +1,4 @@
-# include("./scripts/unit_testing/allocTest.jl")
+# include("./src/scripts/unit_testing/allocTest.jl")
 @warn "unit testing"
 # include dependencies
 include("../../superInclude.jl")

@@ -97,15 +97,16 @@ end
         end   
     end
 end
-@kernel inbounds = true function kernel_ϵII0(ϵpII,W,w,mpD,ls=0.5,nonlocal=1)
+@kernel inbounds = true function kernel_ϵII0(ϵpII,W,w,mpD,cmParam)
     p = @index(Global)
-    if nonlocal == 0
+    if cmParam[:nonlocal][:cond] == 0
         ϵpII[p] = mpD.ϵpII[p]
-    elseif nonlocal == 1
+    elseif cmParam[:nonlocal][:cond] == 1
         if p ≤ mpD.nmp
             for k ∈ 1:mpD.nmp
                 ξ,η    = (mpD.x[p,1]-mpD.x[k,1]),(mpD.x[p,2]-mpD.x[k,2])
                 d      = sqrt(ξ^2+η^2)
+                ls     = cmParam[:nonlocal][:ls]
                 w[p,k] = d/ls*exp(-(d/ls)^2)
                 W[p]  += w[p,k]
             end
@@ -163,7 +164,7 @@ function plast!(mpD,cmParam,cmType,fwrkDeform)
     # nonlocal regularization
     ϵpII,W,w = zeros(mpD.nmp),zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
     @isdefined(ϵII0K!) ? nothing : ϵII0K! = kernel_ϵII0(CPU())
-    ϵII0K!(ϵpII,W,w,mpD; ndrange=mpD.nmp);sync(CPU())
+    ϵII0K!(ϵpII,W,w,mpD,cmParam; ndrange=mpD.nmp);sync(CPU())
 
     #ϵpII = ϵII0(mpD)
 
