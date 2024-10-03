@@ -4,7 +4,7 @@ include("../../superInclude.jl")
 function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; kwargs...)
     # init & kwargs
     instr  = setKwargs(:instr,kwargs)
-    @info "** ϵp$(length(L))De v$(getVersion()): $(instr[:fwrk]) strain formulation **"
+    @info "ϵp$(length(L))De v$(getVersion()): $(instr[:fwrk]) strain formulation"
     @info "init..."
     # mesh setup
     meD     = meshSetup(nel,L,typeD)                                            # mesh geometry setup
@@ -28,24 +28,28 @@ function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; k
     @info "mesh & mp feature(s):" nel=Tuple(meD.nel) nno=Tuple(meD.nno) nmp=mpD.nmp
     @info "launch $(instr[:shpfun]) calculation cycle using $(nthreads()) thread(s)..."
     prog  = ProgressUnknown("working hard:", spinner=true,showspeed=true)
-    while tw<=t
+    checkpoints = sort(unique([collect(tw+tC:tC:t);t]))
+    # action
+    for (k,time) ∈ enumerate(checkpoints)
         # plot/save
-        if tw >= ctr*tC ctr = plotStuff(mpD,tw,varPlot,ctr) end
-        if tw > te instr[:plast] = true end
-        # set clock on/off
-        tic = time_ns()
-        # adaptative Δt & linear increase in gravity
-        Δt,g  = get_Δt(mpD.v,meD.h,yd),get_g(tw,tg,meD.nD)
-        # bsmpm cycle
-        shpfun!(mpD,meD,instr[:shpfun])
-        mapsto!(mpD,meD,g,Δt,instr[:trsfr],"p->n")    
-        solve!(meD,Δt)
-        mapsto!(mpD,meD,g,Δt,instr[:trsfr],"p<-n")
-        ηmax = elastoplast!(mpD,meD,cmParam,cmType,Δt,instr)
-        # update sim time
-        tw,it,toc,ηtot = tw+Δt,it+1,((time_ns()-tic)),max(ηmax,ηtot)
-        # update progress bas
-        next!(prog;showvalues = getVals(meD,mpD,it,ηmax,ηtot,tw/t,"(✗)"))
+        plotStuff(mpD,tw,varPlot,ctr)
+        while tw<time
+            if tw > te instr[:plast] = true end
+            # set clock on/off
+            tic = time_ns()
+            # adaptative Δt & linear increase in gravity
+            Δt,g  = get_Δt(mpD.v,meD.h,yd,tw,t),get_g(tw,tg,meD.nD)
+            # bsmpm cycle
+            shpfun!(mpD,meD,instr[:shpfun])
+            mapsto!(mpD,meD,g,Δt,instr[:trsfr],"p->n")    
+            solve!(meD,Δt)
+            mapsto!(mpD,meD,g,Δt,instr[:trsfr],"p<-n")
+            ηmax = elastoplast!(mpD,meD,cmParam,cmType,Δt,instr)
+            # update sim time
+            tw,it,toc,ηtot = tw+Δt,it+1,((time_ns()-tic)),max(ηmax,ηtot)
+            # update progress bas
+            next!(prog;showvalues = getVals(meD,mpD,it,ηmax,ηtot,tw/t,"(✗)"))
+        end
     end
     ProgressMeter.finish!(prog, spinner = '✓',showvalues = getVals(meD,mpD,it,ηmax,ηtot,1.0,"(✓)"))
     ctr     = plotStuff(mpD,tw,varPlot,ctr)
