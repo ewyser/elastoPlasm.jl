@@ -1,7 +1,7 @@
 # include("./scripts/unit_testing/allocTest.jl")
 @warn "unit testing"
 # include dependencies
-include("../../src/superInclude.jl")
+include("../../superInclude.jl")
 using BenchmarkTools
 @views function allocCheck(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; kwargs...)
     ϕ∂ϕType,fwrkDeform,trsfrAp,isΔFbar,isGRF = getKwargs(kwargs)
