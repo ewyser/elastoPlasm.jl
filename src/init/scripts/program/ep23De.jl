@@ -1,5 +1,3 @@
-# include dependencies
-include("../../superInclude.jl")
 # main program
 function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; kwargs...)
     # init & kwargs
@@ -58,6 +56,7 @@ function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; k
     savefig(path_plot*"$(length(L))D_$(varPlot)_$(instr[:shpfun])_$(instr[:fwrk])_$(instr[:trsfr])_$(instr[:vollock])_$(cmType).png")
     return msg("(✓) Done! exiting...")
 end
+export ϵp23De
 # include("./src/scripts/program/ep23De.jl")
 # e.g., L = [64.1584,12.80] or L = [64.1584,5.0,12.80]                                                                                        
 # ϵp23De(L,40,"P","DP";shpfun=:bsmpm,fwrk=:finite,trsf=:mUSL,vollock=true)
