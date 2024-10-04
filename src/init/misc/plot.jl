@@ -1,15 +1,3 @@
-# plot parameters
-default(
-    fontfamily  = "Computer Modern", #Courier
-    titlefont   = 12, 
-    guidefont   = 12,  
-    tickfont    = 10, 
-    legendfont  = 10,
-    linewidth   = 2,
-    framestyle  = :box,
-    label       = nothing,
-    grid        = false
-    )
 # plot routines
 @views function plot_coh(xp,coh,phi,coh0,ϕ0)
     coh0 = coh0/1e3

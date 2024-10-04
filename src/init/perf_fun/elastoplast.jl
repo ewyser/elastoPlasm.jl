@@ -139,14 +139,57 @@ end
     end
     return nothing
 end
+@views function ϵII0(mpD,ls=0.5,nonlocal=true)
+    if !nonlocal
+        return mpD.ϵpII
+    else
+        W,w = zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
+        #=         
+        for p ∈ 1:mpD.nmp
+            ps = findall(x->x==mpD.p2e[p],mpD.p2e)
+            for i ∈ ps
+                for j ∈ ps
+                    ξ = (mpD.x[i,1]-mpD.x[j,1]) 
+                    η = (mpD.x[i,2]-mpD.x[j,2])
+                    d = sqrt(ξ^2+η^2)
+                    w[i,j] = d/ls*exp(-(d/ls)^2)
+                    W[i]  += w[i,j]
+                end
+            end
+        end
+        =#
+        #= =#
+        for i ∈ 1:mpD.nmp
+            for j ∈ 1:mpD.nmp
+                ξ,η    = (mpD.x[i,1]-mpD.x[j,1]),(mpD.x[i,2]-mpD.x[j,2])
+                d      = sqrt(ξ^2+η^2)
+                w[i,j] = d/ls*exp(-(d/ls)^2)
+                W[i]  += w[i,j]
+            end
+        end
+        
+        #w       = w./sum(w,dims=2)
+        ϵpII = zeros(mpD.nmp)
+        for p ∈ 1:mpD.nmp
+            for k ∈ 1:mpD.nmp
+                
+                #ϵpII[p]+= (w[p,k])*mpD.ϵpII[k]
+                ϵpII[p]+= (w[p,k]/W[p])*mpD.ϵpII[k]
+            end
+        end
+        return ϵpII
+    end
+end
 function plast!(mpD,cmParam,cmType,fwrkDeform)
+    # nonlocal regularization
+    ϵpII = mpD.ϵpII#ϵII0(mpD)
     # plastic return-mapping dispatcher
     if cmType == "MC"
-        ηmax = MCRetMap!(mpD,cmParam,fwrkDeform)
+        ηmax = MCRetMap!(mpD,ϵpII,cmParam,fwrkDeform)
     elseif cmType == "DP"        
-        ηmax = DPRetMap!(mpD,cmParam,fwrkDeform)
+        ηmax = DPRetMap!(mpD,ϵpII,cmParam,fwrkDeform)
     elseif cmType == "J2"
-        ηmax = J2RetMap!(mpD,cmParam,fwrkDeform)
+        ηmax = J2RetMap!(mpD,ϵpII,cmParam,fwrkDeform)
     elseif cmType == "camC"
         ηmax = camCRetMap!(mpD,cmParam,fwrkDeform)
     else
@@ -155,19 +198,19 @@ function plast!(mpD,cmParam,cmType,fwrkDeform)
     end
     return ηmax::Int64
 end
-@views function elastoplast!(mpD,meD,cmParam,cmType,Δt,ϕ∂ϕType,isΔFbar,fwrkDeform,plastOn)
+@views function elastoplast!(mpD,meD,cmParam,cmType,Δt,instr)
     # get incremental deformation tensor & strains
-    deform!(mpD,meD,Δt,ϕ∂ϕType,isΔFbar)
+    deform!(mpD,meD,Δt,instr[:shpfun],instr[:vollock])
     # update kirchoff/cauchy stresses
-    elast!(mpD,cmParam.Del,fwrkDeform)
+    elast!(mpD,cmParam.Del,instr[:fwrk])
     # plastic corrector
-    if plastOn 
-        ηmax = plast!(mpD,cmParam,cmType,fwrkDeform) 
+    if instr[:plast] 
+        ηmax = plast!(mpD,cmParam,cmType,instr[:fwrk]) 
     else 
         ηmax = 0 
     end
     # get cauchy stresses
-    if fwrkDeform == :finite
+    if instr[:fwrk] == :finite
         @threads for p ∈ 1:mpD.nmp
             mpD.σ[:,p] .= mpD.τ[:,p]./mpD.J[p]
         end

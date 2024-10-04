@@ -1,5 +1,7 @@
 # main program
 function ϵp23De(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; kwargs...)
+    # 
+    configPlot()
     # init & kwargs
     instr  = setKwargs(:instr,kwargs)
     @info "ϵp$(length(L))De v$(getVersion()): $(instr[:fwrk]) strain formulation"
