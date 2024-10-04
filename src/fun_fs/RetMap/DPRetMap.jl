@@ -30,7 +30,7 @@ end
     end
     return σn 
 end
-@views function DPRetMap!(mpD,cmParam,fwrkDeform)
+@views function DPRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
     ψ,nstr   = 0.0*π/180.0,size(mpD.σ,1)
     # create an alias for stress tensor
     if fwrkDeform == :finite
@@ -40,7 +40,7 @@ end
     end
     # closed-form solution return-mapping for D-P
     for p ∈ 1:mpD.nmp
-        c   = mpD.c0[p]+cmParam.Hp*mpD.ϵpII[p]
+        c   = mpD.c0[p]+cmParam.Hp*ϵIIp[p]
         if c<mpD.cr[p] c = mpD.cr[p] end
         P,τ0,τII = σTr(σ[:,p],nstr)
         η,ηB,ξ   = materialParam(mpD.ϕ[p],ψ,c,nstr)

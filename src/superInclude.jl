@@ -17,6 +17,7 @@ if splitpath(Base.active_project())[end-1]!="elastoPlasm"
     Pkg.activate(".")
 end
 # include dependencies & function call(s)
+using Revise
 try 
     using LinearAlgebra, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter
     import KernelAbstractions.@atomic as @atom

@@ -19,7 +19,7 @@ end
 @views function J2Yield(ξn,κ)
     return f = ξn-κ
 end
-@views function J2RetMap!(mpD,cmParam,fwrkDeform) # Borja (1990); De Souza Neto (2008)
+@views function J2RetMap!(mpD,ϵIIp,cmParam,fwrkDeform) # Borja (1990); De Souza Neto (2008)
     ftol,ηtol,ηmax = 1e-9,1e4,20
     Hp,χ = 0.35*cmParam.Hp,3.0/2.0
     # create an alias
@@ -30,7 +30,7 @@ end
     end
     @threads for p in 1:mpD.nmp
         P,q,n,ξn = J2Param(σ[:,p],χ,nstr)
-        κ        = 2.5*mpD.c0[p]+cmParam.Hp*mpD.ϵpII[p]
+        κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵIIp[p]
         if κ <= mpD.cr[p] κ = mpD.cr[p] end
         f        = J2Yield(ξn,κ)
         if f>0.0 

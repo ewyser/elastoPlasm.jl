@@ -1,4 +1,4 @@
-@views function MCRetMap!(mpD,cmParam,fwrkDeform)
+@views function MCRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
     ftol,ηtol,ηmax = 1e-6,1e4,0
     ψ              = 0.5*π/180.0
     # create an alias
@@ -8,7 +8,7 @@
         σ = mpD.σ
     end
     @threads for p ∈ 1:mpD.nmp
-        ϕ,H,ϵII0 = mpD.ϕ[p],cos(mpD.ϕ[p])*cmParam.Hp,mpD.ϵpII[p]
+        ϕ,H,ϵII0 = mpD.ϕ[p],cos(mpD.ϕ[p])*cmParam.Hp,ϵIIp[p]
         c0,cr    = mpD.c0[p]+cmParam.Hp*ϵII0,mpD.cr[p]
         if c0<cr c0 = cr end
         σm,τII   = 0.5*(σ[1,p]+σ[2,p]),sqrt(0.25*(σ[1,p]-σ[2,p])^2+σ[3,p]^2)

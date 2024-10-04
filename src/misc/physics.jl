@@ -17,7 +17,7 @@
     end
     return Kc,Gc,D
 end
-@views function get_Δt(vp,h,yd)
+@views function get_Δt(vp,h,yd,tw,t)
     if length(h)==2
         Δx   = h[1]
         Δz   = h[2]
@@ -36,7 +36,7 @@ end
     else
         Δt = nothing    
     end
-    return Δt
+    return min(Δt,t-tw)
 end
 function get_g(tw::Float64,tg::Float64,nD::Int64)
     g = 0.0
