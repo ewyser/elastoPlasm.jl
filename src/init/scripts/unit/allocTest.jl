@@ -2,8 +2,8 @@
 @warn "unit testing"
 using BenchmarkTools
 @views function allocCheck(L::Vector{Float64},nel::Int64,varPlot::String,cmType::String; kwargs...)
-    ϕ∂ϕType,fwrkDeform,trsfrAp,isΔFbar,isGRF = getKwargs(kwargs)
-    @info "** ϵp$(length(L))De v$(getVersion()): $(fwrkDeform) strain formulation **"
+    instr  = setKwargs(:instr,kwargs)
+    @info "ϵp$(length(L))De v$(getVersion()): $(instr[:fwrk]) strain formulation"
     @info "init..."
     # mesh setup
     meD     = meshSetup(nel,L,typeD)                                            # mesh geometry setup
@@ -17,32 +17,33 @@ using BenchmarkTools
     ϕ0,ϕr,ψ0= 20.0*π/180,7.5*π/180,0.0                                          # friction angle [Rad], dilation angle [Rad]                                                              
     t,te,tg = 15.0,10.0,15.0/1.5                                                # simulation time [s], elastic loading [s], gravity load
     # mp setup
-    mpD     = pointSetup(meD,L,c0,cr,ϕ0,ϕr,ρ0,isGRF,typeD)                      # material point geometry setup
+    mpD     = pointSetup(meD,L,c0,cr,ϕ0,ϕr,ρ0,instr[:GRF],typeD)                      # material point geometry setup
     Hp      = -60.0e3*meD.h[1]                                                  # softening modulus
     # constitutive model param.
     cmParam = (Kc = K, Gc = G, Del = Del, Hp = Hp,)
-    @info "mesh & mp feature(s):" ϕ∂ϕType fwrkDeform trsfrAp isΔFbar nel nthreads()
+    @info "mesh & mp feature(s):" instr[:shpfun] instr[:fwrk] instr[:trsfr] instr[:vollock] nel nthreads()
     # plot & time stepping parameters
     tw,tC,it,ctr,toc,flag,ηmax,ηtot,Δt = 0.0,1.0/1.0,0,0,0.0,0,0,0,1.0e-4    
     # action
     @info "Evaluate core functions:"
     println("launch ϕ∂ϕ!()")
-    @btime shpfun!($mpD,$meD,$ϕ∂ϕType)
+    @btime shpfun!($mpD,$meD,$instr[:shpfun])
     println("launch mapsto!(p->n)")
-    @btime mapsto!($mpD,$meD,vec([0.0,0.0,9.81]),$Δt,$trsfrAp,"p->n")   
+    @btime mapsto!($mpD,$meD,vec([0.0,0.0,9.81]),$Δt,$instr[:trsfr],"p->n")   
     println("launch solve!()")
     @btime solve!($meD,$Δt)
     println("launch mapsto!(p<-n)")
-    @btime mapsto!($mpD,$meD,vec([0.0,0.0,9.81]),$Δt,$trsfrAp,"p<-n")
+    @btime mapsto!($mpD,$meD,vec([0.0,0.0,9.81]),$Δt,$instr[:trsfr],"p<-n")
     println("launch elastoplast!()")
-    @btime ηmax = elastoplast!($mpD,$meD,$cmParam,$cmType,$Δt,$ϕ∂ϕType,$isΔFbar,$fwrkDeform,true)
+    @btime ηmax = elastoplast!($mpD,$meD,$cmParam,$cmType,$Δt,$instr)
+    
     @warn "Digging deeper in elastoplast!(), "
     println("-> launch deform!()")
-    @btime deform!($mpD,$meD,$Δt,$ϕ∂ϕType,$isΔFbar)
+    @btime strain!($mpD,$meD,$Δt)
     println("-> launch ΔFbar!()")
     @btime ΔFbar!($mpD,$meD)
     println("-> launch elast!()")
-    @btime elast!($mpD,$cmParam.Del,$fwrkDeform)
+    @btime stress!($mpD,$cmParam,$instr,:update)
     return msg("(✓) Done! exiting...")
 end
 export allocCheck

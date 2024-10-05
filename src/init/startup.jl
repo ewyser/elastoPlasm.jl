@@ -36,6 +36,8 @@ import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
 # arithmetic precision & relative path for figs & data
 const typeD     = Float64  
+const path_DAT = "./misc/DAT/"
+if isdir(path_DAT)==false mkdir(path_DAT) end
 const path_plot = "./misc/out/"
 if isdir(path_plot)==false mkdir(path_plot) end
 const path_test = "./misc/test/"

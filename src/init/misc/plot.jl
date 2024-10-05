@@ -48,7 +48,7 @@
     )
     savefig(path_plot*"phi0.png")
 end
-@views function plotStuff(mpD,t,type,ctr)
+@views function plotStuff(mpD,t,type)
     temp = L"$t = $"*string(round(t,digits=1))*" [s]"
     if type == "P"
         if size(mpD.σ,1) == 3
@@ -112,5 +112,5 @@ end
     aspect_ratio=1,
     )
     display(plot(p1;layout=(1,1),size=(500,250))) 
-    return ctr+=1
+    return nothing
 end
