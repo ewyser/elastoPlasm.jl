@@ -16,7 +16,7 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     # postprocessing
     sleep(2.5)
     @info "figs saved in" path_plot
-    savefig(path_plot*"$(length(L))D_$(last(instr[:plot]))_$(instr[:shpfun])_$(instr[:fwrk])_$(instr[:trsfr])_$(instr[:vollock])_$(cmParam[:cmType]).png")
+    savefig(path_plot*"$(length(L))D_$(last(instr[:plot]))_$(instr[:shpfun])_$(instr[:fwrk])_$(instr[:trsfr])_$(instr[:vollock])_$(cmParam[:cmType])_$(instr[:perf]).png")
     return msg("(✓) Done! exiting...")
 end
 export slump
