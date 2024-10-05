@@ -1,6 +1,6 @@
 @views function savlot(mpD,t,instr)
-    if first(instr[:plot])
-        type = last(instr[:plot])
+    if instr[:plot][:cond]
+        type = instr[:plot][:what]
         temp = L"$t = $"*string(round(t,digits=1))*" [s]"
         if type == "P"
             if size(mpD.σ,1) == 3

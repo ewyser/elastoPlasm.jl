@@ -5,7 +5,11 @@ using BenchmarkTools
     instr  = setKwargs(:instr,kwargs)
     @info "init test geometry"
     # independant physical constant
-    g       = 9.81                                                              # gravitationnal acceleration [m/s^2]            
+    if length(L) == 2
+        g = vec([0.0,9.81])
+    elseif length(L) == 3
+        g = vec([0.0,0.0,9.81])
+    end                                                           # gravitationnal acceleration [m/s^2]            
     # constitutive model
     cmParam = cm(length(L),instr)
     T,te,tg = 15.0,10.0,15.0/1.5                                                # simulation time [s], elastic loading [s], gravity load
@@ -16,7 +20,18 @@ using BenchmarkTools
     # plot & time stepping parameters
     tw,tC,it,ctr,toc,flag,ηmax,ηtot,Δt = 0.0,1.0/1.0,0,0,0.0,0,0,0,1.0e-4    
     # action
-
+    suite                = BenchmarkGroup()
+    suite["mapsto"]      = BenchmarkGroup(["string", "unicode"])
+    suite["elastoplast"] = BenchmarkGroup(["string", "unicode"])
+    suite["shp"]                   = @benchmarkable shpfun!($mpD,$meD,$instr)
+    #suite["mapsto"]["p->n"] = @benchmarkable mapsto!($mpD,$meD,$g,$Δt,$instr,"p->n")
+    #suite["mapsto"]["p<-p"] = @benchmarkable mapsto!($mpD,$meD,$g,$Δt,$instr,"p<-n")
+    suite["solve"]                 = @benchmarkable solve!($meD,$Δt)
+    suite["elastoplast"]["all"]    = @benchmarkable ηmax = elastoplast!($mpD,$meD,$cmParam,$Δt,$instr)
+    suite["elastoplast"]["strain"] = @benchmarkable strain!($mpD,$meD,$Δt,$instr)
+    suite["elastoplast"]["ΔFbar"]  = @benchmarkable ΔFbar!($mpD,$meD)
+    suite["elastoplast"]["stress"] = @benchmarkable stress!($mpD,$cmParam,$instr,:update)
+#=
     @info "Evaluate core functions:"
     println("launch ϕ∂ϕ!()")
     @btime shpfun!($mpD,$meD,$instr)
@@ -36,7 +51,10 @@ using BenchmarkTools
     @btime ΔFbar!($mpD,$meD)
     println("-> launch elast!()")
     @btime stress!($mpD,$cmParam,$instr,:update)
-    return msg("(✓) Done! exiting...")
+=#  
+    @info "run benchmarks..."
+    benchmark = run(suite)
+    return benchmark
 end
 export allocCheck
 #allocCheck([64.1584,64.1584/4,12.80],80)

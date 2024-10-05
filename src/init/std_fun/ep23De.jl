@@ -5,7 +5,7 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
     - $(instr[:shpfun]) calculation cycle
     - $(nthreads()) active thread(s) 
     """
-    t,tC,it,ηmax,ηtot = 0.0,1.0,0,0,0
+    t,tC,it,ηmax,ηtot = 0.0,instr[:plot][:freq],0,0,0
     # action
     prog  = ProgressUnknown("ϵp23De! working:", spinner=true,showspeed=true)
     for (k,time) ∈ enumerate(sort(unique([collect(t+tC:tC:T);te;T])))

@@ -9,7 +9,7 @@ function require(in::Symbol)
             :GRF     => false,
             :plast   => (false,"DP"),
             :nonloc  => (;cond=false,ls=2.5,),
-            :plot    => (true,"P"),
+            :plot    => (;cond=true,freq=1.0,what="epII"),
             :perf    => true,
         )
         return instr
