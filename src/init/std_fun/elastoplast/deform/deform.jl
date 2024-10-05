@@ -34,8 +34,16 @@ end
         mpD.V[p]      = mpD.J[p]*mpD.V0[p]
     end
 end
-function strain!(mpD,meD,Δt)
-    @isdefined(deform!) ? nothing : deform! = MEASURE(CPU())
+function strain!(mpD,meD,Δt,instr)
+    if @isdefined(deform!) 
+        nothing 
+    else
+        if instr[:perf]
+            deform! = MEASURE(CPU())
+        else
+            deform! = measure(CPU())
+        end
+    end
     deform!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())
     return nothing
 end

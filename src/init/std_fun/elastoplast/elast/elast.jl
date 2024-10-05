@@ -80,7 +80,15 @@ end
 end
 function stress!(mpD,cmParam,instr,type)
     if type == :update
-        @isdefined(stresses!) ? nothing : stresses! = ELAST!(CPU())
+        if @isdefined(stresses!) 
+            nothing 
+        else
+            if instr[:perf]
+                stresses! = ELAST!(CPU())
+            else
+                stresses! = elast!(CPU())
+            end
+        end
         stresses!(mpD,cmParam.Del,instr; ndrange=mpD.nmp)
         sync(CPU())
     elseif type == :cauchy

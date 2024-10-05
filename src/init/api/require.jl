@@ -1,12 +1,5 @@
 function require(in::Symbol)
-    if in == :path
-        path = Dict(
-            :plot => true,
-            :dat  => true,
-            :geo  => false,
-        )
-        return path
-    elseif in == :instr
+    if in == :instr
         instr = Dict(
             :dtype   => Float32, # set the arithmetic precision
             :shpfun  => :bsmpm,
@@ -14,7 +7,10 @@ function require(in::Symbol)
             :trsfr   => :mUSL,
             :vollock => true,
             :GRF     => false,
-            :plast   => false,
+            :plast   => (false,"DP"),
+            :nonloc  => (;cond=false,ls=2.5,),
+            :plot    => (true,"P"),
+            :perf    => true,
         )
         return instr
     else

@@ -1,6 +1,6 @@
 function elastoplast!(mpD,meD,cmParam,Δt,instr)
     # get incremental deformation tensor & strains
-    strain!(mpD,meD,Δt)
+    strain!(mpD,meD,Δt,instr)
     # update material point's domain
     if instr[:shpfun] == :gimpm 
         domain!(mpD)
@@ -12,8 +12,8 @@ function elastoplast!(mpD,meD,cmParam,Δt,instr)
     # update {kirchoff|cauchy} stresses
     stress!(mpD,cmParam,instr,:update)
     # plastic corrector
-    if instr[:plast] 
-        ηmax = plast!(mpD,cmParam,instr[:fwrk]) 
+    if first(instr[:plast]) 
+        ηmax = plast!(mpD,cmParam,instr) 
     else 
         ηmax = 0 
     end

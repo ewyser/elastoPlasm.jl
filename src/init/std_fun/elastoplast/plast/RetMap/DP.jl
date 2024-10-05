@@ -30,16 +30,17 @@ end
     end
     return σn 
 end
-@views function DPRetMap!(mpD,ϵIIp,cmParam,fwrkDeform)
-    ψ,nstr   = 0.0*π/180.0,size(mpD.σ,1)
-    # create an alias for stress tensor
-    if fwrkDeform == :finite
-        σ = mpD.τ
-    elseif fwrkDeform == :infinitesimal
-        σ = mpD.σ
-    end
-    # closed-form solution return-mapping for D-P
-    for p ∈ 1:mpD.nmp
+@views @kernel inbounds = true function DP!(mpD,ϵIIp,cmParam,instr)
+    p = @index(Global)
+    if p≤mpD.nmp 
+        ψ,nstr   = 0.0*π/180.0,size(mpD.σ,1)
+        # create an alias for stress tensor
+        if instr[:fwrk] == :finite
+            σ = mpD.τ
+        elseif instr[:fwrk] == :infinitesimal
+            σ = mpD.σ
+        end
+        # closed-form solution return-mapping for D-P
         c   = mpD.c0[p]+cmParam.Hp*ϵIIp[p]
         if c<mpD.cr[p] c = mpD.cr[p] end
         P,τ0,τII = σTr(σ[:,p],nstr)
@@ -52,7 +53,7 @@ end
             Pn,τn       = P-cmParam.Kc*ηB*Δλ,ξ-η*(P-cmParam.Kc*ηB*Δλ)
             σ[:,p]     .= σn(Pn,τ0,τn,τII,nstr)
             mpD.ϵpII[p]+= Δλ*sqrt(1/3+2/9*ηB^2)
-            if fwrkDeform == :finite
+            if instr[:fwrk] == :finite
                 mpD.ϵ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
                 # update left cauchy green tensor
                 λ,n          = eigen(mpD.ϵ[:,:,p],sortby=nothing)
@@ -64,7 +65,7 @@ end
             Pn          = σm-P
             σ[:,p]     .= σn(Pn,τ0,0.0,τII,nstr)
             mpD.ϵpII[p]+= sqrt(2.0)*Δλ/3.0
-            if fwrkDeform == :finite
+            if instr[:fwrk] == :finite
                 mpD.ϵ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
                 # update left cauchy green tensor
                 λ,n          = eigen(mpD.ϵ[:,:,p],sortby=nothing)
@@ -72,5 +73,4 @@ end
             end
         end
     end
-    return 0
 end

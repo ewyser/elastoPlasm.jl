@@ -17,7 +17,7 @@ function D(E,ν,nD)
     end
     return Kc,Gc,D
 end
-function cm(dim,cmType)
+function cm(dim,instr)
     # independant physical constant          
     E,ν     = 1.0e6,0.3                                                         # Young's mod. [Pa], Poisson's ratio [-]
     K,G,Del = D(E,ν,dim)                                                  # elastic matrix D(E,ν) Young's mod. [Pa] + Poisson's ratio [-]    
@@ -28,8 +28,8 @@ function cm(dim,cmType)
     Hp      = -60.0e3                                                           # softening modulus
     # constitutive model param.
     cmParam = (;
-        cmType   = cmType, 
-        nonlocal = (cond=0,ls=2.5,),
+        cmType   = last(instr[:plast]), 
+        nonlocal = instr[:nonloc],
         E   = E, 
         ν   = ν, 
         Kc  = K, 

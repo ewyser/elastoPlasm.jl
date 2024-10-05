@@ -19,16 +19,17 @@ end
 @views function J2Yield(ξn,κ)
     return f = ξn-κ
 end
-@views function J2RetMap!(mpD,ϵIIp,cmParam,fwrkDeform) # Borja (1990); De Souza Neto (2008)
-    ftol,ηtol,ηmax = 1e-9,1e4,20
-    Hp,χ = 0.35*cmParam.Hp,3.0/2.0
-    # create an alias
-    if fwrkDeform == :finite
-        σ,nstr = mpD.τ,size(mpD.τ,1)
-    elseif fwrkDeform == :infinitesimal
-        σ,nstr = mpD.σ,size(mpD.σ,1)
-    end
-    @threads for p in 1:mpD.nmp
+@views @kernel inbounds = true function J2!(mpD,ϵIIp,cmParam,instr) # Borja (1990); De Souza Neto (2008)
+    p = @index(Global)
+    if p≤mpD.nmp 
+        ftol,ηtol,ηmax = 1e-9,1e4,20
+        Hp,χ = 0.35*cmParam.Hp,3.0/2.0
+        # create an alias
+        if instr[:fwrk] == :finite
+            σ,nstr = mpD.τ,size(mpD.τ,1)
+        elseif instr[:fwrk] == :infinitesimal
+            σ,nstr = mpD.σ,size(mpD.σ,1)
+        end
         P,q,n,ξn = J2Param(σ[:,p],χ,nstr)
         κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵIIp[p]
         if κ <= mpD.cr[p] κ = mpD.cr[p] end
@@ -42,14 +43,14 @@ end
                 σ0     .-= Δσ 
                 γ0      += Δλ
                 P,q,n,ξn = J2Param(σ0,χ,nstr)
-                κ        = 2.5*mpD.c0[p]+cmParam.Hp*mpD.ϵpII[p]
+                κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵIIp[p]
                 if κ <= mpD.cr[p] κ = mpD.cr[p] end
                 f        = J2Yield(ξn,κ)
                 ηit +=1
             end
             mpD.ϵpII[p] = γ0
             σ[:,p]     .= σ0
-            if fwrkDeform == :finite
+            if instr[:fwrk] == :finite
                 # update strain tensor
                 mpD.ϵ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
                 # update left cauchy green tensor
@@ -57,8 +58,6 @@ end
                 mpD.b[:,:,p].= n*diagm(exp.(2.0.*λ))*n'
             end
             ηmax = max(ηit,ηmax)
-        end
+        end        
     end
-    return ηmax::Int64
 end
-
