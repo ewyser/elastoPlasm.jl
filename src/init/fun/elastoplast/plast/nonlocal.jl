@@ -1,22 +1,26 @@
-@views @kernel inbounds = true function regularization(ϵpII,W,w,mpD,meD,cmParam)
+@views @kernel inbounds = true function regularization(ϵpII,W,w,mpD,meD,cmParam,type)
     p = @index(Global)
-    if p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
-        active     = meD.e2e[mpD.p2e[p]]
-        mpD.p2p[p] = []
-        for k ∈ 1:length(active)
-            mpD.p2p[p] = vcat(mpD.p2p[p],findall(x->x==active[k],mpD.p2e))
+
+    if type == "p->q" && p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
+        els = meD.e2e[mpD.p2e[p]]
+        mask = map(x -> x ∈ els, mpD.p2e)
+        ps   = findall(mask)
+
+        mpD.p2p[p] = ps
+        for (it,q) ∈ enumerate(mpD.p2p[p])
+            if w[p,q] == 0.0 || w[q,p] == 0.0
+                ξ,η    = (mpD.x[p,1]-mpD.x[q,1]),(mpD.x[p,2]-mpD.x[q,2])
+                d      = sqrt(ξ^2+η^2)
+                ls     = cmParam[:nonlocal][:ls]
+                w0     = d/ls*exp(-(d/ls)^2)
+                w[p,q] = w0
+                w[q,p] = w0
+                W[p]  += w0
+                W[q]  += w0
+            end
         end
 
-        for (it,q) ∈ enumerate(mpD.p2p[p])
-            ξ,η    = (mpD.x[p,1]-mpD.x[q,1]),(mpD.x[p,2]-mpD.x[q,2])
-            d      = sqrt(ξ^2+η^2)
-            ls     = cmParam[:nonlocal][:ls]
-            w[p,q] = d/ls*exp(-(d/ls)^2)
-            W[p]  += w[p,q]
-        end
-    end
-    sync(CPU())
-    if p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
+    elseif type == "p<-q" && p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
         for (k,q) ∈ enumerate(mpD.p2p[p])
             ϵpII[p]+= (w[p,q]/W[p])*mpD.ϵpII[q]
         end

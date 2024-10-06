@@ -141,11 +141,11 @@ function meshSetup(nel,L,instr)
         nel  = nel,
         nno  = nno,
         nn   = nn,
-        L    = L,
-        h    = h,
-        minC = minimum(x,dims=2),
+        L    = instr[:dtype].(L),
+        h    = instr[:dtype].(h),
+        minC = instr[:dtype].(minimum(x,dims=2)),
         # nodal quantities
-        xn   = x,
+        xn   = instr[:dtype].(x),
         mn   = zeros(instr[:dtype],nno[nD+1]             ), # lumped mass vector
         Mn   = zeros(instr[:dtype],nno[nD+1],nno[nD+1]   ), # consistent mass matrix
         oobf = zeros(instr[:dtype],nno[nD+1],nD          ),
@@ -164,10 +164,5 @@ function meshSetup(nel,L,instr)
         # mesh boundary conditions
         bc   = bc,
     )
-
-    ceil.(Int,h./instr[:nonloc][:ls])
-    println(h)
-    println(instr[:nonloc][:ls])
-
     return meD
 end
