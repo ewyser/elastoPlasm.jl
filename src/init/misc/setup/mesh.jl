@@ -111,9 +111,6 @@ function e2e(nD,nno,nel,nn,h,instr)
 	e2e  = Array{Int64}(undef,nel[end],9)
     nnel = ceil.(Int,instr[:nonloc][:ls]./h)
     if nD == 2
-        #gnum = reverse(reshape(1:(nno[3]),nno[2],nno[1]),dims=1)
-        #gnum = reverse(reshape(1:nel[end],nel[2],nel[1]),dims=1)
-        #gnum = reverse(reshape(1:nel[end],nel[2],nel[1]),dims=1)
         gnum = reshape(1:nel[end],nel[2],nel[1])
         e2e  = Vector{Any}(undef,nel[end])
         iel  = 1
