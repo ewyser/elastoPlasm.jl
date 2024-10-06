@@ -1,7 +1,7 @@
 function require(in::Symbol)
     if in == :instr
         instr = Dict(
-            :dtype   => Float32, # set the arithmetic precision
+            :dtype   => Float64, # set the arithmetic precision
             :shpfun  => :bsmpm,
             :fwrk    => :finite,
             :trsfr   => :mUSL,

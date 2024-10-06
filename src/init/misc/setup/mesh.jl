@@ -66,112 +66,40 @@ function meshBCs(xn,h,nno,nD)
     return bc,xB
 end
 function e2N(nD,nno,nel,nn)
-	e2n  = zeros(Int64,nel[nD+1],nn)
+	iel,e2n =1,zeros(Int64,nel[end],nn)
     if nD == 2
-        gnum = reverse(reshape(1:(nno[3]),nno[2],nno[1]),dims=1)
-        iel  = 1
-        for i ∈ 1:nel[1]#nelx
-            for j ∈ 1:nel[2]#nelz
-                if i>1 && i<nel[1] && j>1 && j<nel[2]
-                    e2n[iel,1 ] = gnum[j-1,i-1]
-                    e2n[iel,2 ] = gnum[j-0,i-1]
-                    e2n[iel,3 ] = gnum[j+1,i-1]
-                    e2n[iel,4 ] = gnum[j+2,i-1]
-
-                    e2n[iel,5 ] = gnum[j-1,i  ]
-                    e2n[iel,6 ] = gnum[j-0,i  ]
-                    e2n[iel,7 ] = gnum[j+1,i  ]
-                    e2n[iel,8 ] = gnum[j+2,i  ]
-
-                    e2n[iel,9 ] = gnum[j-1,i+1]
-                    e2n[iel,10] = gnum[j-0,i+1]
-                    e2n[iel,11] = gnum[j+1,i+1]
-                    e2n[iel,12] = gnum[j+2,i+1]
-
-                    e2n[iel,13] = gnum[j-1,i+2]
-                    e2n[iel,14] = gnum[j-0,i+2]
-                    e2n[iel,15] = gnum[j+1,i+2]
-                    e2n[iel,16] = gnum[j+2,i+2]
+        gnum = reverse(reshape(1:(nno[end]),nno[2],nno[1]),dims=1)
+        for i0 ∈ 1:nel[1]#nelx
+            for j0 ∈ 1:nel[2]#nelz
+                if 1<i0<nel[1] && 1<j0<nel[2]
+                    nn = 0
+                    for i ∈ -1:2
+                        for j ∈ -1:2
+                            nn += 1
+                            e2n[iel,nn] = gnum[j0+j,i0+i]    
+                        end
+                    end
                 end
-                iel = iel+1;
+                iel = iel+1
             end
         end
     elseif nD == 3
-        gnum = reverse(reshape(1:(nno[4]),nno[3],nno[1],nno[2]),dims=1)
-        iel  = 1
-        for k ∈ 1:nel[2]#nely
-            for i ∈ 1:nel[1]#nelx
-                for j ∈ 1:nel[3]#nelz
-                    if i>1 && i<nel[1] && j>1 && j<nel[3] && k>1 && k<nel[2]
-                        e2n[iel,1 ] = gnum[j-1,i-1,k-1]
-                        e2n[iel,2 ] = gnum[j-0,i-1,k-1]
-                        e2n[iel,3 ] = gnum[j+1,i-1,k-1]
-                        e2n[iel,4 ] = gnum[j+2,i-1,k-1]
-                        e2n[iel,5 ] = gnum[j-1,i  ,k-1]
-                        e2n[iel,6 ] = gnum[j-0,i  ,k-1]
-                        e2n[iel,7 ] = gnum[j+1,i  ,k-1]
-                        e2n[iel,8 ] = gnum[j+2,i  ,k-1]
-                        e2n[iel,9 ] = gnum[j-1,i+1,k-1]
-                        e2n[iel,10] = gnum[j-0,i+1,k-1]
-                        e2n[iel,11] = gnum[j+1,i+1,k-1]
-                        e2n[iel,12] = gnum[j+2,i+1,k-1]
-                        e2n[iel,13] = gnum[j-1,i+2,k-1]
-                        e2n[iel,14] = gnum[j-0,i+2,k-1]
-                        e2n[iel,15] = gnum[j+1,i+2,k-1]
-                        e2n[iel,16] = gnum[j+2,i+2,k-1]
-                        
-                        e2n[iel,17] = gnum[j-1,i-1,k  ]
-                        e2n[iel,18] = gnum[j-0,i-1,k  ]
-                        e2n[iel,19] = gnum[j+1,i-1,k  ]
-                        e2n[iel,20] = gnum[j+2,i-1,k  ]
-                        e2n[iel,21] = gnum[j-1,i  ,k  ]
-                        e2n[iel,22] = gnum[j-0,i  ,k  ]
-                        e2n[iel,23] = gnum[j+1,i  ,k  ]
-                        e2n[iel,24] = gnum[j+2,i  ,k  ]
-                        e2n[iel,25] = gnum[j-1,i+1,k  ]
-                        e2n[iel,26] = gnum[j-0,i+1,k  ]
-                        e2n[iel,27] = gnum[j+1,i+1,k  ]
-                        e2n[iel,28] = gnum[j+2,i+1,k  ]
-                        e2n[iel,29] = gnum[j-1,i+2,k  ]
-                        e2n[iel,30] = gnum[j-0,i+2,k  ]
-                        e2n[iel,31] = gnum[j+1,i+2,k  ]
-                        e2n[iel,32] = gnum[j+2,i+2,k  ]
-                        
-                        e2n[iel,33] = gnum[j-1,i-1,k+1]
-                        e2n[iel,34] = gnum[j-0,i-1,k+1]
-                        e2n[iel,35] = gnum[j+1,i-1,k+1]
-                        e2n[iel,36] = gnum[j+2,i-1,k+1]
-                        e2n[iel,37] = gnum[j-1,i  ,k+1]
-                        e2n[iel,38] = gnum[j-0,i  ,k+1]
-                        e2n[iel,39] = gnum[j+1,i  ,k+1]
-                        e2n[iel,40] = gnum[j+2,i  ,k+1]
-                        e2n[iel,41] = gnum[j-1,i+1,k+1]
-                        e2n[iel,42] = gnum[j-0,i+1,k+1]
-                        e2n[iel,43] = gnum[j+1,i+1,k+1]
-                        e2n[iel,44] = gnum[j+2,i+1,k+1]
-                        e2n[iel,45] = gnum[j-1,i+2,k+1]
-                        e2n[iel,46] = gnum[j-0,i+2,k+1]
-                        e2n[iel,47] = gnum[j+1,i+2,k+1]
-                        e2n[iel,48] = gnum[j+2,i+2,k+1]
-                            
-                        e2n[iel,49] = gnum[j-1,i-1,k+2]
-                        e2n[iel,50] = gnum[j-0,i-1,k+2]
-                        e2n[iel,51] = gnum[j+1,i-1,k+2]
-                        e2n[iel,52] = gnum[j+2,i-1,k+2]
-                        e2n[iel,53] = gnum[j-1,i  ,k+2]
-                        e2n[iel,54] = gnum[j-0,i  ,k+2]
-                        e2n[iel,55] = gnum[j+1,i  ,k+2]
-                        e2n[iel,56] = gnum[j+2,i  ,k+2]
-                        e2n[iel,57] = gnum[j-1,i+1,k+2]
-                        e2n[iel,58] = gnum[j-0,i+1,k+2]
-                        e2n[iel,59] = gnum[j+1,i+1,k+2]
-                        e2n[iel,60] = gnum[j+2,i+1,k+2]
-                        e2n[iel,61] = gnum[j-1,i+2,k+2]
-                        e2n[iel,62] = gnum[j-0,i+2,k+2]
-                        e2n[iel,63] = gnum[j+1,i+2,k+2]
-                        e2n[iel,64] = gnum[j+2,i+2,k+2]
+        gnum = reverse(reshape(1:(nno[end]),nno[3],nno[1],nno[2]),dims=1)
+        for k0 ∈ 1:nel[2]#nely
+            for i0 ∈ 1:nel[1]#nelx
+                for j0 ∈ 1:nel[3]#nelz gnum[j0-1,i0-1,k0-1]
+                    if 1<i0<nel[1] && 1<j0<nel[3] && 1<k0<nel[2]
+                        nn = 0
+                        for k ∈ -1:2
+                            for i ∈ -1:2
+                                for j ∈ -1:2
+                                    nn += 1
+                                    e2n[iel,nn] = gnum[j0+j,i0+i,k0+k]
+                                end
+                            end
+                        end
                     end
-                    iel = iel+1;
+                    iel = iel+1
                 end
             end
         end
@@ -179,20 +107,20 @@ function e2N(nD,nno,nel,nn)
     e2n = permutedims(e2n,(2,1))
 	return e2n
 end
-function e2e(nD,nno,nel,nn)
+function e2e(nD,nno,nel,nn,h,instr)
 	e2e  = Array{Int64}(undef,nel[end],9)
+    nnel = ceil.(Int,instr[:nonloc][:ls]./h)
     if nD == 2
         #gnum = reverse(reshape(1:(nno[3]),nno[2],nno[1]),dims=1)
+        #gnum = reverse(reshape(1:nel[end],nel[2],nel[1]),dims=1)
         #gnum = reverse(reshape(1:nel[end],nel[2],nel[1]),dims=1)
         gnum = reshape(1:nel[end],nel[2],nel[1])
         e2e  = Vector{Any}(undef,nel[end])
         iel  = 1
         for i ∈ 1:nel[1]#nelx
             for j ∈ 1:nel[2]#nelz
-                I = max(1,i-1):min(nel[1],i+1)
-                J = max(1,j-1):min(nel[2],j+1)
-                #I = max(1,i):min(nel[1],i)
-                #J = max(1,j):min(nel[2],j)
+                I = max(1,i-nnel[1]):min(nel[1],i+nnel[1])
+                J = max(1,j-nnel[2]):min(nel[2],j+nnel[2])
                 e2e[iel] = vec(gnum[J,I])
                 iel = iel+1;
             end
@@ -200,16 +128,17 @@ function e2e(nD,nno,nel,nn)
     elseif nD == 3
 
     end
+    
 	return e2e
 end
-function meshSetup(nel,L,typeD)
+function meshSetup(nel,L,instr)
     # geometry                                               
     L,h,nD       = meshGeom(L,nel)
     # mesh 
     x,nn,nel,nno = meshCoord(nD,L,h)
     # boundary conditions
     bc,xB        = meshBCs(x,h,nno,nD)
-    # constructor
+    # constructor 
     meD = (
         nD   = nD,
         nel  = nel,
@@ -220,23 +149,28 @@ function meshSetup(nel,L,typeD)
         minC = minimum(x,dims=2),
         # nodal quantities
         xn   = x,
-        mn   = zeros(typeD,nno[nD+1]             ), # lumped mass vector
-        Mn   = zeros(typeD,nno[nD+1],nno[nD+1]   ), # consistent mass matrix
-        oobf = zeros(typeD,nno[nD+1],nD          ),
-        Dn   = zeros(typeD,nno[nD+1],nD          ),
-        fn   = zeros(typeD,nno[nD+1],nD          ),
-        an   = zeros(typeD,nno[nD+1],nD          ),
-        pn   = zeros(typeD,nno[nD+1],nD          ),
-        vn   = zeros(typeD,nno[nD+1],nD          ),
-        Δun  = zeros(typeD,nno[nD+1],nD          ),
-        ΔJn  = zeros(typeD,nno[nD+1],nD          ),
-        bn   = zeros(typeD,nD       ,nD,nno[nD+1]),
+        mn   = zeros(instr[:dtype],nno[nD+1]             ), # lumped mass vector
+        Mn   = zeros(instr[:dtype],nno[nD+1],nno[nD+1]   ), # consistent mass matrix
+        oobf = zeros(instr[:dtype],nno[nD+1],nD          ),
+        Dn   = zeros(instr[:dtype],nno[nD+1],nD          ),
+        fn   = zeros(instr[:dtype],nno[nD+1],nD          ),
+        an   = zeros(instr[:dtype],nno[nD+1],nD          ),
+        pn   = zeros(instr[:dtype],nno[nD+1],nD          ),
+        vn   = zeros(instr[:dtype],nno[nD+1],nD          ),
+        Δun  = zeros(instr[:dtype],nno[nD+1],nD          ),
+        ΔJn  = zeros(instr[:dtype],nno[nD+1],nD          ),
+        bn   = zeros(instr[:dtype],nD       ,nD,nno[nD+1]),
         # mesh-to-node topology
         e2n  = e2N(nD,nno,nel,nn),
-        e2e  = e2e(nD,nno,nel,nn),
+        e2e  = e2e(nD,nno,nel,nn,h,instr),
         xB   = xB,
         # mesh boundary conditions
         bc   = bc,
     )
+
+    ceil.(Int,h./instr[:nonloc][:ls])
+    println(h)
+    println(instr[:nonloc][:ls])
+
     return meD
 end

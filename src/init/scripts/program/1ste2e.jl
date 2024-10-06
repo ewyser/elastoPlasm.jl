@@ -9,7 +9,7 @@ function teste2e(L::Vector{Float64},nel::Int64; kwargs...)
     cmParam = cm(length(L),instr)
     T,te,tg = 15.0,10.0,15.0/1.5                                                # simulation time [s], elastic loading [s], gravity load
     # mesh & mp setup
-    meD     = meshSetup(nel,L,typeD)                                            # mesh geometry setup
+    meD     = meshSetup(nel,L,instr)                                            # mesh geometry setup
     mpD     = pointSetup(meD,L,cmParam,instr[:GRF],typeD)                      # material point geometry setup
 
     twoDtplgy!(mpD,meD)
