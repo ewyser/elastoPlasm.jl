@@ -40,8 +40,8 @@ using BenchmarkTools
     
     ϵpII,W,w = zeros(mpD.nmp),zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
     mpD.Δλ[:] .= 1.0
-    suite["plast" ]["ϵII0p2q"] = @benchmarkable $ϵII0!($ϵpII,$W,$w,$mpD,$meD,$cmParam,"p->q"; ndrange=$mpD.nmp);sync(CPU())
-    suite["plast" ]["ϵII0q2p"] = @benchmarkable $ϵII0!($ϵpII,$W,$w,$mpD,$meD,$cmParam,"p<-q"; ndrange=$mpD.nmp);sync(CPU())
+    suite["plast" ]["ϵII0p2q"] = @benchmarkable $ϵII0!($ϵpII,$W,$w,$mpD,$meD,$cmParam[:nonlocal][:ls],"p->q"; ndrange=$mpD.nmp);sync(CPU())
+    suite["plast" ]["ϵII0q2p"] = @benchmarkable $ϵII0!($ϵpII,$W,$w,$mpD,$meD,$cmParam[:nonlocal][:ls],"p<-q"; ndrange=$mpD.nmp);sync(CPU())
 
 #=
     @info "Evaluate core functions:"

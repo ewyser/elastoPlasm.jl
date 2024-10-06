@@ -31,7 +31,7 @@ end
 ####################################################################################################################################
 # include dependencies & function call(s)
 using Revise,Pkg
-using LinearAlgebra, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
+using LinearAlgebra,SparseArrays, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
 import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
 # arithmetic precision & relative path for figs & data

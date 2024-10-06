@@ -108,18 +108,18 @@ function e2N(nD,nno,nel,nn)
 	return e2n
 end
 function e2e(nD,nno,nel,nn,h,instr)
-	e2e  = Array{Int64}(undef,nel[end],9)
+    e2e  = spzeros(Int64,nel[end],nel[end])
     nnel = ceil.(Int,instr[:nonloc][:ls]./h)
     if nD == 2
         gnum = reshape(1:nel[end],nel[2],nel[1])
-        e2e  = Vector{Any}(undef,nel[end])
-        iel  = 1
+        iel  = 0
         for i ∈ 1:nel[1]#nelx
             for j ∈ 1:nel[2]#nelz
-                I = max(1,i-nnel[1]):min(nel[1],i+nnel[1])
-                J = max(1,j-nnel[2]):min(nel[2],j+nnel[2])
-                e2e[iel] = vec(gnum[J,I])
-                iel = iel+1;
+                iel = iel+1
+                I   = max(1,i-nnel[1]):min(nel[1],i+nnel[1])
+                J   = max(1,j-nnel[2]):min(nel[2],j+nnel[2])
+                els = vec(gnum[J,I])         
+                e2e[iel,els] = els
             end
         end
     elseif nD == 3

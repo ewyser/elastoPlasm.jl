@@ -1,28 +1,26 @@
-@views @kernel inbounds = true function regularization(ϵpII,W,w,mpD,meD,cmParam,type)
+@views @kernel inbounds = true function regularization(ϵpII,W,w,mpD,meD,ls,type)
     p = @index(Global)
 
     if type == "p->q" && p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
-        els = meD.e2e[mpD.p2e[p]]
+        els  = findall(!iszero,meD.e2e[:,mpD.p2e[p]])
         mask = map(x -> x ∈ els, mpD.p2e)
-        ps   = findall(mask)
-
-        mpD.p2p[p] = ps
-        for (it,q) ∈ enumerate(mpD.p2p[p])
-            if w[p,q] == 0.0 || w[q,p] == 0.0
+        q    = findall(mask)
+        for (it,q) ∈ enumerate(q)
+            if w[p,q] == 0.0
                 ξ,η    = (mpD.x[p,1]-mpD.x[q,1]),(mpD.x[p,2]-mpD.x[q,2])
                 d      = sqrt(ξ^2+η^2)
-                ls     = cmParam[:nonlocal][:ls]
                 w0     = d/ls*exp(-(d/ls)^2)
-                w[p,q] = w0
-                w[q,p] = w0
-                W[p]  += w0
-                W[q]  += w0
+                #w[p,q] = w0
+                #w[q,p] = w0
+                #W[p]  += w0
+                #W[q]  += w0
             end
+            mpD.p2p[q,p] = q
         end
-
     elseif type == "p<-q" && p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
-        for (k,q) ∈ enumerate(mpD.p2p[p])
+        for (k,q) ∈ enumerate(findall(!iszero,mpD.p2p[:,p]))
             ϵpII[p]+= (w[p,q]/W[p])*mpD.ϵpII[q]
+            mpD.p2p[q,p] = 0
         end
     end
 end

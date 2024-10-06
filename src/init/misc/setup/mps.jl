@@ -141,7 +141,8 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         δnp  = zeros(typeD,meD.nn,meD.nD,nmp      ),
         B    = zeros(typeD,meD.nn.*meD.nD,nstr,nmp),
         # connectivity
-        p2p  = Vector{Any}(undef,nmp),
+        e2p  = spzeros(Int64,nmp,meD.nel[end]),
+        p2p  = spzeros(Int64,nmp,nmp),
         p2e  = zeros(Int64,nmp),
         p2n  = zeros(Int64,meD.nn,nmp),
     )

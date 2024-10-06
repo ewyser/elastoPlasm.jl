@@ -1,10 +1,10 @@
 function plast!(mpD,meD,cmParam,instr)
     # nonlocal regularization
     if cmParam[:nonlocal][:cond]
-        ϵpII,W,w = zeros(mpD.nmp),zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
+        ϵpII,W,w = zeros(mpD.nmp),spzeros(mpD.nmp),spzeros(mpD.nmp,mpD.nmp)
         @isdefined(ϵII0!) ? nothing : ϵII0! = regularization(CPU())
-        ϵII0!(ϵpII,W,w,mpD,meD,cmParam,"p->q"; ndrange=mpD.nmp);sync(CPU())
-        ϵII0!(ϵpII,W,w,mpD,meD,cmParam,"p<-q"; ndrange=mpD.nmp);sync(CPU())        
+        ϵII0!(ϵpII,W,w,mpD,meD,cmParam[:nonlocal][:ls],"p->q"; ndrange=mpD.nmp);sync(CPU())
+        ϵII0!(ϵpII,W,w,mpD,meD,cmParam[:nonlocal][:ls],"p<-q"; ndrange=mpD.nmp);sync(CPU())        
     else
         ϵpII = mpD.ϵpII
     end
