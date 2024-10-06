@@ -14,6 +14,18 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     mpD     = pointSetup(meD,L,cmParam,instr[:GRF],typeD)                      # material point geometry setup
 
     twoDtplgy!(mpD,meD)
+    for p ∈ 1:mpD.nmp
+        for el ∈ findall(!iszero,meD.e2e[:,mpD.p2e[p]])
+            for P ∈ findall(x->x==el,mpD.p2e)
+                for E ∈ mpD.p2e[p]
+                    mpD.e2p[P,E] = P
+                end
+            end            
+        end
+    end
+
+
+
 
     gr(size=(2.0*250,2*125),legend=true,markersize=2.25,markerstrokecolor=:auto)
     xn = reshape(meD.xn[:,1],meD.nno[2],meD.nno[1])
@@ -23,6 +35,8 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
         for k ∈ 1:length(active)
             ps = vcat(ps,findall(x->x==active[k],mpD.p2e))
         end
+        #ps = findall(!iszero,mpD.e2p[:,mpD.p2e[p]])
+        
         plot(xn  ,yn ,seriestype=:path,linestyle=:solid,linecolor=:black,linewidth=0.25)
         plot!(xn',yn',seriestype=:path,linestyle=:solid,linecolor=:black,linewidth=0.25)
         scatter!(mpD.x[:,1],mpD.x[:,2], c=:black, alpha=0.1)

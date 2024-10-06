@@ -4,7 +4,8 @@ function plast!(mpD,meD,cmParam,instr)
         ϵpII,W,w = zeros(mpD.nmp),spzeros(mpD.nmp),spzeros(mpD.nmp,mpD.nmp)
         @isdefined(ϵII0!) ? nothing : ϵII0! = regularization(CPU())
         ϵII0!(ϵpII,W,w,mpD,meD,cmParam[:nonlocal][:ls],"p->q"; ndrange=mpD.nmp);sync(CPU())
-        ϵII0!(ϵpII,W,w,mpD,meD,cmParam[:nonlocal][:ls],"p<-q"; ndrange=mpD.nmp);sync(CPU())        
+        ϵII0!(ϵpII,W,w,mpD,meD,cmParam[:nonlocal][:ls],"p<-q"; ndrange=mpD.nmp);sync(CPU())   
+        mpD.e2p[:,:].= 0     
     else
         ϵpII = mpD.ϵpII
     end

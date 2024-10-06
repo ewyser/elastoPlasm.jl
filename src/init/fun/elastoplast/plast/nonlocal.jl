@@ -2,18 +2,16 @@
     p = @index(Global)
 
     if type == "p->q" && p ≤ mpD.nmp && mpD.Δλ[p] != 0.0
-        els  = findall(!iszero,meD.e2e[:,mpD.p2e[p]])
-        mask = map(x -> x ∈ els, mpD.p2e)
-        q    = findall(mask)
+        q  = findall(!iszero,mpD.e2p[:,mpD.p2e[p]])
         for (it,q) ∈ enumerate(q)
             if w[p,q] == 0.0
                 ξ,η    = (mpD.x[p,1]-mpD.x[q,1]),(mpD.x[p,2]-mpD.x[q,2])
                 d      = sqrt(ξ^2+η^2)
                 w0     = d/ls*exp(-(d/ls)^2)
-                #w[p,q] = w0
-                #w[q,p] = w0
-                #W[p]  += w0
-                #W[q]  += w0
+                w[p,q] = w0
+                w[q,p] = w0
+                W[p]  += w0
+                W[q]  += w0
             end
             mpD.p2p[q,p] = q
         end
