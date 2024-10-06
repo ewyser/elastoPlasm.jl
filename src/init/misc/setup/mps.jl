@@ -79,43 +79,6 @@ function materialGeom(meD,lz,wl,coh0,cohr,ni)
     id = shuffle(collect(1:size(xp,1)))
     return xp,clt
 end
-function meshSetup(nel,L,typeD)
-    # geometry                                               
-    L,h,nD       = meshGeom(L,nel)
-    # mesh 
-    x,nn,nel,nno = meshCoord(nD,L,h)
-    # boundary conditions
-    bc,xB        = meshBCs(x,h,nno,nD)
-    # constructor
-    meD = (
-        nD   = nD,
-        nel  = nel,
-        nno  = nno,
-        nn   = nn,
-        L    = L,
-        h    = h,
-        minC = minimum(x,dims=2),
-        # nodal quantities
-        xn   = x,
-        mn   = zeros(typeD,nno[nD+1]             ), # lumped mass vector
-        Mn   = zeros(typeD,nno[nD+1],nno[nD+1]   ), # consistent mass matrix
-        oobf = zeros(typeD,nno[nD+1],nD          ),
-        Dn   = zeros(typeD,nno[nD+1],nD          ),
-        fn   = zeros(typeD,nno[nD+1],nD          ),
-        an   = zeros(typeD,nno[nD+1],nD          ),
-        pn   = zeros(typeD,nno[nD+1],nD          ),
-        vn   = zeros(typeD,nno[nD+1],nD          ),
-        Δun  = zeros(typeD,nno[nD+1],nD          ),
-        ΔJn  = zeros(typeD,nno[nD+1],nD          ),
-        bn   = zeros(typeD,nD       ,nD,nno[nD+1]),
-        # mesh-to-node topology
-        e2n  = e2N(nD,nno,nel,nn),
-        xB   = xB,
-        # mesh boundary conditions
-        bc   = bc,
-    )
-    return meD
-end
 function pointSetup(meD,L,cmParam,isGRF,typeD)
     coh0,cohr,phi0,phir,rho0 = cmParam[:c0],cmParam[:cr],cmParam[:ϕ0],cmParam[:ϕr],cmParam[:ρ0]
     # non-dimensional constant                                                   
@@ -155,6 +118,7 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         c0   = coh,
         cr   = cohr,
         ϕ    = phi,            
+        Δλ   = zeros(typeD,nmp),
         ϵpII = zeros(typeD,nmp),
         ϵpV  = zeros(typeD,nmp), 
         ΔJ   = ones(typeD,nmp),
@@ -177,6 +141,7 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         δnp  = zeros(typeD,meD.nn,meD.nD,nmp      ),
         B    = zeros(typeD,meD.nn.*meD.nD,nstr,nmp),
         # connectivity
+        p2p  = Vector{Any}(undef,nmp),
         p2e  = zeros(Int64,nmp),
         p2n  = zeros(Int64,meD.nn,nmp),
     )

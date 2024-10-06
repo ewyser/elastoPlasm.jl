@@ -179,3 +179,64 @@ function e2N(nD,nno,nel,nn)
     e2n = permutedims(e2n,(2,1))
 	return e2n
 end
+function e2e(nD,nno,nel,nn)
+	e2e  = Array{Int64}(undef,nel[end],9)
+    if nD == 2
+        #gnum = reverse(reshape(1:(nno[3]),nno[2],nno[1]),dims=1)
+        #gnum = reverse(reshape(1:nel[end],nel[2],nel[1]),dims=1)
+        gnum = reshape(1:nel[end],nel[2],nel[1])
+        e2e  = Vector{Any}(undef,nel[end])
+        iel  = 1
+        for i ∈ 1:nel[1]#nelx
+            for j ∈ 1:nel[2]#nelz
+                I = max(1,i-1):min(nel[1],i+1)
+                J = max(1,j-1):min(nel[2],j+1)
+                #I = max(1,i):min(nel[1],i)
+                #J = max(1,j):min(nel[2],j)
+                e2e[iel] = vec(gnum[J,I])
+                iel = iel+1;
+            end
+        end
+    elseif nD == 3
+
+    end
+	return e2e
+end
+function meshSetup(nel,L,typeD)
+    # geometry                                               
+    L,h,nD       = meshGeom(L,nel)
+    # mesh 
+    x,nn,nel,nno = meshCoord(nD,L,h)
+    # boundary conditions
+    bc,xB        = meshBCs(x,h,nno,nD)
+    # constructor
+    meD = (
+        nD   = nD,
+        nel  = nel,
+        nno  = nno,
+        nn   = nn,
+        L    = L,
+        h    = h,
+        minC = minimum(x,dims=2),
+        # nodal quantities
+        xn   = x,
+        mn   = zeros(typeD,nno[nD+1]             ), # lumped mass vector
+        Mn   = zeros(typeD,nno[nD+1],nno[nD+1]   ), # consistent mass matrix
+        oobf = zeros(typeD,nno[nD+1],nD          ),
+        Dn   = zeros(typeD,nno[nD+1],nD          ),
+        fn   = zeros(typeD,nno[nD+1],nD          ),
+        an   = zeros(typeD,nno[nD+1],nD          ),
+        pn   = zeros(typeD,nno[nD+1],nD          ),
+        vn   = zeros(typeD,nno[nD+1],nD          ),
+        Δun  = zeros(typeD,nno[nD+1],nD          ),
+        ΔJn  = zeros(typeD,nno[nD+1],nD          ),
+        bn   = zeros(typeD,nD       ,nD,nno[nD+1]),
+        # mesh-to-node topology
+        e2n  = e2N(nD,nno,nel,nn),
+        e2e  = e2e(nD,nno,nel,nn),
+        xB   = xB,
+        # mesh boundary conditions
+        bc   = bc,
+    )
+    return meD
+end

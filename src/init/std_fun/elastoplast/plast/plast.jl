@@ -1,9 +1,9 @@
-function plast!(mpD,cmParam,instr)
+function plast!(mpD,meD,cmParam,instr)
     # nonlocal regularization
     if cmParam[:nonlocal][:cond]
         ϵpII,W,w = zeros(mpD.nmp),zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
         @isdefined(ϵII0!) ? nothing : ϵII0! = regularization(CPU())
-        ϵII0!(ϵpII,W,w,mpD,cmParam; ndrange=mpD.nmp);sync(CPU())        
+        ϵII0!(ϵpII,W,w,mpD,meD,cmParam; ndrange=mpD.nmp);sync(CPU())        
     else
         ϵpII = mpD.ϵpII
     end
