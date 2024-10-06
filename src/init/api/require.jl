@@ -8,7 +8,7 @@ function require(in::Symbol)
             :vollock => true,
             :GRF     => false,
             :plast   => (false,"DP"),
-            :nonloc  => (;cond=false,ls=2.5,),
+            :nonloc  => (;cond=false,ls=1.0,),
             :plot    => (;cond=true,freq=1.0,what="epII"),
             :perf    => true,
         )
