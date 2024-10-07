@@ -1,7 +1,7 @@
 name = "elastoPlasm"
 uuid = "ff84b311-7f94-4593-ba3b-b1d6d2226836"
 authors = ["ewyser <manuwyser@gmail.com>"]
-version = "0.3.5"
+version = "0.3.6"
 
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

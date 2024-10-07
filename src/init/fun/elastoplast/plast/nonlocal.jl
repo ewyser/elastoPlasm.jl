@@ -25,3 +25,17 @@
         end
     end
 end
+#=
+ξ = (mpD.x[p,1]-mpD.x[q,1])
+if ξ<1.5*ls && w[p,q] == 0.0
+    η = (mpD.x[p,2]-mpD.x[q,2])
+    if η<1.5*ls
+        ω₀     = d/ls*exp(-(d/ls)^2)
+        w[p,q] = ω₀
+        w[q,p] = ω₀
+        W[p]  += ω₀
+        W[q]  += ω₀
+        mpD.p2p[q,p] = q
+    end
+end
+=#
