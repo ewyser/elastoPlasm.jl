@@ -30,8 +30,13 @@ end
         elseif instr[:fwrk] == :infinitesimal
             σ,nstr = mpD.σ,size(mpD.σ,1)
         end
+        if first(instr[:nonloc])
+            ϵII0 = mpD.ϵpII[:,2]
+        else
+            ϵII0 = mpD.ϵpII[:,1]
+        end
         P,q,n,ξn = J2Param(σ[:,p],χ,nstr)
-        κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵIIp[p]
+        κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵII0
         if κ <= mpD.cr[p] κ = mpD.cr[p] end
         f        = J2Yield(ξn,κ)
         if f>0.0 
@@ -43,13 +48,13 @@ end
                 σ0     .-= Δσ 
                 γ0      += Δλ
                 P,q,n,ξn = J2Param(σ0,χ,nstr)
-                κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵIIp[p]
+                κ        = 2.5*mpD.c0[p]+cmParam.Hp*ϵpII[p,1]
                 if κ <= mpD.cr[p] κ = mpD.cr[p] end
                 f        = J2Yield(ξn,κ)
                 ηit +=1
             end
-            mpD.ϵpII[p] = γ0
-            σ[:,p]     .= σ0
+            mpD.ϵpII[p,1] = γ0
+            σ[:,p]       .= σ0
             if instr[:fwrk] == :finite
                 # update strain tensor
                 mpD.ϵ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
