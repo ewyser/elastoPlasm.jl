@@ -1,8 +1,8 @@
 <div style="max-width:500px; word-wrap:break-word;">
 
-# ***ϵlastoPlasm*** #
+# ***ϵlastoPlasm.jl*** #
 ## **Description** 
-This project originates from [``ep2-3De v1.0``](https://github.com/ewyser/ep2-3De) and is fully witten in Julia (*i.e.,* the two-languages problem solution). It solves explicit elasto-plastic problems within a finite deformation framework (*i.e.,* adopting logarithmic strains and Kirchoff stresses which allows the use of conventional small-strain stress integration algorithms within a finite deformation framework), using the **material point method** with **cubic b-spline shape functions** alongside with a **mUSL approach**.
+This project originates from [``ep2-3De v1.0``](https://github.com/ewyser/ep2-3De) and is fully witten in Julia. It solves explicit elasto-plastic problems within a finite deformation framework (*i.e.,* adopting logarithmic strains and Kirchoff stresses, which allows the use of conventional small-strain stress integration algorithms within a finite deformation framework), using the **material point method** with **{ b-spline|gimp|standard} shape functions** alongside with a **{mUSL|TPIC} approach**.
 
 <p align="center">
   <img src="misc/img/epII.png" width="400"/>
@@ -27,10 +27,10 @@ The solver relies on random gaussian fields to generate initial fields $\psi(\bo
 ### How to ```plasmazing``` ?  
 
 0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
-1. ``cd`` to the local repo ```./ep2DeJu ``` 
+1. ``cd`` to the local repo ```./elastoPlasm ``` 
 2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal)
 ```julia
-% julia --project  
+manuwyser@mBp elastoPlasm.jl % julia --project=. --threads=1
                _
    _       _ _(_)_     |  Documentation: https://docs.julialang.org
   (_)     | (_) (_)    |
@@ -40,44 +40,51 @@ The solver relies on random gaussian fields to generate initial fields $\psi(\bo
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 ```
-3. Enter pkg mode ``` ] ```, then ``activate .`` the project ``ep2DeJu`` and ``instantiate`` its environment and related packages. You can ``st`` to check package status.
+3. Enter pkg mode ``` ] ```, then ``activate .`` the project ``elastoPlasm`` and ``instantiate`` its environment and related packages. You can ``st`` to check package status.
 ```julia
-(ep2DeJu) pkg> activate .
-(ep2DeJu) pkg> instantiate 
-(ep2DeJu) pkg> st
-Project ep2DeJu v0.1.0
-Status `./ep2DeJu/Project.toml`
-  [6e4b80f9] BenchmarkTools v1.3.2
-  [b964fa9f] LaTeXStrings v1.3.0
-  [91a5bcdd] Plots v1.39.0
-  [92933f4c] ProgressMeter v1.9.0
+(elastoPlasm) pkg> st
+Project elastoPlasm v0.3.5
+Status `~/Dropbox/Jobs/git/elastoPlasm.jl/Project.toml`
+  [6e4b80f9] BenchmarkTools v1.5.0
+⌃ [052768ef] CUDA v5.4.3
+  [f67ccb44] HDF5 v0.17.2
+⌃ [63c18a36] KernelAbstractions v0.9.22
+  [b964fa9f] LaTeXStrings v1.3.1
+⌃ [91a5bcdd] Plots v1.40.5
+  [92933f4c] ProgressMeter v1.10.2
+  [295af30f] Revise v3.6.0
   [37e2e46d] LinearAlgebra
-  [44cfe95a] Pkg v1.8.0
+  [44cfe95a] Pkg v1.9.2
+  [3fa0cd96] REPL
+  [9a3f8284] Random
+  [2f01184e] SparseArrays
+Info Packages marked with ⌃ have new versions available and may be upgradable.
 
-(ep2DeJu) pkg>
+(elastoPlasm) pkg> 
+
 ```
-4. Code ``include()`` and execute method ``ϵp23De(nel,varPlot,cmType; kwargs...)``. It should result in the following:
-```julia
-julia> include("./scripts/program/ep23De.jl")
-ϵp23De (generic function with 1 method)
-julia> L = [64.1584,12.80]
-julia> ϵp23De(L,40,"P","MC")
-[ Info: ** ϵp2De v0.3.0: finite strain formulation **
-┌ Info: mesh & mp feature(s):
-│   nel = 528
-│   nno = 585
-└   nmp = 591
-[ Info: launch bsmpm calculation cycle...
-✓ working hard:          Time: 0:00:09 (22.83 ms/it)
-  nel,np:        (528, 591)
-  iteration(s):  432
-  ηmax,ηtot:     (21, 849)
-  (✓) t/T:       100.0
-┌ Info: Figs saved in
-└   path_plot = "./docs/out/"
-│
-└ (✓) Done! exiting...
-julia>
+4. Once ```elastoPlasm``` has been correctly instantiated, you can ```using elastoPlasm```
+
+```juliaREPL
+julia> using elastoPlasm
+[ Info: Precompiling elastoPlasm [ff84b311-7f94-4593-ba3b-b1d6d2226836]
+┌ Info: elastoPlasm: sucessful superInclude()
+│ 	✓ init/scripts
+│ 	✓ init/misc
+│ 	✓ init/fun
+└ 	✓ init/api
+
+julia> names(elastoPlasm)
+6-element Vector{Symbol}:
+ :allocCheck
+ :configPlot
+ :e2eTest
+ :elastoPlasm
+ :slump
+ :ϵp23De!
+
+julia> 
+julia> 
 ```
 
 5. Input parameters: ``L`` is a vector of the Eulerian mesh dimensions $\ell_{x,z|x,y,z}$ (two- and three-dimensional geometries are now supported since ``v0.3.0``), the argument ``nel`` defines the elements along the $x$ dim., ``varPlot`` defines state variable to be displayed in plot (``"P"`` for pressure, ``"du"`` for displacement or ``"epII"`` for plastic strain), and ``cmType`` defines the constitutive model being used. 
