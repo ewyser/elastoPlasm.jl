@@ -1,4 +1,3 @@
-using UnicodePlots
 function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     configPlot()
     # init & kwargs
@@ -16,11 +15,7 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     twoDtplgy!(mpD,meD)
     for p ∈ 1:mpD.nmp
         for el ∈ findall(!iszero,meD.e2e[:,mpD.p2e[p]])
-            for P ∈ findall(x->x==el,mpD.p2e)
-                for E ∈ mpD.p2e[p]
-                    mpD.e2p[P,E] = P
-                end
-            end            
+            mpD.e2p[p,el] = p       
         end
     end
 
@@ -31,11 +26,7 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     xn = reshape(meD.xn[:,1],meD.nno[2],meD.nno[1])
     yn = reshape(meD.xn[:,2],meD.nno[2],meD.nno[1])
     for p ∈ 1:mpD.nmp
-        ps,active = [],findall(!iszero,meD.e2e[:,mpD.p2e[p]])
-        for k ∈ 1:length(active)
-            ps = vcat(ps,findall(x->x==active[k],mpD.p2e))
-        end
-        #ps = findall(!iszero,mpD.e2p[:,mpD.p2e[p]])
+        ps = findall(!iszero,mpD.e2p[:,mpD.p2e[p]])
         
         plot(xn  ,yn ,seriestype=:path,linestyle=:solid,linecolor=:black,linewidth=0.25)
         plot!(xn',yn',seriestype=:path,linestyle=:solid,linecolor=:black,linewidth=0.25)

@@ -2,9 +2,6 @@
     p = @index(Global)
     if p≤mpD.nmp 
         mpD.p2e[p] = (floor(Int64,(mpD.x[p,2]-meD.minC[2])*1.0/meD.h[2])+1)+(meD.nel[2])*floor(Int64,(mpD.x[p,1]-meD.minC[1])*1.0/meD.h[1])
-        mpD.e2p[p,mpD.p2e[p]] = p
-        #active = findall(!iszero,meD.e2e[:,mpD.p2e[p]])
-        #mpD.e2p[p,active].= p
         for nn ∈ 1:meD.nn
             mpD.p2n[nn,p] = meD.e2n[nn,mpD.p2e[p]]
         end
