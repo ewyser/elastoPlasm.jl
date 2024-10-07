@@ -33,7 +33,7 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
         plot!(xn',yn',seriestype=:path,linestyle=:solid,linecolor=:black,linewidth=0.25)
         scatter!(mpD.x[:,1],mpD.x[:,2]  ,c=:black,alpha=0.1,markersize=mSize    ,)
         scatter!(mpD.x[ps,1],mpD.x[ps,2],c=:black,alpha=0.2,markersize=mSize    ,)
-        scatter!((mpD.x[p,1],mpD.x[p,2]),c=:green,alpha=1.0,markersize=2.0*mSize,legend=false,aspect_ratio=1,display=true)
+        scatter!((mpD.x[p,1],mpD.x[p,2]),c=:green,alpha=1.0,markersize=1.5*mSize,markershape=:square,legend=false,aspect_ratio=1,display=true)
     end
     return msg("(✓) Done! exiting...")
 end
