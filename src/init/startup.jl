@@ -42,3 +42,4 @@ const path_plot = "./misc/out/"
 if isdir(path_plot)==false mkdir(path_plot) end
 const path_test = "./misc/test/"
 if isdir(path_test)==false mkdir(path_test) end
+lists = ["init/api","init/program","init/scripts"]
