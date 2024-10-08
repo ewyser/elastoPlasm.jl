@@ -15,7 +15,7 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
             instr[:plast] = (true,last(instr[:plast]))
         end
         # plot/save
-        savlot(mpD,t,instr)
+        savlot(mpD,meD,t,instr)
         while t<time
             # set clock on/off
             tic = time_ns()
@@ -34,6 +34,6 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
         end
     end
     ProgressMeter.finish!(prog, spinner = '✓',showvalues = getVals(meD,mpD,it,ηmax,ηtot,1.0,"(✓)"))
-    return savlot(mpD,t,instr)
+    return savlot(mpD,meD,t,instr)
 end
 export ϵp23De!

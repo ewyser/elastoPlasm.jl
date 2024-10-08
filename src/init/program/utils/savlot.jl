@@ -1,6 +1,12 @@
-@views function savlot(mpD,t,instr)
+@views function savlot(mpD,meD,t,instr)
     if instr[:plot][:cond]
-        type = instr[:plot][:what]
+
+
+        for (k,type) ∈ enumerate(instr[:plot][:what])
+            #println(type)
+        end
+
+        type = instr[:plot][:what][1]
         temp = L"$t = $"*string(round(t,digits=1))*" [s]"
         if type == "P"
             if size(mpD.σ,1) == 3
@@ -51,19 +57,29 @@
             err_msg = "$(type): plot option undefined"
             throw(error(err_msg))
         end
-        # plot
-        gr(legend=true,markersize=2.5,markershape=:circle,markerstrokewidth=0.75,)#markerstrokecolor=:match,)
-        p1 = scatter(mpD.x[:,1],mpD.x[:,end],zcolor=d,
-        xlabel = L"$x-$direction [m]",
-        ylabel = L"$z-$direction [m]",
-        label  = lab,
-        c      = cb,
-        clim   = cblim,
-        ylim   = (-10.0,20.0),
-        title  = tit,
-        aspect_ratio=1,
+        # plot option
+        ms = 2.25
+        ms = 0.4*instr[:plot][:dims][1]/meD.nel[1]
+        # plotting
+        gr(legend=true,markersize=ms,markershape=:circle,markerstrokewidth=0.75,)
+        p = plot(
+            if meD.nD == 2
+                mpD.x[:,1],mpD.x[:,2]
+            elseif meD.nD == 3
+                mpD.x[:,1],mpD.x[:,2],mpD.x[:,3]
+            end,
+            seriestype  = :scatter,
+            marker_z    = d,
+            xlabel      = L"$x-$direction [m]",
+            ylabel      = L"$z-$direction [m]",
+            label       = lab,
+            c           = cb,
+            clim        = cblim,
+            ylim        = (-10.0,20.0),
+            title       = tit,
+            aspect_ratio= 1,
         )
-        display(plot(p1;layout=(1,1),size=(500,250))) 
+        display(plot(p;layout=(1,1),size=instr[:plot][:dims])) 
     else
         nothing
     end

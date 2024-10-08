@@ -15,7 +15,7 @@ Dict{Symbol, Any} with 10 entries:
   :trsfr   => :mUSL
   :vollock => true
   :plast   => (false, "DP")
-  :plot    => (cond = true, freq = 1.0, what = "epII")
+  :plot    => (cond = true, freq = 1.0, what = ["epII"])
   :perf    => true
   :fwrk    => :finite
 
@@ -46,8 +46,13 @@ function require(in::Symbol)
             :vollock => true,
             :GRF     => false,
             :plast   => (false,"DP"),
-            :nonloc  => (;cond=false,ls=1.0,),
-            :plot    => (;cond=true,freq=1.0,what="epII"),
+            :nonloc  => (;cond=true,
+                        ls=0.5,),
+            :plot    => (;cond=true,
+                        freq=1.0,
+                        what=["epII"],
+                        dims=(500.0,250.0),
+                        ),
             :perf    => true,
         )
         return instr
