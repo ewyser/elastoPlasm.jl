@@ -27,6 +27,21 @@ function treeLike(sucess, prefix="\n\t", level=0, max_level=1)
 	return printout
 end
 ####################################################################################################################################
+## start-up info struct definition and instanciation
+####################################################################################################################################
+Base.@kwdef mutable struct moduleCore
+	cpu::NamedTuple  = (name=nothing,lab=nothing,mtp=nothing)
+	gpu::NamedTuple  = (name=nothing,lab=nothing,mtp=nothing)
+	root::String     = ROOT
+	init::Dict       = Dict("where"=>dirname(@__FILE__),
+					   "list"=>["api","program","scripts"])
+	lib::Dict        = Dict()
+end
+Base.@kwdef struct moduleInfo
+	sys::moduleCore
+end
+info = moduleInfo(sys = moduleCore(),)
+####################################################################################################################################
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################
 # include dependencies & function call(s)
@@ -42,4 +57,3 @@ const path_plot = "./misc/out/"
 if isdir(path_plot)==false mkdir(path_plot) end
 const path_test = "./misc/test/"
 if isdir(path_test)==false mkdir(path_test) end
-lists = ["init/api","init/program","init/scripts"]

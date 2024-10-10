@@ -1,17 +1,21 @@
 # docs/make.jl
+push!(LOAD_PATH,"../src/")
+include("./src/fun/utils.jl")
 using Documenter,elastoPlasm
 
 format = Documenter.HTML()
-pages  = [
+manual = [
     "Home" => "index.md",
+    "Getting Started" => "getting_started.md",
+    "Functions" => mdGenerate(),
 ]
 @info "Making documentation..."
 makedocs(
-    sitename = "elastoPlasm.jl Documentation",
+    sitename = "ϵlastσPlasm.jl Documentation",
     authors  = "madMax",
     modules  = [elastoPlasm],
     format   = format,
-    pages    = pages,
+    pages    = manual,
 )
 @info "Deploying documentation..."
 deploydocs(
