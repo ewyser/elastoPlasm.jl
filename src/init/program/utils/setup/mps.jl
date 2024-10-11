@@ -107,7 +107,6 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         nD   = meD.nD,
         nmp  = nmp,
         x    = xp,
-        z0   = xp[:,end],
         u    = zeros(typeD,nmp,meD.nD), 
         v    = zeros(typeD,nmp,meD.nD),
         p    = zeros(typeD,nmp,meD.nD),
@@ -124,6 +123,8 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         ϵpV  = zeros(typeD,nmp), 
         ΔJ   = ones(typeD,nmp),
         J    = ones(typeD,nmp),
+        # plot quantity
+        z0   = xp[:,end],
         # tensor in matrix notation
         I    = Matrix(1.0I,meD.nD,meD.nD    ),
         ∇u   = zeros(typeD,meD.nD,meD.nD,nmp),

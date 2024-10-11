@@ -1,5 +1,6 @@
-@views function whichplot(temp,mpD,meD,instr)
-    type = instr[:plot][:what][1]
+@views function whichplot(what,temp,mpD,meD,instr)
+    type = what
+    
     if type == "P"
         if size(mpD.σ,1) == 3
             d   = -(mpD.σ[1,:]+mpD.σ[2,:])/2/1e3
@@ -49,7 +50,7 @@
         d     = mpD.z0
         lab   = L"$z_p(t_0)$"
         tit   = "initial vertical position, "*temp
-        cb    = palette(:grayC,5)
+        cb    = palette(:grayC,5) 
         cblim = (0.0,maximum(d))
     else
         err_msg = "$(type): plot option undefined"
@@ -80,19 +81,19 @@
     return p0
 end
 
-@views function savlot(mpD,meD,t,instr)
+@views function savlot(mpD,meD,t,instr) 
+    if !first(instr[:plast]) 
+        mpD.z0 .= mpD.x[:,end] 
+    end
     if instr[:plot][:cond]
-
-
-        for (k,type) ∈ enumerate(instr[:plot][:what])
-            #println(type)
+        P,tit = [],L"$t = $"*string(round(t,digits=1))*" [s]"
+        for (k,what) ∈ enumerate(instr[:plot][:what])
+            p0 = whichplot(what,tit,mpD,meD,instr)
+            push!(P,p0)
         end
-        P    = []
-        temp = L"$t = $"*string(round(t,digits=1))*" [s]"
-        p0 = whichplot(temp,mpD,meD,instr)
-        push!(P,p0)
-
-        display(plot(P...;layout=(1,1),size=instr[:plot][:dims])) 
+        scale = length(P) 
+        sx,sy = instr[:plot][:dims][1],scale*instr[:plot][:dims][2]
+        display(plot(P...;layout=(scale,1),size=(sx,sy))) 
     else
         nothing
     end
