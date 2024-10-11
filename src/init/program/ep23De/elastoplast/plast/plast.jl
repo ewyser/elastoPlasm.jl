@@ -1,22 +1,25 @@
-function plast!(mpD,cmParam,instr)
+function plast!(mpD,meD,cmParam,instr)
     # nonlocal regularization
     if cmParam[:nonlocal][:cond]
-        ϵpII,W,w = zeros(mpD.nmp),zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
-        @isdefined(ϵII0!) ? nothing : ϵII0! = regularization(CPU())
-        ϵII0!(ϵpII,W,w,mpD,cmParam; ndrange=mpD.nmp);sync(CPU())        
-    else
-        ϵpII = mpD.ϵpII
+        ls      = cmParam[:nonlocal][:ls]
+        mpD.e2p.= Int(0)
+        mpD.p2p.= Int(0)
+        W,w     = spzeros(mpD.nmp),spzeros(mpD.nmp,mpD.nmp)
+        @isdefined(nonloc!) ? nothing : nonloc! = nonlocal(CPU())
+        for proc ∈ ["p->q","p<-q"]
+            nonloc!(W,w,mpD,meD,ls,proc; ndrange=mpD.nmp);sync(CPU())
+        end
     end
     # plastic return-mapping dispatcher
     if cmParam[:cmType] == "MC"
         ηmax = MCRetMap!(mpD,ϵpII,cmParam,instr[:fwrk])
     elseif cmParam[:cmType] == "DP"        
         @isdefined(DPcorr!) ? nothing : DPcorr! = DP!(CPU())
-        DPcorr!(mpD,ϵpII,cmParam,instr; ndrange=mpD.nmp);sync(CPU())
+        DPcorr!(mpD,cmParam,instr; ndrange=mpD.nmp);sync(CPU())
         ηmax = 0
     elseif cmParam[:cmType] == "J2"
         @isdefined(J2corr!) ? nothing : J2corr! = J2!(CPU())
-        J2corr!(mpD,ϵpII,cmParam,instr; ndrange=mpD.nmp);sync(CPU())
+        J2corr!(mpD,cmParam,instr; ndrange=mpD.nmp);sync(CPU())
         ηmax = 0
     elseif cmParam[:cmType] == "camC"
         ηmax = camCRetMap!(mpD,cmParam,instr[:fwrk])

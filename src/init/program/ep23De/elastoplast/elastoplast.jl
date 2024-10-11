@@ -13,7 +13,7 @@ function elastoplast!(mpD,meD,cmParam,Δt,instr)
     stress!(mpD,cmParam,instr,:update)
     # plastic corrector
     if first(instr[:plast]) 
-        ηmax = plast!(mpD,cmParam,instr) 
+        ηmax = plast!(mpD,meD,cmParam,instr) 
     else 
         ηmax = 0 
     end

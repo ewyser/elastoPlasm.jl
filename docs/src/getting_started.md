@@ -1,29 +1,4 @@
-<div style="max-width:500px; word-wrap:break-word;">
-
-# ***ϵlastoPlasm.jl*** #
-[![Build Status](https://github.com/ewyser/elastoPlasm.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ewyser/elastoPlasm.jl/actions/workflows/CI.yml?query=branch%3Amain)
-## **Description** 
-This project originates from [``ep2-3De v1.0``](https://github.com/ewyser/ep2-3De) and is fully witten in Julia. It solves explicit elasto-plastic problems within a finite deformation framework (*i.e.,* adopting logarithmic strains and Kirchoff stresses, which allows the use of conventional small-strain stress integration algorithms within a finite deformation framework), using the **material point method** with **{ b-spline|gimp|standard} shape functions** alongside with a **{mUSL|TPIC} approach**.
-
-<p align="center">
-  <img src="misc/img/epII.png" width="400"/>
-</p>
-
-* **Fig |** Slumping dynamics (without any volumetric locking corrections) showing the accumulated plastic strain $\epsilon_p^{\mathrm{acc}}$ after an elastic load of 8 s and an additional elasto-plastic load of $\approx$ 7 s. 
-
-The solver relies on random gaussian fields to generate initial fields $\psi(\boldsymbol{x})$, *e.g.,* the cohesion $c(\boldsymbol{x}_p)$ or the internal friction angle $\phi(\boldsymbol{x}_p)$, with $\boldsymbol{x}_p$ the material point's coordinates. 
-
-<p align="center">
-  <img src="misc/img/c0.png" width="400"/>
-</p>
-
-* **Fig |** Initial cohesion field $c_0(\boldsymbol{x}_p)$ with average $\mu=20$ kPa with a variance $\sigma\pm5$ kPa.
-
-## **Content**
-1. [Usage](#id-section2)
-<div id='id-section2'/> 
-
-## **Usage**
+## Getting started
 
 ### How to ```plasmazing``` ?  
 

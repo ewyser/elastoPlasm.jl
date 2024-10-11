@@ -27,11 +27,22 @@ function treeLike(sucess, prefix="\n\t", level=0, max_level=1)
 	return printout
 end
 ####################################################################################################################################
+## start-up info struct definition and instanciation
+####################################################################################################################################
+Base.@kwdef mutable struct moduleCore
+	cpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
+	gpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
+	root::String    = ROOT
+	init::String    = dirname(@__FILE__)
+	lib::Vector     = ["api","program","scripts"]
+	method::Vector  = []
+end
+####################################################################################################################################
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################
 # include dependencies & function call(s)
 using Revise,Pkg
-using LinearAlgebra, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
+using LinearAlgebra,SparseArrays, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
 import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
 # arithmetic precision & relative path for figs & data
