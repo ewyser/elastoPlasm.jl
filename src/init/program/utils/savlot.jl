@@ -5,6 +5,7 @@
         for (k,type) ∈ enumerate(instr[:plot][:what])
             #println(type)
         end
+        P = []
 
         type = instr[:plot][:what][1]
         temp = L"$t = $"*string(round(t,digits=1))*" [s]"
@@ -53,6 +54,12 @@
             else
                 cblim = (0.0,maximum(d))
             end
+        elseif type == "z0"
+            d     = mpD.z0
+            lab   = L"$z_p(t_0)$"
+            tit   = "initial vertical position, "*temp
+            cb    = palette(:grayC,5)
+            cblim = (0.0,maximum(d))
         else
             err_msg = "$(type): plot option undefined"
             throw(error(err_msg))
@@ -73,13 +80,15 @@
             xlabel      = L"$x-$direction [m]",
             ylabel      = L"$z-$direction [m]",
             label       = lab,
-            c           = cb,
+            color       = cb,
             clim        = cblim,
             ylim        = (-10.0,20.0),
             title       = tit,
             aspect_ratio= 1,
         )
-        display(plot(p;layout=(1,1),size=instr[:plot][:dims])) 
+        push!(P,p)
+
+        display(plot(P...;layout=(1,1),size=instr[:plot][:dims])) 
     else
         nothing
     end

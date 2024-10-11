@@ -14,6 +14,10 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
         if t > te 
             instr[:plast] = (true,last(instr[:plast]))
         end
+        if !first(instr[:plast])
+            println("save z0")
+            mpD.z0[:] .= mpD.x[:,end]
+        end
         # plot/save
         savlot(mpD,meD,t,instr)
         while t<time
