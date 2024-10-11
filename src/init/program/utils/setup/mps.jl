@@ -107,6 +107,7 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         nD   = meD.nD,
         nmp  = nmp,
         x    = xp,
+        x0   = xp,
         u    = zeros(typeD,nmp,meD.nD), 
         v    = zeros(typeD,nmp,meD.nD),
         p    = zeros(typeD,nmp,meD.nD),
