@@ -11,9 +11,7 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
     # action
     prog  = ProgressUnknown("ϵp23De! working:", spinner=true,showspeed=true)
     for (k,time) ∈ enumerate(sort(unique([collect(t+tC:tC:T);te;T])))
-        if t > te 
-            instr[:plast] = (true,last(instr[:plast]))
-        end
+        if t > te instr[:plast] = (true,last(instr[:plast])) end
         # plot/save
         savlot(mpD,meD,t,instr)
         while t<time
