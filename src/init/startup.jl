@@ -30,17 +30,13 @@ end
 ## start-up info struct definition and instanciation
 ####################################################################################################################################
 Base.@kwdef mutable struct moduleCore
-	cpu::NamedTuple  = (name=nothing,lab=nothing,mtp=nothing)
-	gpu::NamedTuple  = (name=nothing,lab=nothing,mtp=nothing)
-	root::String     = ROOT
-	init::Dict       = Dict("where"=>dirname(@__FILE__),
-					   "list"=>["api","program","scripts"])
-	lib::Dict        = Dict()
+	cpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
+	gpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
+	root::String    = ROOT
+	init::String    = dirname(@__FILE__)
+	lib::Vector     = ["api","program","scripts"]
+	method::Vector  = []
 end
-Base.@kwdef struct moduleInfo
-	sys::moduleCore
-end
-info = moduleInfo(sys = moduleCore(),)
 ####################################################################################################################################
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################

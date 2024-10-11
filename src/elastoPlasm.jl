@@ -9,14 +9,19 @@ const ROOT = dirname(@__FILE__)
 # include startup file
 include(joinpath(ROOT,"init/startup.jl"))
 # include .jl files
+sys    = moduleCore()
 sucess = ["welcome to elastoPlasm:\nsucessful superInclude()"]
-for (k,child) ∈ enumerate(info.sys.init["list"])
-	list = superInc(joinpath(ROOT,child))
-	push!(sucess,"\n✓ "*child)
+for (k,child) ∈ enumerate(sys.lib)
+	list = superInc(joinpath(sys.init,child))
+	if isempty(list)
+		push!(sucess,"\n✗ "*child)
+	else	
+		push!(sys.method,("$(child)"=>list))
+		push!(sucess    ,"\n✓ "*child      )
+	end
 	if haskey(ENV,"TREE_SUPERINC") && ENV["TREE_SUPERINC"]=="true"
 		push!(sucess,join(treeLike(list)))
 	end
-	push!(info.sys.lib,("$(child)"=>list))
 end
 @info join(sucess)
 @info """new comer ?
@@ -25,5 +30,6 @@ end
   julia> slump(L,nel)
 - wait for the simulation to end
 """
+#= =#
 end # module elastoPlasm
 
