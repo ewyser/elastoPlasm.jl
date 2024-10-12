@@ -59,7 +59,7 @@ end
     # calculate shape functions
     if meD.nD == 2 
         if mp ≤ mpD.nmp
-            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if iszero(id) continue end
+            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1]) 
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
@@ -75,7 +75,7 @@ end
         end
     elseif meD.nD == 3 
         if mp ≤ mpD.nmp
-            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]])
+            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
                 id     = mpD.p2n[nn,mp]
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])

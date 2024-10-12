@@ -2,7 +2,7 @@
     k = @index(Global)
     if arg == :p2n && k≤mpD.nmp 
         # accumulation
-        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[k]]) if iszero(no) continue end
+        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[k]]) if no<1 continue end
             @atom meD.ΔJn[no]+= mpD.ϕ∂ϕ[nn,k,1]*(mpD.m[k]*mpD.ΔJ[k])  
         end
     elseif arg == :solve && k≤meD.nno[end] 
@@ -11,7 +11,7 @@
     elseif arg == :n2p && k≤mpD.nmp 
         # mapping back to mp's
         ΔJ = 0.0
-        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[k]]) if iszero(no) continue end
+        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[k]]) if no<1 continue end
             ΔJ += mpD.ϕ∂ϕ[nn,k,1]*meD.ΔJn[no]/mpD.ΔJ[k]
         end
         @views mpD.ΔF[:,:,k].*= ΔJ^(1.0/meD.nD)

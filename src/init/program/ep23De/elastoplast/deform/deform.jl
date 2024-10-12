@@ -3,8 +3,8 @@
     if p≤mpD.nmp 
         # compute velocity & displacement gradients
         mpD.∇u[:,:,p].= 0.0
-        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]])
-            for i ∈ 1:meD.nD,j ∈ 1:meD.nD
+        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for i ∈ 1:meD.nD , j ∈ 1:meD.nD
                 mpD.∇u[i,j,p]+= Δt*(mpD.ϕ∂ϕ[nn,p,j+1]*meD.vn[no,i])
             end
         end

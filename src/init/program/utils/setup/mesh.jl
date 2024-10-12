@@ -17,8 +17,8 @@ function meshCoord(nD,L,h)
         xn  = collect((0.0-2*h[1]):h[1]:(L[1]+2.0*h[1])) 
         zn  = reverse(collect((0.0-2*h[2]):h[2]:(L[2]+2.0*h[2])))
 
-#        xn  = collect(0.0:h[1]:L[1]) 
-#        zn  = reverse(collect(0.0:h[2]:L[2]+2.0*h[2]) )
+        #xn  = collect(0.0:h[1]:L[1]) 
+        #zn  = reverse(collect(0.0:h[2]:L[2]+2.0*h[2]) )
 
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
@@ -81,13 +81,12 @@ function e2n(nD,nno,nel,nn)
                         try
                             push!(nno,gnum[j0+j,i0+i])
                         catch
-                            push!(nno,0)
+                            push!(nno,-404)
                         end
                     end
                 end
-                e2n[:,iel] .= nno
-                
-                iel = iel+1
+                e2n[:,iel].= nno
+                iel        = iel+1
             end
         end
     elseif nD == 3
@@ -95,18 +94,20 @@ function e2n(nD,nno,nel,nn)
         for k0 ∈ 1:nel[2]#nely
             for i0 ∈ 1:nel[1]#nelx
                 for j0 ∈ 1:nel[3]#nelz gnum[j0-1,i0-1,k0-1]
-                    if 1<i0<nel[1] && 1<j0<nel[3] && 1<k0<nel[2]
-                        nno = []
-                        for k ∈ -1:2
-                            for i ∈ -1:2
-                                for j ∈ -1:2
+                    nno = []
+                    for k ∈ -1:2
+                        for i ∈ -1:2
+                            for j ∈ -1:2
+                                try
                                     push!(nno,gnum[j0+j,i0+i,k0+k])
+                                catch
+                                    push!(nno,-404)
                                 end
                             end
                         end
-                        e2n[:,iel] .= nno
                     end
-                    iel = iel+1
+                    e2n[:,iel].= nno
+                    iel        = iel+1
                 end
             end
         end
