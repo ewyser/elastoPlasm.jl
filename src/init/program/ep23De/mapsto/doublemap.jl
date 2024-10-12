@@ -3,8 +3,8 @@
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
             # accumulation
-            for nn ∈ 1:meD.nn
-                @atom meD.pn[mpD.p2n[nn,p],dim]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*mpD.v[p,dim])
+            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]])
+                @atom meD.pn[no,dim]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*mpD.v[p,dim])
             end
         end
     end
@@ -24,7 +24,7 @@ end
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
             # accumulation
-            mpD.u[p,dim]+= Δt*(mpD.ϕ∂ϕ[:,p,1]'*meD.vn[mpD.p2n[:,p],dim])
+            mpD.u[p,dim]+= Δt*(mpD.ϕ∂ϕ[:,p,1]'*meD.vn[meD.e2n[:,mpD.p2e[p]],dim])
         end
     end
 end
