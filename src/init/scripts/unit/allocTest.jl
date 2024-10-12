@@ -30,19 +30,27 @@ using BenchmarkTools
     #suite["mapsto"]["p->n"] = @benchmarkable mapsto!($mpD,$meD,$g,$Δt,$instr,"p->n")
     #suite["mapsto"]["p<-p"] = @benchmarkable mapsto!($mpD,$meD,$g,$Δt,$instr,"p<-n")
     suite["shpfun"]["shpfun!"] = @benchmarkable shpfun!($mpD,$meD,$instr)
-    suite["solve" ]["solve!" ] = @benchmarkable solve!($meD,$Δt)
-    suite["elasto"]["-------"] = @benchmarkable ηmax = elastoplast!($mpD,$meD,$cmParam,$Δt,$instr)
-    suite["elasto"]["strain!"] = @benchmarkable strain!($mpD,$meD,$Δt,$instr)
-    suite["elasto"]["ΔFbar! "] = @benchmarkable ΔFbar!($mpD,$meD)
-    suite["elasto"]["stress!"] = @benchmarkable stress!($mpD,$cmParam,$instr,:update)
+    #suite["solve" ]["solve!" ] = @benchmarkable solve!($meD,$Δt)
+    #suite["elasto"]["-------"] = @benchmarkable ηmax = elastoplast!($mpD,$meD,$cmParam,$Δt,$instr)
+    #suite["elasto"]["strain!"] = @benchmarkable strain!($mpD,$meD,$Δt,$instr)
+    #suite["elasto"]["ΔFbar! "] = @benchmarkable ΔFbar!($mpD,$meD)
+    #suite["elasto"]["stress!"] = @benchmarkable stress!($mpD,$cmParam,$instr,:update)
     
-    ϵII0! = regularization(CPU())
-    
-    ϵpII,W,w = zeros(mpD.nmp),zeros(mpD.nmp),zeros(mpD.nmp,mpD.nmp)
+#=
     mpD.Δλ[:] .= 1.0
+
+    ls      = cmParam[:nonlocal][:ls]
+    mpD.e2p.= Int(0)
+    mpD.p2p.= Int(0)
+    W,w     = spzeros(mpD.nmp),spzeros(mpD.nmp,mpD.nmp)
+    @isdefined(nonloc!) ? nothing : nonloc! = nonlocal(CPU())
+    for proc ∈ ["p->q","p<-q"]
+        nonloc!(W,w,mpD,meD,ls,proc; ndrange=mpD.nmp);sync(CPU())
+    end
+
     suite["plast" ]["ϵII0p2q"] = @benchmarkable $ϵII0!($ϵpII,$W,$w,$mpD,$meD,$cmParam[:nonlocal][:ls],"p->q"; ndrange=$mpD.nmp);sync(CPU())
     suite["plast" ]["ϵII0q2p"] = @benchmarkable $ϵII0!($ϵpII,$W,$w,$mpD,$meD,$cmParam[:nonlocal][:ls],"p<-q"; ndrange=$mpD.nmp);sync(CPU())
-
+=#
 #=
     @info "Evaluate core functions:"
     println("launch ϕ∂ϕ!()")

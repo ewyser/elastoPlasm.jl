@@ -16,6 +16,10 @@ function meshCoord(nD,L,h)
     if nD == 2
         xn  = collect((0.0-2*h[1]):h[1]:(L[1]+2.0*h[1])) 
         zn  = reverse(collect((0.0-2*h[2]):h[2]:(L[2]+2.0*h[2])))
+
+#        xn  = collect(0.0:h[1]:L[1]) 
+#        zn  = reverse(collect(0.0:h[2]:L[2]+2.0*h[2]) )
+
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         nn  = 16
@@ -65,21 +69,24 @@ function meshBCs(xn,h,nno,nD)
     end
     return bc,xB
 end
-function e2N(nD,nno,nel,nn)
-	iel,e2n =1,zeros(Int64,nel[end],nn)
+function e2n(nD,nno,nel,nn)
+	iel,e2n =1,zeros(Int64,nn,nel[end])
     if nD == 2
         gnum = reverse(reshape(1:(nno[end]),nno[2],nno[1]),dims=1)
         for i0 ∈ 1:nel[1]#nelx
             for j0 ∈ 1:nel[2]#nelz
-                if 1<i0<nel[1] && 1<j0<nel[2]
-                    nn = 0
-                    for i ∈ -1:2
-                        for j ∈ -1:2
-                            nn += 1
-                            e2n[iel,nn] = gnum[j0+j,i0+i]    
+                nno = []
+                for i ∈ -1:2
+                    for j ∈ -1:2
+                        try
+                            push!(nno,gnum[j0+j,i0+i])
+                        catch
+                            push!(nno,0)
                         end
                     end
                 end
+                e2n[:,iel] .= nno
+                
                 iel = iel+1
             end
         end
@@ -89,22 +96,21 @@ function e2N(nD,nno,nel,nn)
             for i0 ∈ 1:nel[1]#nelx
                 for j0 ∈ 1:nel[3]#nelz gnum[j0-1,i0-1,k0-1]
                     if 1<i0<nel[1] && 1<j0<nel[3] && 1<k0<nel[2]
-                        nn = 0
+                        nno = []
                         for k ∈ -1:2
                             for i ∈ -1:2
                                 for j ∈ -1:2
-                                    nn += 1
-                                    e2n[iel,nn] = gnum[j0+j,i0+i,k0+k]
+                                    push!(nno,gnum[j0+j,i0+i,k0+k])
                                 end
                             end
                         end
+                        e2n[:,iel] .= nno
                     end
                     iel = iel+1
                 end
             end
         end
     end
-    e2n = permutedims(e2n,(2,1))
 	return e2n
 end
 function e2e(nD,nno,nel,nn,h,instr)
@@ -158,7 +164,7 @@ function meshSetup(nel,L,instr)
         ΔJn  = zeros(instr[:dtype],nno[nD+1],nD          ),
         bn   = zeros(instr[:dtype],nD       ,nD,nno[nD+1]),
         # mesh-to-node topology
-        e2n  = e2N(nD,nno,nel,nn),
+        e2n  = e2n(nD,nno,nel,nn),
         e2e  = e2e(nD,nno,nel,nn,h,instr),
         xB   = xB,
         # mesh boundary conditions

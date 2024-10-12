@@ -5,6 +5,8 @@ function shpfun!(mpD,meD,instr)
     elseif meD.nD == 3
         threeDtplgy!(mpD,meD)
     end
+    # initialize shapefunctions
+    mpD.ϕ∂ϕ .= 0.0
     # calculate shape functions
     if instr[:shpfun] == :bsmpm 
         ϕ∂ϕbsmpm!(mpD,meD) 
