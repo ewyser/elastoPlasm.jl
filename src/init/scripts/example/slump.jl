@@ -17,11 +17,13 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     # plot initial cohesion field
     plotcoh(mpD,cmParam,paths)
     # action
+    println(meD.e2n[2])
     out     = ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
     # postprocessing
     sleep(2.5)
     @info "fig(s) saved at $(paths[:plot])"
-    joinpath(paths[:plot],"$(length(L))D_$(nel)_$(join(instr[:plot][:what]))_$(instr[:shpfun])_$(instr[:fwrk])_$(instr[:trsfr])_$(instr[:vollock])_$(cmParam[:cmType])_$(instr[:perf])_$(first(instr[:nonloc])).png")
+    path =joinpath(paths[:plot],"$(length(L))D_$(nel)_$(join(instr[:plot][:what]))_$(instr[:shpfun])_$(instr[:fwrk])_$(instr[:trsfr])_$(instr[:vollock])_$(cmParam[:cmType])_$(instr[:perf])_$(first(instr[:nonloc])).png")
+    savefig(path)
     return msg("(✓) Done! exiting...")
 end
 export slump
