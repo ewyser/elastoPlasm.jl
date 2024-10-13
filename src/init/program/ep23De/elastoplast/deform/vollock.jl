@@ -1,30 +1,43 @@
-@kernel inbounds = true function kernel_ΔJn(mpD,meD,arg)
-    k = @index(Global)
-    if arg == :p2n && k≤mpD.nmp 
+@kernel inbounds = true function ΔJn(mpD,meD)
+    mp = @index(Global)
+    if mp≤mpD.nmp 
         # accumulation
-        for nn ∈ 1:meD.nn
-            @atom meD.ΔJn[mpD.p2n[nn,k]]+= mpD.ϕ∂ϕ[nn,k,1]*(mpD.m[k]*mpD.ΔJ[k])  
+        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if no<1 continue end
+            @atom meD.ΔJn[no]+= mpD.ϕ∂ϕ[nn,mp,1]*(mpD.m[mp]*mpD.ΔJ[mp])  
         end
-    elseif arg == :solve && k≤meD.nno[end] 
+    end
+end
+@kernel inbounds = true function ΔJs(mpD,meD)
+    no = @index(Global)
+    if no≤meD.nno[end] 
         # solve
-        meD.mn[k]>0.0 ? meD.ΔJn[k]/= meD.mn[k] : meD.ΔJn[k] = 0.0
-    elseif arg == :n2p && k≤mpD.nmp 
+        meD.mn[no]>0.0 ? meD.ΔJn[no]/= meD.mn[no] : meD.ΔJn[no] = 0.0
+    end
+end
+@kernel inbounds = true function ΔJp(mpD,meD)
+    mp = @index(Global)
+    if mp≤mpD.nmp 
         # mapping back to mp's
-        @views mpD.ΔF[:,:,k].*= (dot(mpD.ϕ∂ϕ[:,k,1],meD.ΔJn[mpD.p2n[:,k]])/mpD.ΔJ[k]).^(1.0/meD.nD)
+        ΔJ = 0.0
+        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if no<1 continue end
+            ΔJ += mpD.ϕ∂ϕ[nn,mp,1]*meD.ΔJn[no]/mpD.ΔJ[mp]
+        end
+        @views mpD.ΔF[:,:,mp].*= ΔJ^(1.0/meD.nD)
     end
 end
 function ΔFbar!(mpD,meD)
+    @isdefined(ΔJn!) ? nothing : ΔJn! = ΔJn(CPU())
+    @isdefined(ΔJs!) ? nothing : ΔJs! = ΔJs(CPU())
+    @isdefined(ΔJp!) ? nothing : ΔJp! = ΔJp(CPU())
     # init mesh quantities to zero
     meD.ΔJn.= 0.0
     # calculate dimensional cst.
     dim     = 1.0/meD.nD
-    # action
-    @isdefined(ΔJn!) ? nothing : ΔJn! = kernel_ΔJn(CPU())
     # mapping to mesh
-    ΔJn!(mpD,meD,:p2n; ndrange=mpD.nmp);sync(CPU())
+    ΔJn!(mpD,meD; ndrange=mpD.nmp);sync(CPU())
     # compute nodal determinant of incremental deformation 
-    ΔJn!(mpD,meD,:solve; ndrange=meD.nno[end]);sync(CPU())
+    ΔJs!(mpD,meD; ndrange=meD.nno[end]);sync(CPU())
     # compute determinant Jbar 
-    ΔJn!(mpD,meD,:n2p; ndrange=mpD.nmp);sync(CPU())
+    ΔJp!(mpD,meD; ndrange=mpD.nmp);sync(CPU())
     return nothing
 end

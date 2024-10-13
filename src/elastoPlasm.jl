@@ -9,7 +9,6 @@ const ROOT = dirname(@__FILE__)
 # include startup file
 include(joinpath(ROOT,"init/startup.jl"))
 # include .jl files
-sys    = moduleCore()
 sucess = ["welcome to elastoPlasm:\nsucessful superInclude()"]
 for (k,child) ∈ enumerate(sys.lib)
 	list = superInc(joinpath(sys.init,child))

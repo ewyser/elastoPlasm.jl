@@ -29,6 +29,7 @@ end
 ####################################################################################################################################
 ## start-up info struct definition and instanciation
 ####################################################################################################################################
+
 Base.@kwdef mutable struct moduleCore
 	cpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
 	gpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
@@ -36,20 +37,17 @@ Base.@kwdef mutable struct moduleCore
 	init::String    = dirname(@__FILE__)
 	lib::Vector     = ["api","program","scripts"]
 	method::Vector  = []
+	out::String     = joinpath(dirname(ROOT),"out")
 end
 ####################################################################################################################################
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################
 # include dependencies & function call(s)
-using Revise,Pkg
+using Revise,Pkg,Test
 using LinearAlgebra,SparseArrays, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
 import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
+# instantiate sys
+sys    = moduleCore()
 # arithmetic precision & relative path for figs & data
 const typeD     = Float64  
-const path_DAT = "./misc/DAT/"
-if isdir(path_DAT)==false mkdir(path_DAT) end
-const path_plot = "./misc/out/"
-if isdir(path_plot)==false mkdir(path_plot) end
-const path_test = "./misc/test/"
-if isdir(path_test)==false mkdir(path_test) end

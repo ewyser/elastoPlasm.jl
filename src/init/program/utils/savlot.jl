@@ -65,7 +65,7 @@
         if meD.nD == 2
             mpD.x[:,1],mpD.x[:,2]
         elseif meD.nD == 3
-            mpD.x[:,1],mpD.x[:,2],mpD.x[:,3]
+            mpD.x[:,1],mpD.x[:,3]
         end,
         seriestype  = :scatter,
         marker_z    = d,

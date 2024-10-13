@@ -125,6 +125,7 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         J    = ones(typeD,nmp),
         # plot quantity
         z0   = xp[:,end],
+        coord   = zeros(Int64,nmp,2),
         # tensor in matrix notation
         I    = Matrix(1.0I,meD.nD,meD.nD    ),
         ∇u   = zeros(typeD,meD.nD,meD.nD,nmp),
@@ -148,7 +149,5 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         p2e  = zeros(Int64,nmp),
         p2n  = zeros(Int64,meD.nn,nmp),
     )
-    # plot initial cohesion field
-    plot_coh(mpD.x,mpD.c0,mpD.ϕ,coh0,phi0)
     return mpD 
 end

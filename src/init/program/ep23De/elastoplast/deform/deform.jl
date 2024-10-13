@@ -3,9 +3,9 @@
     if p≤mpD.nmp 
         # compute velocity & displacement gradients
         mpD.∇u[:,:,p].= 0.0
-        for nn ∈ 1:meD.nn
-            for i ∈ 1:meD.nD,j ∈ 1:meD.nD
-                mpD.∇u[i,j,p]+= Δt*(mpD.ϕ∂ϕ[nn,p,j+1]*meD.vn[mpD.p2n[nn,p],i])
+        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for i ∈ 1:meD.nD , j ∈ 1:meD.nD
+                mpD.∇u[i,j,p]+= Δt*(mpD.ϕ∂ϕ[nn,p,j+1]*meD.vn[no,i])
             end
         end
         # compute incremental deformation gradient
@@ -22,7 +22,8 @@ end
     p = @index(Global)
     if p≤mpD.nmp 
         # compute velocity & displacement gradients
-        mpD.∇v[:,:,p].= (permutedims(mpD.ϕ∂ϕ[:,p,2:end],(2,1))*meD.vn[mpD.p2n[:,p],:])'
+        nn            = findall(x->x!=0,meD.e2n[:,mpD.p2e[p]])
+        mpD.∇v[:,:,p].= (permutedims(mpD.ϕ∂ϕ[nn,p,2:end],(2,1))*meD.vn[meD.e2n[nn,mpD.p2e[p]],:])'
         mpD.∇u[:,:,p].= Δt.*mpD.∇v[:,:,p]
         # compute incremental deformation gradient
         mpD.ΔF[:,:,p].= mpD.I.+mpD.∇u[:,:,p]

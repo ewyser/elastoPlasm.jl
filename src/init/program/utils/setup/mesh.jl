@@ -14,18 +14,18 @@ function meshGeom(L,nel)
 end
 function meshCoord(nD,L,h)
     if nD == 2
-        xn  = collect((0.0-2*h[1]):h[1]:(L[1]+2.0*h[1])) 
-        zn  = reverse(collect((0.0-2*h[2]):h[2]:(L[2]+2.0*h[2])))
+        xn  = collect(0.0:h[1]:L[1]) 
+        zn  = collect(0.0:h[2]:L[2]+2.0*h[2])
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         nn  = 16
         xn  = (xn'.*ones(typeD,nno[2],1     ))     
-        zn  = (     ones(typeD,nno[1],1     )'.*zn)
+        zn  = (     ones(typeD,nno[1],1     )'.*reverse(zn))
         x   = hcat(vec(xn),vec(zn))
     elseif nD == 3
-        xn  = collect((0.0-2*h[1]):h[1]:(L[1]+2.0*h[1])) 
-        yn  = collect((0.0-2*h[2]):h[2]:(L[2]+2.0*h[2])) 
-        zn  = reverse(collect((0.0-2*h[3]):h[3]:(L[3]+2.0*h[3])))        
+        xn  = collect(0.0:h[1]:L[1]) 
+        yn  = collect(0.0:h[2]:L[2]) 
+        zn  = reverse(collect(0.0:h[3]:L[3]+2.0*h[3]))        
         nno = [length(xn),length(yn),length(zn),length(xn)*length(yn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,nno[3]-1,(nno[1]-1)*(nno[2]-1)*(nno[3]-1)]
         nn  = 64
@@ -37,24 +37,21 @@ function meshCoord(nD,L,h)
     return x,nn,nel,nno
 end
 function meshBCs(xn,h,nno,nD)
+    l,L = minimum(xn,dims=1),maximum(xn,dims=1)
     if nD == 2
-        xB  = [minimum(xn[:,1])+2*h[1],maximum(xn[:,1])-2*h[1],
-               0.0                    ,Inf                    ]                                    
-        bcx = vcat(findall(x->x<=xB[1], xn[:,1]),findall(x->x>=xB[2], xn[:,1]))
-        bcz = findall(x->x<=xB[3], xn[:,2])
+        xB  = vcat([l[1],L[1]],[l[2],Inf])
+        bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
+        bcz = findall(x-> x ∈ xB[3:4],xn[:,2])
         bcX = ones(Float64,nno[nD+1],1)
         bcX[bcx] .= 0.0
         bcZ = ones(nno[nD+1],1)
         bcZ[bcz] .= 0.0
-        #bcX[bcz] .= 0.0
         bc   = hcat(bcX,bcZ)
     elseif nD == 3
-        xB  = [minimum(xn[:,1])+2*h[1],maximum(xn[:,1])-2*h[1],
-               minimum(xn[:,2])+2*h[2],maximum(xn[:,2])-2*h[2],
-               0.0                    ,Inf                    ]       
-        bcx = vcat(findall(x->x<=xB[1], xn[:,1]),findall(x->x>=xB[2], xn[:,1]))
-        bcy = vcat(findall(x->x<=xB[3], xn[:,2]),findall(x->x>=xB[4], xn[:,2]))
-        bcz = findall(x->x<=xB[5], xn[:,3])
+        xB  = vcat([l[1],L[1]],[l[2],L[2]],[l[3],Inf])
+        bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
+        bcy = findall(x-> x ∈ xB[3:4],xn[:,2])
+        bcz = findall(x-> x ∈ xB[5:6],xn[:,3])
         bcX = ones(Float64,nno[nD+1],1)
         bcX[bcx] .= 0.0
         bcY = ones(nno[nD+1],1)
@@ -65,22 +62,24 @@ function meshBCs(xn,h,nno,nD)
     end
     return bc,xB
 end
-function e2N(nD,nno,nel,nn)
-	iel,e2n =1,zeros(Int64,nel[end],nn)
+function e2n(nD,nno,nel,nn)
+	iel,e2n =1,zeros(Int64,nn,nel[end])
     if nD == 2
         gnum = reverse(reshape(1:(nno[end]),nno[2],nno[1]),dims=1)
         for i0 ∈ 1:nel[1]#nelx
             for j0 ∈ 1:nel[2]#nelz
-                if 1<i0<nel[1] && 1<j0<nel[2]
-                    nn = 0
-                    for i ∈ -1:2
-                        for j ∈ -1:2
-                            nn += 1
-                            e2n[iel,nn] = gnum[j0+j,i0+i]    
+                nno = []
+                for i ∈ -1:2
+                    for j ∈ -1:2
+                        try
+                            push!(nno,gnum[j0+j,i0+i])
+                        catch
+                            push!(nno,-404)
                         end
                     end
                 end
-                iel = iel+1
+                e2n[:,iel].= nno
+                iel        = iel+1
             end
         end
     elseif nD == 3
@@ -88,23 +87,24 @@ function e2N(nD,nno,nel,nn)
         for k0 ∈ 1:nel[2]#nely
             for i0 ∈ 1:nel[1]#nelx
                 for j0 ∈ 1:nel[3]#nelz gnum[j0-1,i0-1,k0-1]
-                    if 1<i0<nel[1] && 1<j0<nel[3] && 1<k0<nel[2]
-                        nn = 0
-                        for k ∈ -1:2
-                            for i ∈ -1:2
-                                for j ∈ -1:2
-                                    nn += 1
-                                    e2n[iel,nn] = gnum[j0+j,i0+i,k0+k]
+                    nno = []
+                    for k ∈ -1:2
+                        for i ∈ -1:2
+                            for j ∈ -1:2
+                                try
+                                    push!(nno,gnum[j0+j,i0+i,k0+k])
+                                catch
+                                    push!(nno,-404)
                                 end
                             end
                         end
                     end
-                    iel = iel+1
+                    e2n[:,iel].= nno
+                    iel        = iel+1
                 end
             end
         end
     end
-    e2n = permutedims(e2n,(2,1))
 	return e2n
 end
 function e2e(nD,nno,nel,nn,h,instr)
@@ -123,9 +123,21 @@ function e2e(nD,nno,nel,nn,h,instr)
             end
         end
     elseif nD == 3
-
+        gnum = reshape(1:(nno[end]),nno[3],nno[1],nno[2])
+        iel  = 0
+        for k ∈ 1:nel[2] #nely
+            for i ∈ 1:nel[1] #nelx
+                for j ∈ 1:nel[3] #nelz
+                    iel = iel+1
+                    I   = max(1,i-nnel[1]):min(nel[1],i+nnel[1])
+                    J   = max(1,j-nnel[3]):min(nel[3],j+nnel[3])
+                    K   = max(1,j-nnel[2]):min(nel[2],j+nnel[2])
+                    els = vec(gnum[J,I,K])         
+                    e2e[iel,els] = els
+                end
+            end
+        end
     end
-    
 	return e2e
 end
 function meshSetup(nel,L,instr)
@@ -146,19 +158,19 @@ function meshSetup(nel,L,instr)
         minC = instr[:dtype].(minimum(x,dims=2)),
         # nodal quantities
         xn   = instr[:dtype].(x),
-        mn   = zeros(instr[:dtype],nno[nD+1]             ), # lumped mass vector
-        Mn   = zeros(instr[:dtype],nno[nD+1],nno[nD+1]   ), # consistent mass matrix
-        oobf = zeros(instr[:dtype],nno[nD+1],nD          ),
-        Dn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        fn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        an   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        pn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        vn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        Δun  = zeros(instr[:dtype],nno[nD+1],nD          ),
-        ΔJn  = zeros(instr[:dtype],nno[nD+1],nD          ),
-        bn   = zeros(instr[:dtype],nD       ,nD,nno[nD+1]),
+        mn   = zeros(instr[:dtype],nno[end]            ), # lumped mass vector
+        Mn   = zeros(instr[:dtype],nno[end],nno[end]   ), # consistent mass matrix
+        oobf = zeros(instr[:dtype],nno[end],nD         ),
+        Dn   = zeros(instr[:dtype],nno[end],nD         ),
+        fn   = zeros(instr[:dtype],nno[end],nD         ),
+        an   = zeros(instr[:dtype],nno[end],nD         ),
+        pn   = zeros(instr[:dtype],nno[end],nD         ),
+        vn   = zeros(instr[:dtype],nno[end],nD         ),
+        Δun  = zeros(instr[:dtype],nno[end],nD         ),
+        ΔJn  = zeros(instr[:dtype],nno[end],nD         ),
+        bn   = zeros(instr[:dtype],nD      ,nD,nno[end]),
         # mesh-to-node topology
-        e2n  = e2N(nD,nno,nel,nn),
+        e2n  = e2n(nD,nno,nel,nn),
         e2e  = e2e(nD,nno,nel,nn,h,instr),
         xB   = xB,
         # mesh boundary conditions

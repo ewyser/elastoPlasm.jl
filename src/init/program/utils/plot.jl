@@ -1,4 +1,8 @@
-@views function plot_coh(xp,coh,phi,coh0,ϕ0)
+@views function plotcoh(mpD,cmParam,paths)
+    xp,coh,phi = mpD.x,mpD.c0,mpD.ϕ
+    coh0,ϕ0    = cmParam[:c0],cmParam[:ϕ0]
+
+
     coh0 = coh0/1e3
     if size(xp,2)==2
         gr(size=(2.0*250,2*125),legend=true,markersize=2.25,markerstrokecolor=:auto)
@@ -30,7 +34,7 @@
         markerstrokewidth=0,
         )
     end
-    savefig(path_plot*"coh0.png")
+    savefig(joinpath(paths[:plot],"coh0.png"))
     gr(size=(2.0*250,2*125),legend=true,markersize=2.25,markerstrokecolor=:auto)
     scatter(xp[:,1],xp[:,2],zcolor=phi,
     markershape=:circle,
@@ -45,5 +49,5 @@
     markerstrokewidth=0,
     ylim=(-10,20),
     )
-    savefig(path_plot*"phi0.png")
+    savefig(joinpath(paths[:plot],"phi0.png"))
 end
