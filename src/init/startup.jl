@@ -43,7 +43,7 @@ end
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################
 # include dependencies & function call(s)
-using Revise,Pkg
+using Revise,Pkg,Test
 using LinearAlgebra,SparseArrays, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
 import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
