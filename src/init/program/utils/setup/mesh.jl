@@ -27,9 +27,9 @@ function meshCoord(nD,L,h)
         zn  = (     ones(typeD,nno[1],1     )'.*zn)
         x   = hcat(vec(xn),vec(zn))
     elseif nD == 3
-        xn  = collect((0.0-2*h[1]):h[1]:(L[1]+2.0*h[1])) 
-        yn  = collect((0.0-2*h[2]):h[2]:(L[2]+2.0*h[2])) 
-        zn  = reverse(collect((0.0-2*h[3]):h[3]:(L[3]+2.0*h[3])))        
+        xn  = collect((0.0-3*h[1]):h[1]:(L[1]+3.0*h[1])) 
+        yn  = collect((0.0-3*h[2]):h[2]:(L[2]+3.0*h[2])) 
+        zn  = reverse(collect((0.0-3*h[3]):h[3]:(L[3]+3.0*h[3])))        
         nno = [length(xn),length(yn),length(zn),length(xn)*length(yn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,nno[3]-1,(nno[1]-1)*(nno[2]-1)*(nno[3]-1)]
         nn  = 64

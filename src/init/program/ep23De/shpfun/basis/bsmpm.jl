@@ -77,7 +77,6 @@ end
         if mp ≤ mpD.nmp
             for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
-                id     = mpD.p2n[nn,mp]
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
                 ζ      = (mpD.x[mp,3]-meD.xn[id,3])

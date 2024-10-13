@@ -25,9 +25,9 @@ end
     for dim ∈ 1:meD.nD
         Δu = 0.0
         for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
-            Δu += (mpD.ϕ∂ϕ[nn,p,1]*meD.vn[no,dim])
+            Δu += Δt*(mpD.ϕ∂ϕ[nn,p,1]*meD.vn[no,dim])
         end
-        mpD.u[p,dim]+= Δt*Δu
+        mpD.u[p,dim]+= Δu
     end
 
 end
