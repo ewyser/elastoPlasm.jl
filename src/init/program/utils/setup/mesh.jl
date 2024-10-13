@@ -123,6 +123,8 @@ function e2e(nD,nno,nel,nn,h,instr)
             end
         end
     elseif nD == 3
+        gnum = reshape(1:(nno[end]),nno[3],nno[1],nno[2])
+        iel  = 0
         for k ∈ 1:nel[2] #nely
             for i ∈ 1:nel[1] #nelx
                 for j ∈ 1:nel[3] #nelz
@@ -136,7 +138,6 @@ function e2e(nD,nno,nel,nn,h,instr)
             end
         end
     end
-    
 	return e2e
 end
 function meshSetup(nel,L,instr)
