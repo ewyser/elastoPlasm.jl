@@ -14,10 +14,11 @@ function S∂S(δx,h,lp)
     end
     return S,∂S    
 end
-@views function ϕ∂ϕgimpm!(mpD,meD)
+@views @kernel inbounds = true function gimpm(mpD,meD)
+    mp = @index(Global)
     # calculate shape functions
     if meD.nD == 2
-        @threads for mp ∈ 1:mpD.nmp
+        if mp ≤ mpD.nmp
             for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
@@ -33,7 +34,7 @@ end
             end
         end
     elseif meD.nD == 3
-        @threads for mp ∈ 1:mpD.nmp
+        if mp ≤ mpD.nmp
             for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
@@ -53,5 +54,4 @@ end
             end
         end
     end
-    return nothing
 end
