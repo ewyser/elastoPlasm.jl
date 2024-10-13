@@ -14,12 +14,8 @@ function meshGeom(L,nel)
 end
 function meshCoord(nD,L,h)
     if nD == 2
-        xn  = collect((0.0-2*h[1]):h[1]:(L[1]+2.0*h[1])) 
-        zn  = reverse(collect((0.0-2*h[2]):h[2]:(L[2]+2.0*h[2])))
-
         xn  = collect(0.0:h[1]:L[1]) 
         zn  = reverse(collect(0.0:h[2]:L[2]+2.0*h[2]) )
-
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         nn  = 16
@@ -41,8 +37,7 @@ function meshCoord(nD,L,h)
     return x,nn,nel,nno
 end
 function meshBCs(xn,h,nno,nD)
-    l = minimum(xn,dims=1)
-    L = maximum(xn,dims=1)
+    l,L = minimum(xn,dims=1),maximum(xn,dims=1)
     if nD == 2
         xB  = vcat([l[1],L[1]],[l[2],Inf])
         bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
