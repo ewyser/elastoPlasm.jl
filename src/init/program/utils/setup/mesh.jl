@@ -41,16 +41,18 @@ function meshCoord(nD,L,h)
     return x,nn,nel,nno
 end
 function meshBCs(xn,h,nno,nD)
+    L = maximum(xn,dims=1)
     if nD == 2
-        xB  = [minimum(xn[:,1]),maximum(xn[:,1]),
-               0.0                    ,Inf                    ]                                    
-        bcx = vcat(findall(x->x<=xB[1], xn[:,1]),findall(x->x>=xB[2], xn[:,1]))
-        bcz = findall(x->x<=xB[3], xn[:,2])
+        xB  = [0.0,L[1]]
+        zB  = [0.0,Inf]                                    
+
+        xB  = vcat(xB,zB)
+        bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
+        bcz = findall(x-> x ∈ xB[3:4],xn[:,2])
         bcX = ones(Float64,nno[nD+1],1)
         bcX[bcx] .= 0.0
         bcZ = ones(nno[nD+1],1)
         bcZ[bcz] .= 0.0
-        #bcX[bcz] .= 0.0
         bc   = hcat(bcX,bcZ)
     elseif nD == 3
         xB  = [minimum(xn[:,1])+2*h[1],maximum(xn[:,1])-2*h[1],
@@ -153,17 +155,17 @@ function meshSetup(nel,L,instr)
         minC = instr[:dtype].(minimum(x,dims=2)),
         # nodal quantities
         xn   = instr[:dtype].(x),
-        mn   = zeros(instr[:dtype],nno[nD+1]             ), # lumped mass vector
-        Mn   = zeros(instr[:dtype],nno[nD+1],nno[nD+1]   ), # consistent mass matrix
-        oobf = zeros(instr[:dtype],nno[nD+1],nD          ),
-        Dn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        fn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        an   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        pn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        vn   = zeros(instr[:dtype],nno[nD+1],nD          ),
-        Δun  = zeros(instr[:dtype],nno[nD+1],nD          ),
-        ΔJn  = zeros(instr[:dtype],nno[nD+1],nD          ),
-        bn   = zeros(instr[:dtype],nD       ,nD,nno[nD+1]),
+        mn   = zeros(instr[:dtype],nno[end]            ), # lumped mass vector
+        Mn   = zeros(instr[:dtype],nno[end],nno[end]   ), # consistent mass matrix
+        oobf = zeros(instr[:dtype],nno[end],nD         ),
+        Dn   = zeros(instr[:dtype],nno[end],nD         ),
+        fn   = zeros(instr[:dtype],nno[end],nD         ),
+        an   = zeros(instr[:dtype],nno[end],nD         ),
+        pn   = zeros(instr[:dtype],nno[end],nD         ),
+        vn   = zeros(instr[:dtype],nno[end],nD         ),
+        Δun  = zeros(instr[:dtype],nno[end],nD         ),
+        ΔJn  = zeros(instr[:dtype],nno[end],nD         ),
+        bn   = zeros(instr[:dtype],nD      ,nD,nno[end]),
         # mesh-to-node topology
         e2n  = e2n(nD,nno,nel,nn),
         e2e  = e2e(nD,nno,nel,nn,h,instr),
