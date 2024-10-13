@@ -17,7 +17,6 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     # plot initial cohesion field
     plotcoh(mpD,cmParam,paths)
     # action
-    println(meD.e2n[2])
     out     = ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
     # postprocessing
     sleep(2.5)
