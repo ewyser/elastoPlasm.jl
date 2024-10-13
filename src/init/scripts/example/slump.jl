@@ -4,7 +4,7 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     configPlot()
     # init & kwargs
     instr  = setKwargs(:instr,kwargs)
-    paths  = setPaths("slump_$(nel)", sys.out)
+    paths  = setPaths("slump", sys.out)
     @info "init slump geometry"
     # independant physical constant
     g       = 9.81                                                              # gravitationnal acceleration [m/s^2]            

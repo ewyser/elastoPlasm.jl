@@ -51,11 +51,7 @@ function setPaths(newDir::String,path::String)
             mkdir(joinpath(joinpath(path,newDir),options[name]))
             push!(msg,"\n\t"*joinpath(joinpath(path,newDir),options[name]))
         else
-            try
-                foreach(rm, filter(endswith(".csv"), readdir(paths[Symbol(options[name])],join=true)))
-                push!(msg!,"\n\t"*paths[Symbol(options[name])])
-            catch err
-            end
+            nothing
         end
     end 
     if length(msg)>1
