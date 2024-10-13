@@ -18,9 +18,8 @@ end
     # calculate shape functions
     if meD.nD == 2
         @threads for mp ∈ 1:mpD.nmp
-            @simd for nn ∈ 1:meD.nn
+            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
-                id     = mpD.p2n[nn,mp]
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
                 ϕx,dϕx = S∂S(ξ,meD.h[1],mpD.l[mp,1])
@@ -35,9 +34,8 @@ end
         end
     elseif meD.nD == 3
         @threads for mp ∈ 1:mpD.nmp
-            @simd for nn ∈ 1:meD.nn
+            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
                 # compute basis functions
-                id     = mpD.p2n[nn,mp]
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
                 ζ      = (mpD.x[mp,3]-meD.xn[id,3])

@@ -5,10 +5,6 @@ function shpfun!(mpD,meD,instr)
     elseif meD.nD == 3
         threeDtplgy!(mpD,meD)
     end
-    a = mpD.coord
-    valx = minimum(mpD.coord[:,1])
-    valy = minimum(mpD.coord[:,2])
-    println("($((valx,valy)))")
     # initialize shapefunctions
     mpD.ϕ∂ϕ .= 0.0
     # calculate shape functions
