@@ -43,10 +43,7 @@ end
 function meshBCs(xn,h,nno,nD)
     L = maximum(xn,dims=1)
     if nD == 2
-        xB  = [0.0,L[1]]
-        zB  = [0.0,Inf]                                    
-
-        xB  = vcat(xB,zB)
+        xB  = vcat([0.0,L[1]],[0.0,Inf])
         bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
         bcz = findall(x-> x ∈ xB[3:4],xn[:,2])
         bcX = ones(Float64,nno[nD+1],1)
@@ -55,12 +52,10 @@ function meshBCs(xn,h,nno,nD)
         bcZ[bcz] .= 0.0
         bc   = hcat(bcX,bcZ)
     elseif nD == 3
-        xB  = [minimum(xn[:,1])+2*h[1],maximum(xn[:,1])-2*h[1],
-               minimum(xn[:,2])+2*h[2],maximum(xn[:,2])-2*h[2],
-               0.0                    ,Inf                    ]       
-        bcx = vcat(findall(x->x<=xB[1], xn[:,1]),findall(x->x>=xB[2], xn[:,1]))
-        bcy = vcat(findall(x->x<=xB[3], xn[:,2]),findall(x->x>=xB[4], xn[:,2]))
-        bcz = findall(x->x<=xB[5], xn[:,3])
+        xB  = vcat([0.0,L[1]],[0.0,L[2]],[0.0,Inf])
+        bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
+        bcy = findall(x-> x ∈ xB[3:4],xn[:,2])
+        bcz = findall(x-> x ∈ xB[5:6],xn[:,3])
         bcX = ones(Float64,nno[nD+1],1)
         bcX[bcx] .= 0.0
         bcY = ones(nno[nD+1],1)
