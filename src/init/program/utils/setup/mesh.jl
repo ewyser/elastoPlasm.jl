@@ -41,9 +41,10 @@ function meshCoord(nD,L,h)
     return x,nn,nel,nno
 end
 function meshBCs(xn,h,nno,nD)
+    l = minimum(xn,dims=1)
     L = maximum(xn,dims=1)
     if nD == 2
-        xB  = vcat([0.0,L[1]],[0.0,Inf])
+        xB  = vcat([l[1],L[1]],[l[2],Inf])
         bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
         bcz = findall(x-> x ∈ xB[3:4],xn[:,2])
         bcX = ones(Float64,nno[nD+1],1)
@@ -52,7 +53,7 @@ function meshBCs(xn,h,nno,nD)
         bcZ[bcz] .= 0.0
         bc   = hcat(bcX,bcZ)
     elseif nD == 3
-        xB  = vcat([0.0,L[1]],[0.0,L[2]],[0.0,Inf])
+        xB  = vcat([l[1],L[1]],[l[2],L[2]],[l[3],Inf])
         bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
         bcy = findall(x-> x ∈ xB[3:4],xn[:,2])
         bcz = findall(x-> x ∈ xB[5:6],xn[:,3])
