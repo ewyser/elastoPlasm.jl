@@ -1,13 +1,13 @@
 function elastoplast!(mpD,meD,cmParam,Δt,instr)
     # get incremental deformation tensor & strains
     strain!(mpD,meD,Δt,instr)
-    # update material point's domain
-    if instr[:shpfun] == :gimpm 
-        domain!(mpD)
-    end
     # volumetric locking correction
     if instr[:vollock]
         ΔFbar!(mpD,meD)
+    end
+    # update material point's domain
+    if instr[:shpfun] == :gimpm 
+        domain!(mpD)
     end
     # update {kirchoff|cauchy} stresses
     stress!(mpD,cmParam,instr,:update)
