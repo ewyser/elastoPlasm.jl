@@ -7,7 +7,7 @@
     elseif fwrkDeform == :infinitesimal
         σ = mpD.σ
     end
-    @threads for p ∈ 1:mpD.nmp
+    for p ∈ 1:mpD.nmp
         ϕ,H,ϵII0 = mpD.ϕ[p],cos(mpD.ϕ[p])*cmParam.Hp,ϵIIp[p]
         c0,cr    = mpD.c0[p]+cmParam.Hp*ϵII0,mpD.cr[p]
         if c0<cr c0 = cr end

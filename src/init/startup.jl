@@ -2,20 +2,20 @@
 ## start-up function definition
 ####################################################################################################################################
 function superInc(DIR::String)
-	msg,included = ["method(s) sucessfully included:"],[]
-	for (root, dirs, files) in walkdir(DIR)
-		for file in files
-			f = joinpath(root, file) # path to files
+	msg,inc = ["method(s) sucessfully included:"],[]
+	for (root, dirs, files) ∈ walkdir(DIR)
+		for file ∈ files
+			f = joinpath(root, file)
 			if !occursin("/mpi/",f) && last(splitext(f)) == ".jl" 
 				include(f)
-				push!(included,file)
-				push!(msg   ,"\n\t(✓) "*file)
+				push!(inc,file           )
+				push!(msg,"\n\t(✓) "*file)
 			end
 		end
 	end
-	return included
+	return inc
 end
-function treeLike(sucess, prefix="\n\t", level=0, max_level=1)
+function tree(sucess, prefix="\n\t", level=0, max_level=1)
     if level > max_level
         return nothing
     end
@@ -42,12 +42,19 @@ end
 ####################################################################################################################################
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################
-# include dependencies & function call(s)
+# include dependencies
 using Revise,Pkg,Test
-using LinearAlgebra,SparseArrays, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
+using Plots,LaTeXStrings,ProgressMeter,REPL.TerminalMenus
+using LinearAlgebra,SparseArrays,Random
+using KernelAbstractions,Adapt,Base.Threads
 import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
+import Adapt.adapt as user_adapt
+import Adapt.@adapt_structure as @user_struct
 # instantiate sys
 sys    = moduleCore()
 # arithmetic precision & relative path for figs & data
 const typeD     = Float64  
+
+
+
