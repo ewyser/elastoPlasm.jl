@@ -39,7 +39,7 @@ Admissible keywords, by-default value and purpose are presented below when ```in
 function require(in::Symbol)
     if in == :instr
         instr = Dict(
-            :bit     => 64,
+            :bits    => 64,
             :basis   => :bsmpm,
             :fwrk    => :finite,
             :trsfr   => :mUSL,
