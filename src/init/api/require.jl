@@ -1,12 +1,12 @@
 """
     require(in::Symbol)
 
-Generates and returns a set (Dict) of reference instruction
+Generates and returns a Dictionnary of reference instruction
 
 # Examples
 
 ```jldoc
-julia> elastoPlasm.require(:instr)
+julia> require(:instr)
 Dict{Symbol, Any} with 10 entries:
   :dtype   => Float64
   :nonloc  => (cond = false, ls = 1.0)
@@ -23,7 +23,7 @@ julia>
 ```
 
 # Further specification
-Admissible keywords, by-default value and purpose are presented below for ```instr = require(:instr)```
+Admissible keywords, by-default value and purpose are presented below when ```instr = require(:instr)```
 - ```:dtype   ```, # set the arithmetic precision
 - ```:basis   ```, # define shapefunction type
 - ```:fwrk    ```, # set the deformation framework
@@ -39,6 +39,7 @@ Admissible keywords, by-default value and purpose are presented below for ```ins
 function require(in::Symbol)
     if in == :instr
         instr = Dict(
+            :bit     => 64,
             :dtype   => Float64, # set the arithmetic precision
             :basis   => :bsmpm,
             :fwrk    => :finite,
@@ -61,3 +62,4 @@ function require(in::Symbol)
         return nothing
     end
 end
+export require

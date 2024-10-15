@@ -23,6 +23,7 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     @info "fig(s) saved at $(paths[:plot])"
     path =joinpath(paths[:plot],"$(length(L))D_$(nel)_$(join(instr[:plot][:what]))_$(instr[:basis])_$(instr[:fwrk])_$(instr[:trsfr])_$(instr[:vollock])_$(cmParam[:cmType])_$(instr[:perf])_$(first(instr[:nonloc])).png")
     savefig(path)
-    return msg("(✓) Done! exiting...")
+    msg("(✓) Done! exiting...\n")
+    return instr
 end
 export slump
