@@ -38,7 +38,7 @@ end
                 mpD.ωᵢⱼ[i,j,p] = 0.5*(mpD.ΔFᵢⱼ[i,j,p]-mpD.ΔFᵢⱼ[j,i,p])
             end
             Δϵ = mutate(mpD.ϵᵢⱼ[:,:,p],2.0,:voigt)
-            Δω = mpD.ωᵢⱼ[2,1,p]
+            Δω = mpD.ωᵢⱼ[1,2,p]
             σ0 = [Δω*(2.0*mpD.σᵢ[3,p]),Δω*(-2.0*mpD.σᵢ[3,p]),Δω*(mpD.σᵢ[2,p]-mpD.σᵢ[1,p])]
             for k ∈ 1:length(σ0)
                 mpD.σᵢ[k,p]+= (Del[k,1]*Δϵ[1]+Del[k,2]*Δϵ[2]+Del[k,3]*Δϵ[3])+σ0[k]
@@ -65,7 +65,7 @@ end
             mpD.ϵᵢⱼ[:,:,p] .= 0.5.*(mpD.ΔFᵢⱼ[:,:,p]+mpD.ΔFᵢⱼ[:,:,p]').-mpD.I
             mpD.ωᵢⱼ[:,:,p] .= 0.5.*(mpD.ΔFᵢⱼ[:,:,p]-mpD.ΔFᵢⱼ[:,:,p]')
             # update cauchy stress tensor
-            mpD.σJᵢⱼ[:,:,p].= mutate(mpD.σ[:,p],1.0,:tensor)
+            mpD.σJᵢⱼ[:,:,p].= mutate(mpD.σᵢ[:,p],1.0,:tensor)
             mpD.σJᵢⱼ[:,:,p].= mpD.σJᵢⱼ[:,:,p]*mpD.ωᵢⱼ[:,:,p]'+mpD.σJᵢⱼ[:,:,p]'*mpD.ωᵢⱼ[:,:,p]
             mpD.σᵢ[:,p]   .+= Del*mutate(mpD.ϵᵢⱼ[:,:,p],2.0,:voigt).+mutate(mpD.σJᵢⱼ[:,:,p],1.0,:voigt)
         end   
