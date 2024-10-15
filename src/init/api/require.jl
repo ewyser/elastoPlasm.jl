@@ -40,7 +40,6 @@ function require(in::Symbol)
     if in == :instr
         instr = Dict(
             :bit     => 64,
-            :dtype   => Float64, # set the arithmetic precision
             :basis   => :bsmpm,
             :fwrk    => :finite,
             :trsfr   => :mUSL,

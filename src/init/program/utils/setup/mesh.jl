@@ -172,23 +172,23 @@ function meshSetup(nel,L,instr)
         nel  = nel,
         nno  = nno,
         nn   = nn,
-        L    = instr[:dtype].(L),
-        h    = instr[:dtype].(h),
-        minC = instr[:dtype].(minimum(x,dims=2)),
+        L    = L,
+        h    = h,
+        minC = minimum(x,dims=2),
         # nodal quantities
-        xn   = instr[:dtype].(x),
+        xn   = x,
         tn   = Int64.(t),
-        mn   = zeros(instr[:dtype],nno[end]            ), # lumped mass vector
-        Mn   = zeros(instr[:dtype],nno[end],nno[end]   ), # consistent mass matrix
-        oobf = zeros(instr[:dtype],nno[end],nD         ),
-        Dn   = zeros(instr[:dtype],nno[end],nD         ),
-        fn   = zeros(instr[:dtype],nno[end],nD         ),
-        an   = zeros(instr[:dtype],nno[end],nD         ),
-        pn   = zeros(instr[:dtype],nno[end],nD         ),
-        vn   = zeros(instr[:dtype],nno[end],nD         ),
-        Δun  = zeros(instr[:dtype],nno[end],nD         ),
-        ΔJn  = zeros(instr[:dtype],nno[end],nD         ),
-        bn   = zeros(instr[:dtype],nD      ,nD,nno[end]),
+        mn   = zeros(nno[end]            ), # lumped mass vector
+        Mn   = zeros(nno[end],nno[end]   ), # consistent mass matrix
+        oobf = zeros(nno[end],nD         ),
+        Dn   = zeros(nno[end],nD         ),
+        fn   = zeros(nno[end],nD         ),
+        an   = zeros(nno[end],nD         ),
+        pn   = zeros(nno[end],nD         ),
+        vn   = zeros(nno[end],nD         ),
+        Δun  = zeros(nno[end],nD         ),
+        ΔJn  = zeros(nno[end],nD         ),
+        bn   = zeros(nD      ,nD,nno[end]),
         # mesh-to-node topology
         e2n  = e2n(nD,nno,nel,nn),
         e2e  = e2e(nD,nno,nel,nn,h,instr),
