@@ -21,7 +21,7 @@ end
 @info """new comer ?
 - copy-paste the followings:
   julia> L,nel = [64.1584,12.80],40
-  julia> instr = slump(L,nel)
+  julia> instr = slump(L,nel);
 - wait for the simulation to end
 """
 end # module elastoPlasm
