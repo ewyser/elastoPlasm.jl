@@ -29,7 +29,6 @@ end
 ####################################################################################################################################
 ## start-up info struct definition and instanciation
 ####################################################################################################################################
-
 Base.@kwdef mutable struct moduleCore
 	cpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
 	gpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
@@ -52,7 +51,7 @@ import KernelAbstractions.synchronize as sync
 import Adapt.adapt as user_adapt
 import Adapt.@adapt_structure as @user_struct
 # instantiate sys
-sys    = moduleCore()
+sys = moduleCore()
 # arithmetic precision & relative path for figs & data
 const typeD     = Float64  
 

@@ -1,8 +1,3 @@
-#using REPL.TerminalMenus
-#options   = ["standard","performance"]
-#select    = request("select mode:",MultiSelectMenu(options))
-#println(select)
-
 module elastoPlasm
 # define module location as const
 const ROOT = dirname(@__FILE__)
@@ -29,6 +24,5 @@ end
   julia> slump(L,nel)
 - wait for the simulation to end
 """
-#= =#
 end # module elastoPlasm
 
