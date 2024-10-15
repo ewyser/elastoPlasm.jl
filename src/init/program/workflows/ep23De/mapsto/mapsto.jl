@@ -33,7 +33,7 @@ function tpic!(mpD,meD,g,Δt,mapsto)
         p2n!(mpD,meD,g; ndrange=mpD.nmp);sync(CPU())
     elseif mapsto == "p<n"
         # mapping back to mp's
-        @isdefined(n2p!) ? nothing : n2p! = tpic23Dn2p(CPU())
+        @isdefined(n2p!) ? nothing : n2p! = pic23Dn2p(CPU())
         n2p!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())      
     end
     return nothing

@@ -33,7 +33,7 @@ end
     elseif instr[:fwrk] == :infinitesimal
         if p ≤ mpD.nmp 
             # calculate elastic strains & spins
-            for i ∈ 1:mpD.nD,j ∈ 1:mpD.nD
+            for i ∈ 1:mpD.nD , j ∈ 1:mpD.nD
                 mpD.ϵᵢⱼ[i,j,p] = 0.5*(mpD.ΔFᵢⱼ[i,j,p]+mpD.ΔFᵢⱼ[j,i,p])-mpD.I[i,j]
                 mpD.ωᵢⱼ[i,j,p] = 0.5*(mpD.ΔFᵢⱼ[i,j,p]-mpD.ΔFᵢⱼ[j,i,p])
             end
