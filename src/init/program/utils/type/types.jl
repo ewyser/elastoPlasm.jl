@@ -1,5 +1,5 @@
 # T1 integer T2 float
-struct EulerianMesh{
+struct Eulerian{
     T1 <: Int, 
     T3 <: AbstractVector{T1},
     T5 <: AbstractMatrix{T1},
@@ -36,7 +36,7 @@ struct EulerianMesh{
     bc   ::T6
     # mesh boundary conditions
 end
-struct Point{
+struct Lagrangian{
     T1 <: Int, 
     T3 <: AbstractVector{T1},
     T5 <: AbstractMatrix{T1},
@@ -66,8 +66,8 @@ struct Point{
     v    ::T6
     p    ::T6
     # plot quantity
-    z0   ::
-    coord::
+    #z0   ::
+    #coord::
     # tensor in voigt notation
     σi   ::T6
     τi   ::T6
@@ -75,14 +75,14 @@ struct Point{
     I    ::T6
     ϕ∂ϕ  ::T6
     # tensor in matrix notation
-    ∇uij ::T8  
-    ΔFij ::T8
-    Fij  ::T8 
-    ∇vij ::T8 
-    ϵij  ::T8 
-    ωij  ::T8 
-    σJij ::T8 
-    bij  ::T8 
+    ∇uᵢⱼ ::T8  
+    ΔFᵢⱼ ::T8
+    Fᵢⱼ  ::T8 
+    ∇vᵢⱼ ::T8 
+    ϵᵢⱼ  ::T8 
+    ωᵢⱼ  ::T8 
+    σJᵢⱼ ::T8 
+    bᵢⱼ  ::T8 
     # connectivity
     p2e  ::T4
     e2p  ::T6
