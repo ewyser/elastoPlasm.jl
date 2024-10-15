@@ -12,9 +12,9 @@ function which(xn,xB,Δx)
     end
     return type::Int64
 end
-function ϕ∂ϕ(ξ,xn,xB,Δx)
+function ϕ∂ϕ(ξ,xn,type,Δx)
     ϕ,∂ϕ = 0.0,0.0
-    if which(xn,xB,Δx) == 1
+    if type == 1
         if -2.0<=ξ<=-1.0 
             ϕ = 1.0/6.0     *ξ^3+     ξ^2   +2.0*ξ    +4.0/3.0
             ∂ϕ= 3.0/6.0     *ξ^2+2.0 *ξ     +2.0
@@ -28,7 +28,7 @@ function ϕ∂ϕ(ξ,xn,xB,Δx)
             ϕ = -1.0/6.0     *ξ^3+     ξ^2  -2.0*ξ    +4.0/3.0
             ∂ϕ= -3.0/6.0     *ξ^2+2.0 *ξ    -2.0
         end    
-    elseif which(xn,xB,Δx) == 2
+    elseif type == 2
         if -1.0<=ξ<=0.0 
             ϕ = -1.0/3.0     *ξ^3-     ξ^2    +2.0/3.0
             ∂ϕ= -3.0/3.0     *ξ^2-2.0 *ξ
@@ -39,7 +39,7 @@ function ϕ∂ϕ(ξ,xn,xB,Δx)
             ϕ = -1.0/6.0     *ξ^3+     ξ^2-2.0*ξ+4.0/3.0
             ∂ϕ= -3.0/6.0     *ξ^2+2.0 *ξ  -2.0
         end
-    elseif which(xn,xB,Δx) == 3
+    elseif type == 3
         if -2.0<=ξ<=-1.0 
             ϕ =  1.0/6.0     *ξ^3+     ξ^2+2.0*ξ+4.0/3.0
             ∂ϕ=  3.0/6.0     *ξ^2+2.0 *ξ  +2.0
@@ -53,7 +53,7 @@ function ϕ∂ϕ(ξ,xn,xB,Δx)
             ϕ = -1.0/6.0     *ξ^3+     ξ^2-2.0*ξ+4.0/3.0
             ∂ϕ= -3.0/6.0     *ξ^2+2.0 *ξ  -2.0
         end
-    elseif which(xn,xB,Δx) == 4
+    elseif type == 4
         if -2.0<=ξ<=-1.0
             ϕ =  1.0/6.0     *ξ^3+     ξ^2+2.0*ξ+4.0/3.0
             ∂ϕ=  3.0/6.0     *ξ^2+2.0 *ξ  +2.0 
@@ -77,8 +77,8 @@ end
                 # compute basis functions
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1]) 
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
-                ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[id,1],meD.xB[1:2],meD.h[1])
-                ϕz,dϕz = ϕ∂ϕ(η/meD.h[2],meD.xn[id,2],meD.xB[3:4],meD.h[2])
+                ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[id,1],meD.tn[id,1],meD.h[1])
+                ϕz,dϕz = ϕ∂ϕ(η/meD.h[2],meD.xn[id,2],meD.tn[id,2],meD.h[2])
                 # convolution of basis function
                 mpD.ϕ∂ϕ[nn,mp,1] =  ϕx*  ϕz                                        
                 mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕz                                        

@@ -16,12 +16,27 @@ function meshCoord(nD,L,h)
     if nD == 2
         xn  = collect(0.0:h[1]:L[1]) 
         zn  = collect(0.0:h[2]:L[2]+2.0*h[2])
+        xt  = ones(Int64,size(xn))
+        xt[1]       = 1
+        xt[2]       = 2
+        xt[3:end-2].= 3
+        xt[end-1]   = 4
+        xt[end]     = 1
+        zt  = ones(Int64,size(zn))
+        zt[1]       = 1
+        zt[2]       = 2
+        zt[3:end-2].= 3
+        zt[end-1]   = 4
+        zt[end]     = 1
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         nn  = 16
         xn  = (xn'.*ones(typeD,nno[2],1     ))     
         zn  = (     ones(typeD,nno[1],1     )'.*reverse(zn))
+        xt  = (xt'.*ones(Int64,nno[2],1     ))     
+        zt  = (     ones(Int64,nno[1],1     )'.*reverse(zt))
         x   = hcat(vec(xn),vec(zn))
+        t   = hcat(vec(xt),vec(zt))
     elseif nD == 3
         xn  = collect(0.0:h[1]:L[1]) 
         yn  = collect(0.0:h[2]:L[2]) 
@@ -34,7 +49,7 @@ function meshCoord(nD,L,h)
         yn  = (     ones(typeD,nno[3],nno[1]))     .*reshape(yn,1,1,nno[2])
         x   = hcat(vec(xn),vec(yn),vec(zn))
     end
-    return x,nn,nel,nno
+    return x,t,nn,nel,nno
 end
 function meshBCs(xn,h,nno,nD)
     l,L = minimum(xn,dims=1),maximum(xn,dims=1)
@@ -144,7 +159,7 @@ function meshSetup(nel,L,instr)
     # geometry                                               
     L,h,nD       = meshGeom(L,nel)
     # mesh 
-    x,nn,nel,nno = meshCoord(nD,L,h)
+    x,t,nn,nel,nno = meshCoord(nD,L,h)
     # boundary conditions
     bc,xB        = meshBCs(x,h,nno,nD)
     # constructor 
@@ -158,6 +173,7 @@ function meshSetup(nel,L,instr)
         minC = instr[:dtype].(minimum(x,dims=2)),
         # nodal quantities
         xn   = instr[:dtype].(x),
+        tn   = t,
         mn   = zeros(instr[:dtype],nno[end]            ), # lumped mass vector
         Mn   = zeros(instr[:dtype],nno[end],nno[end]   ), # consistent mass matrix
         oobf = zeros(instr[:dtype],nno[end],nD         ),
