@@ -7,40 +7,40 @@ function meshGeom(L,nel)
         L   = [L[1],L[2],ceil(L[3])]
         h   = [L[1]/nel[1],L[1]/nel[1],L[1]/nel[1]]
     else 
-        err_msg = "nD = $(nD), L= $(L): unsupported mesh geometry"
+        err_msg = "dim(L = ($(L)))>3: unsupported mesh geometry"
         throw(error(err_msg))
     end
     return L,h,nD
 end
 function meshCoord(nD,L,h)
     if nD == 2
-        xn  = collect(0.0:h[1]:L[1]) 
-        zn  = collect(0.0:h[2]:L[2]+2.0*h[2])
-        xt  = ones(Int64,size(xn))
-        xt[1]       = 1
-        xt[2]       = 2
-        xt[3:end-2].= 3
-        xt[end-1]   = 4
-        xt[end]     = 1
-        zt  = ones(Int64,size(zn))
-        zt[1]       = 1
-        zt[2]       = 2
-        zt[3:end-2].= 3
-        zt[end-1]   = 4
-        zt[end]     = 1
+        xn,zn = collect(0.0:h[1]:L[1]),collect(0.0:h[2]:L[2]+2.0*h[2])
+        xt,zt = repeat([3],length(xn)),repeat([3],length(zn))
+        xt[1] = zt[1] = 1
+        xt[2] = zt[2] = 2
+        xt[end-1] = zt[end-1] = 4
+        xt[end  ] = zt[end  ] = 1
+
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         nn  = 16
         xn  = (xn'.*ones(typeD,nno[2],1     ))     
         zn  = (     ones(typeD,nno[1],1     )'.*reverse(zn))
+        x   = hcat(vec(xn),vec(zn))
         xt  = (xt'.*ones(Int64,nno[2],1     ))     
         zt  = (     ones(Int64,nno[1],1     )'.*reverse(zt))
-        x   = hcat(vec(xn),vec(zn))
         t   = hcat(vec(xt),vec(zt))
     elseif nD == 3
         xn  = collect(0.0:h[1]:L[1]) 
         yn  = collect(0.0:h[2]:L[2]) 
-        zn  = reverse(collect(0.0:h[3]:L[3]+2.0*h[3]))        
+        zn  = reverse(collect(0.0:h[3]:L[3]+2.0*h[3]))
+        xt  = repeat([3],length(xn))
+        yt  = repeat([3],length(yn))
+        zt  = repeat([3],length(zn))
+        xt[1]     = yt[1]     = zt[1]     = 1
+        xt[2]     = yt[2]     = zt[2]     = 2
+        xt[end-1] = yt[end-1] = zt[end-1] = 4
+        xt[end  ] = yt[end  ] = zt[end  ] = 1      
         nno = [length(xn),length(yn),length(zn),length(xn)*length(yn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,nno[3]-1,(nno[1]-1)*(nno[2]-1)*(nno[3]-1)]
         nn  = 64
@@ -48,6 +48,10 @@ function meshCoord(nD,L,h)
         zn  = (     ones(typeD,nno[1],1     )'.*zn).*ones(typeD,1,1,nno[2])
         yn  = (     ones(typeD,nno[3],nno[1]))     .*reshape(yn,1,1,nno[2])
         x   = hcat(vec(xn),vec(yn),vec(zn))
+        xt  = (xt'.*ones(Int64,nno[3],1     ))     .*ones(Int64,1,1,nno[2])
+        zt  = (     ones(Int64,nno[1],1     )'.*zt).*ones(Int64,1,1,nno[2])
+        yt  = (     ones(Int64,nno[3],nno[1]))     .*reshape(yt,1,1,nno[2])
+        t   = hcat(vec(xt),vec(yt),vec(zt))
     end
     return x,t,nn,nel,nno
 end
@@ -173,7 +177,7 @@ function meshSetup(nel,L,instr)
         minC = instr[:dtype].(minimum(x,dims=2)),
         # nodal quantities
         xn   = instr[:dtype].(x),
-        tn   = t,
+        tn   = Int64.(t),
         mn   = zeros(instr[:dtype],nno[end]            ), # lumped mass vector
         Mn   = zeros(instr[:dtype],nno[end],nno[end]   ), # consistent mass matrix
         oobf = zeros(instr[:dtype],nno[end],nD         ),
