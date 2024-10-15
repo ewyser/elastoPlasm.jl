@@ -1,5 +1,5 @@
 @views function plotcoh(mpD,cmParam,paths)
-    xp,coh,phi = mpD.x,mpD.c0,mpD.ϕ
+    xp,coh,phi = mpD.x,mpD.c₀,mpD.ϕ
     coh0,ϕ0    = cmParam[:c0],cmParam[:ϕ0]
 
 

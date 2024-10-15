@@ -83,8 +83,8 @@ end
                 mpD.ϕ∂ϕ[nn,mp,1] =  ϕx*  ϕz                                        
                 mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕz                                        
                 mpD.ϕ∂ϕ[nn,mp,3] =  ϕx* dϕz   
-                #mpD.δnp[nn,1,mp] = -ξ
-                #mpD.δnp[nn,2,mp] = -η
+                mpD.δnp[nn,1,mp] = -ξ
+                mpD.δnp[nn,2,mp] = -η
             end
         end
     elseif meD.nD == 3 
@@ -102,9 +102,9 @@ end
                 mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕy*  ϕz                                                                                
                 mpD.ϕ∂ϕ[nn,mp,3] =  ϕx* dϕy*  ϕz                                   
                 mpD.ϕ∂ϕ[nn,mp,4] =  ϕx*  ϕy* dϕz
-                #mpD.δnp[nn,1,mp]  = -ξ
-                #mpD.δnp[nn,2,mp]  = -η
-                #mpD.δnp[nn,3,mp]  = -ζ
+                mpD.δnp[nn,1,mp]  = -ξ
+                mpD.δnp[nn,2,mp]  = -η
+                mpD.δnp[nn,3,mp]  = -ζ
             end
         end
     end

@@ -34,12 +34,12 @@ end
     p = @index(Global)
     if p≤mpD.nmp 
         mpD.Δλ[p] = 0.0
-        ψ,nstr   = 0.0*π/180.0,size(mpD.σ,1)
+        ψ,nstr   = 0.0*π/180.0,size(mpD.σᵢ,1)
         # create an alias for stress tensor
         if instr[:fwrk] == :finite
-            σ = mpD.τ
+            σ = mpD.τᵢ
         elseif instr[:fwrk] == :infinitesimal
-            σ = mpD.σ
+            σ = mpD.σᵢ
         end
         if first(instr[:nonloc])
             ϵII0 = mpD.ϵpII[:,2]
@@ -47,8 +47,8 @@ end
             ϵII0 = mpD.ϵpII[:,1]
         end
         # closed-form solution return-mapping for D-P
-        c   = mpD.c0[p]+cmParam.Hp*ϵII0[p]
-        if c<mpD.cr[p] c = mpD.cr[p] end
+        c   = mpD.c₀[p]+cmParam.Hp*ϵII0[p]
+        if c<mpD.cᵣ[p] c = mpD.cᵣ[p] end
         P,τ0,τII = σTr(σ[:,p],nstr)
         η,ηB,ξ   = materialParam(mpD.ϕ[p],ψ,c,nstr)
         σm,τP    = ξ/η,ξ-η*(ξ/η)
@@ -60,10 +60,10 @@ end
             Pn,τn     = P-cmParam.Kc*ηB*Δλ,ξ-η*(P-cmParam.Kc*ηB*Δλ)
             σ[:,p]   .= σn(Pn,τ0,τn,τII,nstr)
             if instr[:fwrk] == :finite
-                mpD.ϵ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
+                mpD.ϵᵢⱼ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
                 # update left cauchy green tensor
-                λ,n          = eigen(mpD.ϵ[:,:,p],sortby=nothing)
-                mpD.b[:,:,p].= n*diagm(exp.(2.0.*λ))*n'
+                λ,n            = eigen(mpD.ϵᵢⱼ[:,:,p],sortby=nothing)
+                mpD.bᵢⱼ[:,:,p].= n*diagm(exp.(2.0.*λ))*n'
             end
             mpD.ϵpII[p,1]+= Δλ*sqrt(1/3+2/9*ηB^2)
         end
@@ -73,10 +73,10 @@ end
             Pn        = σm-P
             σ[:,p]   .= σn(Pn,τ0,0.0,τII,nstr)
             if instr[:fwrk] == :finite
-                mpD.ϵ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
+                mpD.ϵᵢⱼ[:,:,p].= mutate(cmParam.Del\σ[:,p],0.5,:tensor)
                 # update left cauchy green tensor
-                λ,n          = eigen(mpD.ϵ[:,:,p],sortby=nothing)
-                mpD.b[:,:,p].= n*diagm(exp.(2.0.*λ))*n'
+                λ,n            = eigen(mpD.ϵᵢⱼ[:,:,p],sortby=nothing)
+                mpD.bᵢⱼ[:,:,p].= n*diagm(exp.(2.0.*λ))*n'
             end
             mpD.ϵpII[p,1]+= sqrt(2.0)*Δλ/3.0
         end

@@ -9,7 +9,7 @@
     end
     for p ∈ 1:mpD.nmp
         ϕ,H,ϵII0 = mpD.ϕ[p],cos(mpD.ϕ[p])*cmParam.Hp,ϵIIp[p]
-        c0,cr    = mpD.c0[p]+cmParam.Hp*ϵII0,mpD.cr[p]
+        c0,cr    = mpD.c₀[p]+cmParam.Hp*ϵII0,mpD.cᵣ[p]
         if c0<cr c0 = cr end
         σm,τII   = 0.5*(σ[1,p]+σ[2,p]),sqrt(0.25*(σ[1,p]-σ[2,p])^2+σ[3,p]^2)
         f        = τII+σm*sin(ϕ)-c0*cos(ϕ)    

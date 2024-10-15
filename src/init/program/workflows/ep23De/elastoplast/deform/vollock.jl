@@ -22,7 +22,7 @@ end
         for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if no<1 continue end
             ΔJ += mpD.ϕ∂ϕ[nn,mp,1]*meD.ΔJn[no]/mpD.ΔJ[mp]
         end
-        @views mpD.ΔF[:,:,mp].*= ΔJ^(1.0/meD.nD)
+        @views mpD.ΔFᵢⱼ[:,:,mp].*= ΔJ^(1.0/meD.nD)
     end
 end
 function ΔFbar!(mpD,meD)

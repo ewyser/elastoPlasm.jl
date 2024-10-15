@@ -2,37 +2,39 @@
     p = @index(Global)
     if p≤mpD.nmp 
         # compute velocity & displacement gradients
-        mpD.∇u[:,:,p].= 0.0
+        mpD.∇vᵢⱼ[:,:,p].= 0.0
+        mpD.∇uᵢⱼ[:,:,p].= 0.0
         for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
             for i ∈ 1:meD.nD , j ∈ 1:meD.nD
-                mpD.∇u[i,j,p]+= Δt*(mpD.ϕ∂ϕ[nn,p,j+1]*meD.vn[no,i])
+                mpD.∇vᵢⱼ[i,j,p]+=     mpD.ϕ∂ϕ[nn,p,j+1]*meD.vn[no,i]
+                mpD.∇uᵢⱼ[i,j,p]+= Δt*(mpD.ϕ∂ϕ[nn,p,j+1]*meD.vn[no,i])
             end
         end
         # compute incremental deformation gradient
-        mpD.ΔF[:,:,p].= mpD.I.+mpD.∇u[:,:,p]
-        mpD.ΔJ[p]     = det(mpD.ΔF[:,:,p])
+        mpD.ΔFᵢⱼ[:,:,p].= mpD.I.+mpD.∇uᵢⱼ[:,:,p]
+        mpD.ΔJ[p]       = det(mpD.ΔFᵢⱼ[:,:,p])
         # update deformation gradient
-        mpD.F[:,:,p] .= mpD.ΔF[:,:,p]*mpD.F[:,:,p]
+        mpD.Fᵢⱼ[:,:,p] .= mpD.ΔFᵢⱼ[:,:,p]*mpD.Fᵢⱼ[:,:,p]
         # update material point's volume
-        mpD.J[p]      = det(mpD.F[:,:,p])
-        mpD.V[p]      = mpD.J[p]*mpD.V0[p]
+        mpD.J[p]        = det(mpD.Fᵢⱼ[:,:,p])
+        mpD.Ω[p]        = mpD.J[p]*mpD.Ω₀[p]
     end
 end
 @views @kernel inbounds = true function measure(mpD,meD,Δt)
     p = @index(Global)
     if p≤mpD.nmp 
         # compute velocity & displacement gradients
-        nn            = findall(x->x!=0,meD.e2n[:,mpD.p2e[p]])
-        mpD.∇v[:,:,p].= (permutedims(mpD.ϕ∂ϕ[nn,p,2:end],(2,1))*meD.vn[meD.e2n[nn,mpD.p2e[p]],:])'
-        mpD.∇u[:,:,p].= Δt.*mpD.∇v[:,:,p]
+        nn              = findall(x->x!=0,meD.e2n[:,mpD.p2e[p]])
+        mpD.∇vᵢⱼ[:,:,p].= (permutedims(mpD.ϕ∂ϕ[nn,p,2:end],(2,1))*meD.vn[meD.e2n[nn,mpD.p2e[p]],:])'
+        mpD.∇uᵢⱼ[:,:,p].= Δt.*mpD.∇vᵢⱼ[:,:,p]
         # compute incremental deformation gradient
-        mpD.ΔF[:,:,p].= mpD.I.+mpD.∇u[:,:,p]
-        mpD.ΔJ[p]     = det(mpD.ΔF[:,:,p])
+        mpD.ΔFᵢⱼ[:,:,p].= mpD.I.+mpD.∇uᵢⱼ[:,:,p]
+        mpD.ΔJ[p]       = det(mpD.ΔFᵢⱼ[:,:,p])
         # update deformation gradient
-        mpD.F[:,:,p] .= mpD.ΔF[:,:,p]*mpD.F[:,:,p]
+        mpD.Fᵢⱼ[:,:,p] .= mpD.ΔFᵢⱼ[:,:,p]*mpD.Fᵢⱼ[:,:,p]
         # update material point's volume
-        mpD.J[p]      = det(mpD.F[:,:,p])
-        mpD.V[p]      = mpD.J[p]*mpD.V0[p]
+        mpD.J[p]        = det(mpD.Fᵢⱼ[:,:,p])
+        mpD.Ω[p]        = mpD.J[p]*mpD.Ω₀[p]
     end
 end
 function strain!(mpD,meD,Δt,instr)

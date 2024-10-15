@@ -69,8 +69,8 @@ struct Lagrangian{
     #z0   ::
     #coord::
     # tensor in voigt notation
-    σi   ::T6
-    τi   ::T6
+    σᵢ   ::T6
+    τᵢ   ::T6
     # additional quantities
     I    ::T6
     ϕ∂ϕ  ::T6
