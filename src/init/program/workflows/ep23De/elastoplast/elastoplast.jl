@@ -6,7 +6,7 @@ function elastoplast!(mpD,meD,cmParam,Δt,instr)
         ΔFbar!(mpD,meD)
     end
     # update material point's domain
-    if instr[:shpfun] == :gimpm 
+    if instr[:basis] == :gimpm 
         domain!(mpD)
     end
     # update {kirchoff|cauchy} stresses

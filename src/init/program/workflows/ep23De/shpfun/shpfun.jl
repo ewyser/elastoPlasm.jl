@@ -9,11 +9,11 @@ function shpfun!(mpD,meD,instr)
     # initialize shapefunctions
     mpD.ϕ∂ϕ .= 0.0
     # calculate shape functions
-    if instr[:shpfun] == :bsmpm 
+    if instr[:basis] == :bsmpm 
         @isdefined(ϕ∂ϕ!) ? nothing : ϕ∂ϕ! = bsmpm(CPU())
-    elseif instr[:shpfun] == :gimpm 
+    elseif instr[:basis] == :gimpm 
         @isdefined(ϕ∂ϕ!) ? nothing : ϕ∂ϕ! = gimpm(CPU())
-    elseif instr[:shpfun] == :smpm
+    elseif instr[:basis] == :smpm
         @isdefined(ϕ∂ϕ!) ? nothing : ϕ∂ϕ! = smpm(CPU())
     end
     ϕ∂ϕ!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())

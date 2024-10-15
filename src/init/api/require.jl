@@ -25,7 +25,7 @@ julia>
 # Further specification
 Admissible keywords, by-default value and purpose are presented below for ```instr = require(:instr)```
 - ```:dtype   ```, # set the arithmetic precision
-- ```:shpfun  ```, # define shapefunction type
+- ```:basis   ```, # define shapefunction type
 - ```:fwrk    ```, # set the deformation framework
 - ```:trsfr   ```, # set the mapping scheme
 - ```:vollock ```, # set volumetric locking mitigation strategy
@@ -40,7 +40,7 @@ function require(in::Symbol)
     if in == :instr
         instr = Dict(
             :dtype   => Float64, # set the arithmetic precision
-            :shpfun  => :bsmpm,
+            :basis   => :bsmpm,
             :fwrk    => :finite,
             :trsfr   => :mUSL,
             :vollock => true,

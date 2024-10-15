@@ -23,8 +23,8 @@ end
                 # compute basis functions
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
-                ϕx,dϕx = S∂S(ξ,meD.h[1],mpD.l[mp,1])
-                ϕz,dϕz = S∂S(η,meD.h[2],mpD.l[mp,2])
+                ϕx,dϕx = S∂S(ξ,meD.h[1],mpD.ℓ[mp,1]) 
+                ϕz,dϕz = S∂S(η,meD.h[2],mpD.ℓ[mp,2])
                 # convolution of basis function
                 mpD.ϕ∂ϕ[nn,mp,1] =  ϕx*  ϕz                                        
                 mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕz                                        
@@ -40,9 +40,9 @@ end
                 ξ      = (mpD.x[mp,1]-meD.xn[id,1])
                 η      = (mpD.x[mp,2]-meD.xn[id,2])
                 ζ      = (mpD.x[mp,3]-meD.xn[id,3])
-                ϕx,dϕx = S∂S(ξ,meD.h[1],mpD.l[mp,1])
-                ϕy,dϕy = S∂S(η,meD.h[2],mpD.l[mp,2])
-                ϕz,dϕz = S∂S(ζ,meD.h[3],mpD.l[mp,3])
+                ϕx,dϕx = S∂S(ξ,meD.h[1],mpD.ℓ[mp,1])
+                ϕy,dϕy = S∂S(η,meD.h[2],mpD.ℓ[mp,2])
+                ϕz,dϕz = S∂S(ζ,meD.h[3],mpD.ℓ[mp,3])
                 # convolution of basis function
                 mpD.ϕ∂ϕ[nn,mp,1] =  ϕx*  ϕy*  ϕz                                                                                
                 mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕy*  ϕz                                                                                
