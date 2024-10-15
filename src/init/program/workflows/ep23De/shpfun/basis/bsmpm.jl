@@ -69,43 +69,39 @@ function ϕ∂ϕ(ξ,xn,type,Δx)
     return ϕ,∂ϕ
 end
 @views @kernel inbounds = true function bsmpm(mpD,meD)
-    mp = @index(Global)
+    p = @index(Global)
     # calculate shape functions
-    if meD.nD == 2 
-        if mp ≤ mpD.nmp
-            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
-                # compute basis functions
-                ξ      = (mpD.x[mp,1]-meD.xn[id,1]) 
-                η      = (mpD.x[mp,2]-meD.xn[id,2])
-                ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[id,1],meD.tn[id,1],meD.h[1])
-                ϕz,dϕz = ϕ∂ϕ(η/meD.h[2],meD.xn[id,2],meD.tn[id,2],meD.h[2])
-                # convolution of basis function
-                mpD.ϕ∂ϕ[nn,mp,1] =  ϕx*  ϕz                                        
-                mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕz                                        
-                mpD.ϕ∂ϕ[nn,mp,3] =  ϕx* dϕz   
-                mpD.δnp[nn,1,mp] = -ξ
-                mpD.δnp[nn,2,mp] = -η
-            end
+    if meD.nD == 2 && p ≤ mpD.nmp
+        for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
+            # compute basis functions
+            ξ      = (mpD.x[p,1]-meD.xn[no,1]) 
+            η      = (mpD.x[p,2]-meD.xn[no,2])
+            ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[no,1],meD.tn[no,1],meD.h[1])
+            ϕz,dϕz = ϕ∂ϕ(η/meD.h[2],meD.xn[no,2],meD.tn[no,2],meD.h[2])
+            # convolution of basis function
+            mpD.ϕ∂ϕ[nn,p,1] =  ϕx*  ϕz                                        
+            mpD.ϕ∂ϕ[nn,p,2] = dϕx*  ϕz                                        
+            mpD.ϕ∂ϕ[nn,p,3] =  ϕx* dϕz   
+            mpD.δnp[nn,1,p] = -ξ
+            mpD.δnp[nn,2,p] = -η
         end
-    elseif meD.nD == 3 
-        if mp ≤ mpD.nmp
-            for (nn,id) ∈ enumerate(meD.e2n[:,mpD.p2e[mp]]) if id<1 continue end
-                # compute basis functions
-                ξ      = (mpD.x[mp,1]-meD.xn[id,1])
-                η      = (mpD.x[mp,2]-meD.xn[id,2])
-                ζ      = (mpD.x[mp,3]-meD.xn[id,3])
-                ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[id,1],meD.xB[1:2],meD.h[1])
-                ϕy,dϕy = ϕ∂ϕ(η/meD.h[2],meD.xn[id,2],meD.xB[3:4],meD.h[2])
-                ϕz,dϕz = ϕ∂ϕ(ζ/meD.h[3],meD.xn[id,3],meD.xB[5:6],meD.h[3])
-                # convolution of basis function
-                mpD.ϕ∂ϕ[nn,mp,1] =  ϕx*  ϕy*  ϕz                                                                                
-                mpD.ϕ∂ϕ[nn,mp,2] = dϕx*  ϕy*  ϕz                                                                                
-                mpD.ϕ∂ϕ[nn,mp,3] =  ϕx* dϕy*  ϕz                                   
-                mpD.ϕ∂ϕ[nn,mp,4] =  ϕx*  ϕy* dϕz
-                mpD.δnp[nn,1,mp]  = -ξ
-                mpD.δnp[nn,2,mp]  = -η
-                mpD.δnp[nn,3,mp]  = -ζ
-            end
+    elseif meD.nD == 3 && p ≤ mpD.nmp
+        for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
+            # compute basis functions
+            ξ      = (mpD.x[p,1]-meD.xn[no,1])
+            η      = (mpD.x[p,2]-meD.xn[no,2])
+            ζ      = (mpD.x[p,3]-meD.xn[no,3])
+            ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[no,1],meD.xB[1:2],meD.h[1])
+            ϕy,dϕy = ϕ∂ϕ(η/meD.h[2],meD.xn[no,2],meD.xB[3:4],meD.h[2])
+            ϕz,dϕz = ϕ∂ϕ(ζ/meD.h[3],meD.xn[no,3],meD.xB[5:6],meD.h[3])
+            # convolution of basis function
+            mpD.ϕ∂ϕ[nn,p,1] =  ϕx*  ϕy*  ϕz                                                                                
+            mpD.ϕ∂ϕ[nn,p,2] = dϕx*  ϕy*  ϕz                                                                                
+            mpD.ϕ∂ϕ[nn,p,3] =  ϕx* dϕy*  ϕz                                   
+            mpD.ϕ∂ϕ[nn,p,4] =  ϕx*  ϕy* dϕz
+            mpD.δnp[nn,1,p] = -ξ
+            mpD.δnp[nn,2,p] = -η
+            mpD.δnp[nn,3,p] = -ζ
         end
     end
 end

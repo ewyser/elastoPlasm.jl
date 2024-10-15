@@ -3,7 +3,7 @@
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
             # accumulation
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 @atom meD.pn[no,dim]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*mpD.v[p,dim])
             end
         end
@@ -24,7 +24,7 @@ end
     # flip update
     for dim ∈ 1:meD.nD
         Δu = 0.0
-        for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+        for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             Δu += Δt*(mpD.ϕ∂ϕ[nn,p,1]*meD.vn[no,dim])
         end
         mpD.u[p,dim]+= Δu

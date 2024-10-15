@@ -6,7 +6,7 @@
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
             # accumulation
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 @atom meD.pn[no,dim]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*mpD.v[p,dim])
                 if dim == 1
                     # lumped mass matrix
@@ -26,7 +26,7 @@ end
     p = @index(Global)
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 @atom meD.pn[no,dim]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*mpD.v[p,dim])
                 if dim == 1
                     @atom meD.mn[no      ]+= mpD.ϕ∂ϕ[nn,p,1]*mpD.m[p] 
@@ -47,7 +47,7 @@ end
         # flip update
         for dim ∈ 1:meD.nD
             δa = δv = 0.0
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 δa += (mpD.ϕ∂ϕ[nn,p,1]*meD.an[no,dim])
                 δv += (mpD.ϕ∂ϕ[nn,p,1]*meD.vn[no,dim])
             end
@@ -63,7 +63,7 @@ end
     p = @index(Global)
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 @atom meD.pn[no,dim]+= mpD.ϕ∂ϕ[nn,p,1]*mpD.m[p]*(mpD.v[p,dim]+mpD.∇vᵢⱼ[dim,1,p]*mpD.δnp[nn,1,p]+mpD.∇vᵢⱼ[dim,2,p]*mpD.δnp[nn,2,p])
                 if dim == 1
                     @atom meD.mn[no]      += mpD.ϕ∂ϕ[nn,p,1]*mpD.m[p]
@@ -81,7 +81,7 @@ end
     p = @index(Global)
     for dim ∈ 1:meD.nD
         if p≤mpD.nmp 
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 @atom meD.pn[no,dim]+= mpD.ϕ∂ϕ[nn,p,1]*mpD.m[p]*(mpD.v[p,dim]+mpD.∇vᵢⱼ[dim,1,p]*mpD.δnp[nn,1,p]+mpD.∇vᵢⱼ[dim,2,p]*mpD.δnp[nn,2,p]+mpD.∇vᵢⱼ[dim,3,p]*mpD.δnp[nn,3,p])
                 if dim == 1
                     @atom meD.mn[no      ]+= mpD.ϕ∂ϕ[nn,p,1]*mpD.m[p]
@@ -102,7 +102,7 @@ end
         for dim ∈ 1:meD.nD
             δv = 0.0
             # pic update
-            for (nn,no) ∈ enumerate(meD.e2n[:,mpD.p2e[p]]) if no<1 continue end
+            for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
                 δv += mpD.ϕ∂ϕ[nn,p,1]*meD.vn[no,dim]
             end
             mpD.v[p,dim] = δv 
