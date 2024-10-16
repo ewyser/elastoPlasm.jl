@@ -50,10 +50,15 @@ import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
 import Adapt.adapt as user_adapt
 import Adapt.@adapt_structure as @user_struct
-# instantiate sys
-sys = moduleCore()
 # arithmetic precision & relative path for figs & data
 const typeD     = Float64  
-
-
-
+# instantiate sys & create out folder 
+sys = moduleCore()
+out = ["elastoPlasm location:\n\t- "*sys.root,]
+if !isdir(sys.out)
+	mkpath(sys.out) 
+	push!(out,"\n\tcreating directory at:\n- "*sys.out)
+else
+	push!(out,"\n\talready existing directory at:\n- "*sys.out)
+end
+@info join(out)

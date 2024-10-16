@@ -13,9 +13,6 @@ for (k,child) ∈ enumerate(sys.lib)
 		push!(sys.method,("$(child)"=>list))
 		push!(sucess    ,"\n✓ "*child      )
 	end
-	if haskey(ENV,"TREE") && ENV["TREE"]=="true"
-		push!(sucess,join(tree(list)))
-	end
 end
 @info join(sucess)
 @info """new comer ?

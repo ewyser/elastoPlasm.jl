@@ -105,7 +105,7 @@ end
 function e2n(nD,nno,nel,nn)
 	iel,e2n =1,zeros(Int64,nn,nel[end])
     if nD == 1
-        gnum = reverse(reshape(1:(nno[end]),nno[2],nno[1]),dims=1)
+        gnum = collect(1:nno[end])
         for i0 ∈ 1:nel[1]#nelx
             nno = []
             for i ∈ -1:2
@@ -164,7 +164,16 @@ end
 function e2e(nD,nno,nel,nn,h,instr)
     e2e  = spzeros(Int64,nel[end],nel[end])
     nnel = ceil.(Int,instr[:nonloc][:ls]./h)
-    if nD == 2
+    if nD == 1
+        gnum = collect(1:nel[end])
+        iel  = 0
+        for i ∈ 1:nel[1]#nelx
+            iel = iel+1
+            I   = max(1,i-nnel[1]):min(nel[1],i+nnel[1])
+            els = vec(gnum[I])         
+            e2e[iel,els] = els
+        end
+    elseif nD == 2
         gnum = reshape(1:nel[end],nel[2],nel[1])
         iel  = 0
         for i ∈ 1:nel[1]#nelx
