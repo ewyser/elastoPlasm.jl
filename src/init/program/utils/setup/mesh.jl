@@ -27,8 +27,6 @@ function meshCoord(nD,L,h)
 
         nno = [length(xn),length(xn)] 
         nel = [nno[1]-1,nno[1]-1    ]
-        xn  = (xn'.*ones(typeD,nno[2],1     ))     
-
         x,t = xn,xt
     elseif nD == 2
         xn,zn = collect(0.0:h[1]:L[1]),collect(0.0:h[2]:L[2]+2.0*h[2])
@@ -72,11 +70,12 @@ function meshCoord(nD,L,h)
 end
 function meshBCs(xn,h,nno,nD)
     l,L = minimum(xn,dims=1),maximum(xn,dims=1)
+
     if nD == 1
-        xB  = [l[1],L[1]]
-        bcx = findall(x-> x ∈ xB[1:2],xn)
-        bcX = ones(Float64,nno[nD+1],1)
-        bcX[bcx] .= 0.0
+        xB  = [minimum(xn),maximum(xn)]
+        bcX = ones(Float64,nno[end])
+        bcX[1]  = 0.0
+        bcX[end]= 0.0
         bc   = bcX
     elseif nD == 2
         xB  = vcat([l[1],L[1]],[l[2],Inf])
@@ -210,6 +209,11 @@ function meshSetup(nel,L,instr)
     x,t,nn,nel,nno = meshCoord(nD,L,h)
     # boundary conditions
     bc,xB        = meshBCs(x,h,nno,nD)
+    if nD>1
+        minC = minimum(x,dims=2)
+    else
+        minC = minimum(x)
+    end
     # constructor 
     meD = (
         nD   = nD,
@@ -218,7 +222,7 @@ function meshSetup(nel,L,instr)
         nn   = nn,
         L    = L,
         h    = h,
-        minC = minimum(x,dims=2),
+        minC = minC,
         # nodal quantities
         xn   = x,
         tn   = Int64.(t),
