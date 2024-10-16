@@ -1,3 +1,12 @@
+@kernel inbounds = true function p2e1D!(mpD,meD)
+    p = @index(Global)
+    if p≤mpD.nmp 
+        mpD.p2e[p] = floor(Int64,(mpD.x[p]-meD.minC[1])*1.0/meD.h[1])+1
+        for nn ∈ 1:meD.nn
+            mpD.p2n[nn,p] = meD.e2n[nn,mpD.p2e[p]]
+        end
+    end
+end
 @kernel inbounds = true function p2e2D!(mpD,meD)
     p = @index(Global)
     if p≤mpD.nmp 

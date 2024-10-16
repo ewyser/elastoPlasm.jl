@@ -68,10 +68,10 @@ function ϕ∂ϕ(ξ,xn,type,Δx)
     ∂ϕ/=Δx
     return ϕ,∂ϕ
 end
-@views @kernel inbounds = true function bsmpm(mpD,meD)
+@views @kernel inbounds = true function bsmpm1D(mpD,meD)
     p = @index(Global)
     # calculate shape functions
-    if meD.nD == 1 && p ≤ mpD.nmp
+    if p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1]) 
@@ -81,7 +81,12 @@ end
             mpD.ϕ∂ϕ[nn,p,2] = dϕx
             mpD.δnp[nn,1,p] = -ξ
         end
-    elseif meD.nD == 2 && p ≤ mpD.nmp
+    end
+end
+@views @kernel inbounds = true function bsmpm2D(mpD,meD)
+    p = @index(Global)
+    # calculate shape functions
+    if p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1]) 
@@ -95,7 +100,12 @@ end
             mpD.δnp[nn,1,p] = -ξ
             mpD.δnp[nn,2,p] = -η
         end
-    elseif meD.nD == 3 && p ≤ mpD.nmp
+    end
+end
+@views @kernel inbounds = true function bsmpm3D(mpD,meD)
+    p = @index(Global)
+    # calculate shape functions
+    if p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1])
@@ -114,10 +124,4 @@ end
             mpD.δnp[nn,3,p] = -ζ
         end
     end
-end
-function ϕ∂ϕbsmpm!(mpD,meD)
-    # calculate shape functions
-    @isdefined(shpfun!) ? nothing : shpfun! = bsmpm(CPU())
-    shpfun!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
-    return nothing
 end
