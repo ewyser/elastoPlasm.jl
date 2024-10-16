@@ -1,6 +1,9 @@
 function meshGeom(L,nel)
     nD = length(L)
-    if nD == 2
+    if nD == 1
+        L   = L
+        h   = L/nel
+    elseif nD == 2
         L   = [L[1],ceil(L[2])]
         h   = [L[1]/nel,L[1]/nel]
     elseif nD == 3
@@ -13,7 +16,21 @@ function meshGeom(L,nel)
     return L,h,nD
 end
 function meshCoord(nD,L,h)
-    if nD == 2
+    nn = 4^nD
+    if nD == 1
+        xn = collect(0.0:h[1]:L[1])
+        xt = repeat([3],length(xn))
+        xt[1]     = 1
+        xt[2]     = 2
+        xt[end-1] = 4
+        xt[end  ] = 1
+
+        nno = [length(xn),length(xn)] 
+        nel = [nno[1]-1,nno[1]-1    ]
+        xn  = (xn'.*ones(typeD,nno[2],1     ))     
+
+        x,t = xn,xt
+    elseif nD == 2
         xn,zn = collect(0.0:h[1]:L[1]),collect(0.0:h[2]:L[2]+2.0*h[2])
         xt,zt = repeat([3],length(xn)),repeat([3],length(zn))
         xt[1] = zt[1] = 1
@@ -23,7 +40,6 @@ function meshCoord(nD,L,h)
 
         nno = [length(xn),length(zn),length(xn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
-        nn  = 16
         xn  = (xn'.*ones(typeD,nno[2],1     ))     
         zn  = (     ones(typeD,nno[1],1     )'.*reverse(zn))
         x   = hcat(vec(xn),vec(zn))
@@ -43,7 +59,6 @@ function meshCoord(nD,L,h)
         xt[end  ] = yt[end  ] = zt[end  ] = 1      
         nno = [length(xn),length(yn),length(zn),length(xn)*length(yn)*length(zn)] 
         nel = [nno[1]-1,nno[2]-1,nno[3]-1,(nno[1]-1)*(nno[2]-1)*(nno[3]-1)]
-        nn  = 64
         xn  = (xn'.*ones(typeD,nno[3],1     ))     .*ones(typeD,1,1,nno[2])
         zn  = (     ones(typeD,nno[1],1     )'.*zn).*ones(typeD,1,1,nno[2])
         yn  = (     ones(typeD,nno[3],nno[1]))     .*reshape(yn,1,1,nno[2])
@@ -57,7 +72,13 @@ function meshCoord(nD,L,h)
 end
 function meshBCs(xn,h,nno,nD)
     l,L = minimum(xn,dims=1),maximum(xn,dims=1)
-    if nD == 2
+    if nD == 1
+        xB  = [l[1],L[1]]
+        bcx = findall(x-> x ∈ xB[1:2],xn)
+        bcX = ones(Float64,nno[nD+1],1)
+        bcX[bcx] .= 0.0
+        bc   = bcX
+    elseif nD == 2
         xB  = vcat([l[1],L[1]],[l[2],Inf])
         bcx = findall(x-> x ∈ xB[1:2],xn[:,1])
         bcz = findall(x-> x ∈ xB[3:4],xn[:,2])
@@ -83,7 +104,21 @@ function meshBCs(xn,h,nno,nD)
 end
 function e2n(nD,nno,nel,nn)
 	iel,e2n =1,zeros(Int64,nn,nel[end])
-    if nD == 2
+    if nD == 1
+        gnum = reverse(reshape(1:(nno[end]),nno[2],nno[1]),dims=1)
+        for i0 ∈ 1:nel[1]#nelx
+            nno = []
+            for i ∈ -1:2
+                try
+                    push!(nno,gnum[i0+i])
+                catch
+                    push!(nno,-404)
+                end
+            end
+            e2n[:,iel].= nno
+            iel        = iel+1
+        end
+    elseif nD == 2
         gnum = reverse(reshape(1:(nno[end]),nno[2],nno[1]),dims=1)
         for i0 ∈ 1:nel[1]#nelx
             for j0 ∈ 1:nel[2]#nelz
