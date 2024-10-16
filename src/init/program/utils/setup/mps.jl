@@ -79,7 +79,7 @@ function materialGeom(meD,lz,wl,coh0,cohr,ni)
     id = shuffle(collect(1:size(xp,1)))
     return xp,clt
 end
-function pointSetup(meD,L,cmParam,isGRF,typeD)
+function pointSetup(meD,L,cmParam,instr)
     coh0,cohr,phi0,phir,rho0 = cmParam[:c0],cmParam[:cr],cmParam[:ϕ0],cmParam[:ϕr],cmParam[:ρ0]
     # non-dimensional constant                                                   
     if meD.nD == 2 ni,nstr = 2,3 elseif meD.nD == 3 ni,nstr = 2,6 end # number of material point along 1d, number of stress components                                                          
@@ -97,7 +97,7 @@ function pointSetup(meD,L,cmParam,isGRF,typeD)
         v0,v   = ones(typeD,nmp).*(2.0.*l0[:,1].*2.0.*l0[:,2].*2.0.*l0[:,3]),ones(typeD,nmp  ).*(2.0.*l[:,1].*2.0.*l[:,2].*2.0.*l[:,2])
     end
     m      = rho0.*v0
-    if isGRF coh = clt else coh = ones(typeD,nmp).*coh0 end
+    if instr[:GRF] coh = clt else coh = ones(typeD,nmp).*coh0 end
     #coh,phi  = RFS(xp[:,1],xp[:,2],coh0,cohr,phi0,phir)
     cohr   = ones(typeD,nmp).*cohr
     phi    = ones(typeD,nmp).*phi0
