@@ -71,7 +71,17 @@ end
 @views @kernel inbounds = true function bsmpm(mpD,meD)
     p = @index(Global)
     # calculate shape functions
-    if meD.nD == 2 && p ≤ mpD.nmp
+    if meD.nD == 1 && p ≤ mpD.nmp
+        for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
+            # compute basis functions
+            ξ      = (mpD.x[p,1]-meD.xn[no,1]) 
+            ϕx,dϕx = ϕ∂ϕ(ξ/meD.h[1],meD.xn[no,1],meD.tn[no,1],meD.h[1])
+            # convolution of basis function
+            mpD.ϕ∂ϕ[nn,p,1] =  ϕx
+            mpD.ϕ∂ϕ[nn,p,2] = dϕx
+            mpD.δnp[nn,1,p] = -ξ
+        end
+    elseif meD.nD == 2 && p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1]) 
