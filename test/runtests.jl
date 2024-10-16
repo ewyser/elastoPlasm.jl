@@ -1,11 +1,9 @@
+using Test,Plots,LaTeXStrings,Revise
+
+
 using elastoPlasm
-using Test,Plots,LaTeXStrings
-const ROOT = dirname(@__FILE__)
 
+@testset "elastoPlasm.jl" verbose = true begin
+    @test shpTest() == true
 
-include(joinpath(ROOT,"unit/shpTest.jl"))
-
-@testset "elastoPlasm.jl" begin
-    @test shpTest
-    #@test YourPackageName.greet_your_package_name() != "Hello world!"
 end
