@@ -6,7 +6,7 @@ DocMeta.setdocmeta!(elastoPlasm, :DocTestSetup, :(using elastoPlasm); recursive=
 
 format = Documenter.HTML()
 manual = [
-    "Home" => "index.md",
+    "Home"            => "index.md",
     "Getting Started" => "getting_started.md",
     #"Functions" => mdGenerate(),
 ]
@@ -16,7 +16,8 @@ makedocs(;
     authors="madmax",
     sitename="elastoPlasm.jl 👻",
     format=Documenter.HTML(;
-        canonical="https://mewyser.github.io/elastoPlasm.jl",
+        repolink="github.com/ewyser/elastoPlasm.jl",
+        canonical="https://ewyser.github.io/elastoPlasm.jl/",
         edit_link="main",
         assets=String[],
     ),
