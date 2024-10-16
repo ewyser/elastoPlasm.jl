@@ -2,10 +2,10 @@
     type = what
     
     if type == "P"
-        if size(mpD.σ,1) == 3
+        if size(mpD.σᵢ,1) == 3
             d   = -(mpD.σᵢ[1,:]+mpD.σᵢ[2,:])/2/1e3
             lab = L"$p=-\left(\sigma_{xx,p}+\sigma_{yy,p}\right)/2$"
-        elseif size(mpD.σ,1) == 6
+        elseif size(mpD.σᵢ,1) == 6
             d   = -(mpD.σᵢ[1,:]+mpD.σᵢ[2,:]+mpD.σᵢ[3,:])/3/1e3
             lab = L"$p=-\left(\sigma_{xx,p}+\sigma_{yy,p}+\sigma_{zz,p}\right)/3$"
         end            
