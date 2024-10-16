@@ -33,41 +33,10 @@ The solver relies on random gaussian fields to generate initial fields $\psi(\bo
 ### How to ```plasmazing``` ?  
 
 0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
-1. Clone ```elastoPlasm.jl``` and ```cd``` to your local repo 
-2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal)
-```julia
-manuwyser@mBp elastoPlasm.jl % julia --project=. --threads=1
-               _
-   _       _ _(_)_     |  Documentation: https://docs.julialang.org
-  (_)     | (_) (_)    |
-   _ _   _| |_  __ _   |  Type "?" for help, "]?" for Pkg help.
-  | | | | | | |/ _` |  |
-  | | |_| | | | (_| |  |  Version 1.6.5 (2021-12-19)
- _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
-|__/                   |
-```
-3. Enter pkg mode ``` ] ```, then ```activate .``` the project ```elastoPlasm``` and ```instantiate``` its environment and related packages. You can ```st``` to check package status.
-```julia
-(elastoPlasm) pkg> st
-Project elastoPlasm v0.3.5
-Status `~/Dropbox/Jobs/git/elastoPlasm.jl/Project.toml`
-  [6e4b80f9] BenchmarkTools v1.5.0
-⌃ [052768ef] CUDA v5.4.3
-  [f67ccb44] HDF5 v0.17.2
-⌃ [63c18a36] KernelAbstractions v0.9.22
-  [b964fa9f] LaTeXStrings v1.3.1
-⌃ [91a5bcdd] Plots v1.40.5
-  [92933f4c] ProgressMeter v1.10.2
-  [295af30f] Revise v3.6.0
-  [37e2e46d] LinearAlgebra
-  [44cfe95a] Pkg v1.9.2
-  [3fa0cd96] REPL
-  [9a3f8284] Random
-  [2f01184e] SparseArrays
-Info Packages marked with ⌃ have new versions available and may be upgradable.
 
-(elastoPlasm) pkg> 
+1. Clone [```elastoPlasm.jl```](https://github.com/ewyser/elastoPlasm.jl/tree/main)  and ```cd``` to your local repo 
 
-```
+2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal) and enter pkg mode ``` ] ```, then ```activate .``` the project ```elastoPlasm``` and ```instantiate``` its environment and related packages.
+
 4. Once ```elastoPlasm``` has been correctly instantiated, you can ```using elastoPlasm```
 
