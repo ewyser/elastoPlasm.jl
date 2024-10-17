@@ -44,22 +44,23 @@ function shpfunCheck(shp,instr,paths)
     gr(size=(2.0*250,3*125),legend=false,markersize=2.25,markerstrokecolor=:auto)
     p0 = plot(
         xp,ϕ,
-        seriestype  = :line,
-        ylim        = (0.0,ϕmax),
-        title       = T[1],
+        seriestype = :line,
+        ylim       = (0.0,1.1*ϕmax),
+        title      = T[1],
     )
     p1 = plot(
         xp,∂ϕ,
-        seriestype  = :line,
-        ylim        = (-∂ϕmax,∂ϕmax),
-        title       = T[2],
+        seriestype = :line,
+        ylim       = (-1.1*∂ϕmax,1.1*∂ϕmax),
+        title      = T[2],
     )
     p2 = plot(
         mpD.x,PoU,
-        seriestype  = :line,
-        xlabel      = L"$x-$direction [m]",
-        ylim        = (0.0,2.0),
-        title       = T[3],
+        seriestype = :line,
+        xlabel     = L"$x-$direction [m]",
+        ylim       = (1.0-0.1,1.0+0.1),
+        yscale     = :log10,
+        title      = T[3],
     )
     display(plot(p0,p1,p2;layout=(3,1))) 
     savefig(joinpath(paths[:plot],"summary_$(shp)"))
