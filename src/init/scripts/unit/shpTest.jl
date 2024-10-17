@@ -62,8 +62,12 @@ function shpfunCheck(shp,instr,paths)
         yscale     = :log10,
         title      = T[3],
     )
-    display(plot(p0,p1,p2;layout=(3,1))) 
-    savefig(joinpath(paths[:plot],"summary_$(shp)"))
+    try
+        display(plot(p0,p1,p2;layout=(3,1))) 
+        savefig(joinpath(paths[:plot],"summary_$(shp)"))
+    catch
+        @warn "unable to display plot and save"
+    end
     return PoU
 end
 function shpTest()
@@ -73,7 +77,7 @@ function shpTest()
     @info "partition of unity (PoU) testset"
     for shp ∈ [:bsmpm,:smpm,:gimpm]
         instr[:basis] = shp
-        @testset "$(shp): PoU" verbose = true begin
+        @testset "PoU: $(shp)" verbose = true begin
             PoU = shpfunCheck(shp,instr,paths)
             @test minimum(PoU) > 0.90
         end
