@@ -15,6 +15,9 @@ function shpfunCheck(shp,instr,paths)
         p2e  = zeros(Int64,nmp),
         p2n  = zeros(Int64,meD.nn,nmp),
     )
+    instr[:cairn] = (;tplgy! = shpfun(meD.nD,instr[:basis])[1],
+                      ϕ∂ϕ!   = shpfun(meD.nD,instr[:basis])[2],
+                    )
     # calculate tplgy and shpfun
     shpfun!(mpD,meD,instr)
     # extract and store value of mpD.ϕ∂ϕ
