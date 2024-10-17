@@ -1,6 +1,5 @@
 # ϵlastσPlasm.jl 👻
-
-[![CI](https://github.com/LandslideSIM/MaterialPointSolver.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/ewyser/elastoPlasm.jl/actions/workflows/ci.yml) 
+[![Build Status](https://github.com/ewyser/elastoPlasm.jl/workflows/CI/badge.svg)](https://github.com/ewyser/elastoPlasm.jl/actions)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://ewyser.github.io/elastoPlasm.jl/)
 <!---
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaci.github.io/PkgTemplates.jl/stable)
