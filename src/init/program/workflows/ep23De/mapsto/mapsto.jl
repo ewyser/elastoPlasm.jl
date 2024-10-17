@@ -1,65 +1,39 @@
-function flip!(mpD,meD,g,Δt,mapsto)
-    if mapsto == "p>n"
-        # initialize nodal quantities
-        meD.mn  .= 0.0
-        meD.pn  .= 0.0
-        meD.oobf.= 0.0
-        # mapping to mesh
-        if meD.nD == 2
-            @isdefined(p2n!) ? nothing : p2n! = flip2Dp2n(CPU())
-        elseif meD.nD == 3
-            @isdefined(p2n!) ? nothing : p2n! = flip3Dp2n(CPU())
+function mapsto(dim::Number,trsfr::Symbol) 
+    if trsfr == :mUSL
+        if dim == 2
+            p2n! = flip2Dp2n(CPU())
+        elseif dim == 3
+            p2n! = flip3Dp2n(CPU())
         end
-        p2n!(mpD,meD,g; ndrange=mpD.nmp);sync(CPU())
-    elseif mapsto == "p<n"
-        # mapping back to mp's
-        @isdefined(n2p!) ? nothing : n2p! = flip23Dn2p(CPU())
-        n2p!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())      
-    end
-    return nothing
-end
-function tpic!(mpD,meD,g,Δt,mapsto)
-    if mapsto == "p>n"
-        # initialize nodal quantities
-        meD.mn  .= 0.0
-        meD.pn  .= 0.0
-        meD.oobf.= 0.0
-        # mapping to mesh
-        if meD.nD == 2
-            @isdefined(p2n!) ? nothing : p2n! = tpic2Dp2n(CPU())
-        elseif meD.nD == 3
-            @isdefined(p2n!) ? nothing : p2n! = tpic3Dp2n(CPU())
+        n2p! = flip23Dn2p(CPU())
+    elseif trsfr == :tpicUSL
+        if dim == 2
+            p2n! = tpic2Dp2n(CPU())
+        elseif dim == 3
+            p2n! = tpic3Dp2n(CPU())
         end
-        p2n!(mpD,meD,g; ndrange=mpD.nmp);sync(CPU())
-    elseif mapsto == "p<n"
-        # mapping back to mp's
-        @isdefined(n2p!) ? nothing : n2p! = pic23Dn2p(CPU())
-        n2p!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())      
-    end
-    return nothing
+        n2p! = pic23Dn2p(CPU())
+    else
+        return throw(ArgumentError("$(trsfr) is not a supported|valid mapping"))
+    end    
+    return p2n!,n2p!
 end
 function mapsto!(mpD,meD,g,Δt,instr,whereto) 
     if whereto == "p>n"
-        if instr[:trsfr] == :mUSL
-            flip!(mpD,meD,g,Δt,whereto)
-        elseif instr[:trsfr] == :tpicUSL
-            tpic!(mpD,meD,g,Δt,whereto)
-        end
+        # initialize nodal quantities
+        meD.mn  .= 0.0
+        meD.pn  .= 0.0
+        meD.oobf.= 0.0
+        # mapping to mesh
+        instr[:cairn].p2n!(mpD,meD,g; ndrange=mpD.nmp);sync(CPU())
     elseif whereto == "p<n"
+        instr[:cairn].n2p!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())
         if instr[:trsfr] == :mUSL
-            flip!(mpD,meD,g,Δt,whereto)
-            DM!(mpD,meD,Δt)
-        elseif instr[:trsfr] == :tpicUSL
-            tpic!(mpD,meD,g,Δt,whereto)
+            DM!(mpD,meD,Δt,instr)
         end
     end
     return nothing
 end
-
-
-
-
-
 
 
 
