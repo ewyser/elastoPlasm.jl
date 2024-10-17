@@ -1,6 +1,21 @@
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
 # FLIP update
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+@kernel inbounds = true function flip1Dp2n(mpD,meD,g)
+    p = @index(Global)
+    if p≤mpD.nmp 
+        # accumulation
+        for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
+            @atom meD.pn[no]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*mpD.v[p])
+            # lumped mass matrix
+            @atom meD.mn[no]+= mpD.ϕ∂ϕ[nn,p,1]*mpD.m[p]
+            # consistent mass matrix
+            # meD.Mn[mpD.p2n[:,p],mpD.p2n[:,p]].+= (mpD.ϕ∂ϕ[:,p,1].*mpD.ϕ∂ϕ[:,p,1]').*mpD.m[p]   
+            @atom meD.oobf[no]+= mpD.ϕ∂ϕ[nn,p,1]*(mpD.m[p]*g) 
+            @atom meD.oobf[no]-= mpD.Ω[p]*mpD.ϕ∂ϕ[nn,p,2]*mpD.σᵢ[1,p]
+        end
+    end
+end
 @kernel inbounds = true function flip2Dp2n(mpD,meD,g)
     p = @index(Global)
     for dim ∈ 1:meD.nD
