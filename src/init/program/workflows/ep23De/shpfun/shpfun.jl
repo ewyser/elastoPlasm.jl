@@ -1,33 +1,48 @@
-function shpfun!(mpD,meD,instr)
-    # get topological relations, i.e., mps-to-elements and elements-to-nodes
+function shpfun(dim::Number,basis::Symbol)
     if !@isdefined(tplgy!)
-        if meD.nD == 1
+        if dim == 1
             tplgy! = p2e1D!(CPU())
-        elseif meD.nD == 2
+        elseif dim == 2
             tplgy! = p2e2D!(CPU())
-        elseif meD.nD == 3
+        elseif dim == 3
             tplgy! = p2e3D!(CPU())
         end
     end
-    tplgy!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
+    if !@isdefined(ϕ∂ϕ!)
+        if basis == :bsmpm
+            if dim == 1
+                ϕ∂ϕ! = bsmpm1D(CPU())    
+            elseif dim == 2
+                ϕ∂ϕ! = bsmpm2D(CPU())
+            elseif dim == 3
+                ϕ∂ϕ! = bsmpm3D(CPU())
+            end
+        elseif basis == :gimpm 
+            if dim == 1
+                ϕ∂ϕ! = gimpm1D(CPU())    
+            elseif dim == 2
+                ϕ∂ϕ! = gimpm2D(CPU())
+            elseif dim == 3
+                ϕ∂ϕ! = gimpm3D(CPU())
+            end
+        elseif basis == :smpm
+            if dim == 1
+                ϕ∂ϕ! = smpm1D(CPU())    
+            elseif dim == 2
+                ϕ∂ϕ! = smpm2D(CPU())
+            elseif dim == 3
+                ϕ∂ϕ! = smpm3D(CPU())
+            end
+        end
+    end
+    return tplgy!,ϕ∂ϕ!
+end
+function shpfun!(mpD,meD,instr)
+    # get topological relations, i.e., mps-to-elements and elements-to-nodes
+    instr[:tool].tplgy!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
     # initialize shapefunctions
     mpD.ϕ∂ϕ .= 0.0
     # calculate shape functions
-    if !@isdefined(ϕ∂ϕ!)
-        if instr[:basis] == :bsmpm
-            if meD.nD == 1
-                ϕ∂ϕ! = bsmpm1D(CPU())    
-            elseif meD.nD == 2
-                ϕ∂ϕ! = bsmpm2D(CPU())
-            elseif meD.nD == 3
-                ϕ∂ϕ! = bsmpm3D(CPU())
-            end
-        elseif instr[:basis] == :gimpm 
-            ϕ∂ϕ! = gimpm(CPU())
-        elseif instr[:basis] == :smpm
-            ϕ∂ϕ! = smpm(CPU())
-        end
-    end
-    ϕ∂ϕ!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
+    instr[:tool].ϕ∂ϕ!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
     return nothing
 end

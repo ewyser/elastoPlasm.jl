@@ -14,10 +14,10 @@ function S∂S(δx,h,lp)
     end
     return S,∂S    
 end
-@views @kernel inbounds = true function gimpm(mpD,meD)
+@views @kernel inbounds = true function gimpm1D(mpD,meD)
     p = @index(Global)
     # calculate shape functions
-    if meD.nD == 1 && p ≤ mpD.nmp
+    if p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1])
@@ -27,7 +27,12 @@ end
             mpD.ϕ∂ϕ[nn,p,2] = dϕx
             mpD.δnp[nn,1,p] = -ξ
         end
-    elseif meD.nD == 2 && p ≤ mpD.nmp
+    end
+end
+@views @kernel inbounds = true function gimpm2D(mpD,meD)
+    p = @index(Global)
+    # calculate shape functions
+    if p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1])
@@ -41,7 +46,12 @@ end
             mpD.δnp[nn,1,p] = -ξ
             mpD.δnp[nn,2,p] = -η
         end
-    elseif meD.nD == 3 && p ≤ mpD.nmp
+    end
+end
+@views @kernel inbounds = true function gimpm3D(mpD,meD)
+    p = @index(Global)
+    # calculate shape functions
+    if p ≤ mpD.nmp
         for (nn,no) ∈ enumerate(mpD.p2n[:,p]) if no<1 continue end
             # compute basis functions
             ξ      = (mpD.x[p,1]-meD.xn[no,1])

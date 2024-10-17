@@ -9,6 +9,10 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
     """
     t,tC,it,ηmax,ηtot = 0.0,instr[:plot][:freq],0,0,0
     # action
+    instr[:tool] = (;tplgy! = shpfun(meD.nD,instr[:basis])[1],
+                     ϕ∂ϕ!   = shpfun(meD.nD,instr[:basis])[2],)
+
+
     prog  = ProgressUnknown("ϵp23De! working:", spinner=true,showspeed=true)
     for (k,time) ∈ enumerate(sort(unique([collect(t+tC:tC:T);te;T])))
         if t > te instr[:plast] = (true,last(instr[:plast])) end
