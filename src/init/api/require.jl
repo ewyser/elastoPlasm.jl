@@ -36,7 +36,7 @@ Admissible keywords, by-default value and purpose are presented below when ```in
 - ```:perf    ```, # set performance mode
 
 """
-function require(in::Symbol)
+function require(in::Symbol=:instr)
     if in == :instr
         instr = Dict(
             :bits    => 64,

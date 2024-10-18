@@ -34,14 +34,18 @@ Dict{Symbol, String} with 2 entries:
 
 ````
 """
-function setPaths(newDir::String,path::String)
+function setPaths(newDir::String,path::String;interactive::Bool=true)
     # creating or doing nothin for dir newDir
     if !isdir(joinpath(path,newDir))
         mkdir(joinpath(path,newDir))
     end
     # select subfolder(s) to be created
     options   = ["plot","dat","geo"]
-    select    = request("select folder(s) you'd like to generate:",MultiSelectMenu(options))
+    if interactive
+        select    = request("select folder(s) you'd like to generate:",MultiSelectMenu(options))
+    else
+        select = Set([1])
+    end
     paths     = Dict{Symbol,Any}()
     msg,msg!  = ["additional paths generated:"],["deleting at:"]
     for (k,name) ∈ enumerate(select)
