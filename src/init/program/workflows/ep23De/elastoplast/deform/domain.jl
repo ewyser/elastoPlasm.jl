@@ -8,7 +8,7 @@
     end
 end
 function domain!(mpD,instr)
-    if instr[:basis] == :gimpm 
+    if instr[:basis] == "gimpm"
         @isdefined(domainUpd) ? nothing : domainUpd = mpDomain(CPU())
         domainUpd(mpD; ndrange=mpD.nmp);sync(CPU())
     end

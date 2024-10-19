@@ -32,7 +32,7 @@ end
 
 end
 function DM(trsfr)
-    if trsfr==:mUSL
+    if trsfr=="mUSL"
         p2n!   = kernel_momentum(CPU())
         solve! = kernel_velocity(CPU())
         displ! = kernel_displacement(CPU())

@@ -1,12 +1,12 @@
-function mapsto(dim::Number,trsfr::Symbol) 
-    if trsfr == :mUSL
+function mapsto(dim::Number,trsfr::String) 
+    if trsfr == "mUSL"
         if dim == 2
             p2n! = flip2Dp2n(CPU())
         elseif dim == 3
             p2n! = flip3Dp2n(CPU())
         end
         n2p! = flip23Dn2p(CPU())
-    elseif trsfr == :tpicUSL
+    elseif trsfr == "tpicUSL"
         if dim == 2
             p2n! = tpic2Dp2n(CPU())
         elseif dim == 3

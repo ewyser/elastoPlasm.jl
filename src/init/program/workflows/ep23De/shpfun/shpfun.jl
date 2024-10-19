@@ -1,4 +1,4 @@
-function shpfun(dim::Number,basis::Symbol)
+function shpfun(dim::Number,basis::String)
     if !@isdefined(tplgy!)
         if dim == 1
             tplgy! = p2e1D!(CPU())
@@ -9,7 +9,7 @@ function shpfun(dim::Number,basis::Symbol)
         end
     end
     if !@isdefined(ϕ∂ϕ!)
-        if basis == :bsmpm
+        if basis == "bsmpm"
             if dim == 1
                 ϕ∂ϕ! = bsmpm1D(CPU())    
             elseif dim == 2
@@ -17,7 +17,7 @@ function shpfun(dim::Number,basis::Symbol)
             elseif dim == 3
                 ϕ∂ϕ! = bsmpm3D(CPU())
             end
-        elseif basis == :gimpm 
+        elseif basis == "gimpm"
             if dim == 1
                 ϕ∂ϕ! = gimpm1D(CPU())    
             elseif dim == 2
@@ -25,7 +25,7 @@ function shpfun(dim::Number,basis::Symbol)
             elseif dim == 3
                 ϕ∂ϕ! = gimpm3D(CPU())
             end
-        elseif basis == :smpm
+        elseif basis == "smpm"
             if dim == 1
                 ϕ∂ϕ! = smpm1D(CPU())    
             elseif dim == 2

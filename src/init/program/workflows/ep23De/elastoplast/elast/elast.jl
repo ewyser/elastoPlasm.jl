@@ -20,7 +20,7 @@ end
 @views @kernel inbounds = true function ELAST!(mpD,Del,instr)
     p = @index(Global)
     # deformation framework dispatcher
-    if instr[:fwrk] == :finite
+    if instr[:fwrk] == "finite"
         if p ≤ mpD.nmp 
             # update left cauchy-green tensor
             mpD.bᵢⱼ[:,:,p].= mpD.ΔFᵢⱼ[:,:,p]*mpD.bᵢⱼ[:,:,p]*mpD.ΔFᵢⱼ[:,:,p]'
@@ -30,7 +30,7 @@ end
             # krichhoff stress tensor
             mpD.τᵢ[:,p]    = Del*mutate(mpD.ϵᵢⱼ[:,:,p],2.0,:voigt)
         end
-    elseif instr[:fwrk] == :infinitesimal
+    elseif instr[:fwrk] == "infinitesimal"
         if p ≤ mpD.nmp 
             # calculate elastic strains & spins
             for i ∈ 1:mpD.nD , j ∈ 1:mpD.nD
@@ -49,7 +49,7 @@ end
 @views @kernel inbounds = true function elast!(mpD,Del,instr)
     p = @index(Global)
     # deformation framework dispatcher
-    if instr[:fwrk] == :finite
+    if instr[:fwrk] == "finite"
         if p ≤ mpD.nmp 
             # update left cauchy-green tensor
             mpD.bᵢⱼ[:,:,p].= mpD.ΔFᵢⱼ[:,:,p]*mpD.bᵢⱼ[:,:,p]*mpD.ΔFᵢⱼ[:,:,p]'
@@ -59,7 +59,7 @@ end
             # krichhoff stress tensor
             mpD.τᵢ[:,p]    = Del*mutate(mpD.ϵᵢⱼ[:,:,p],2.0,:voigt)
         end
-    elseif instr[:fwrk] == :infinitesimal
+    elseif instr[:fwrk] == "infinitesimal"
         if p ≤ mpD.nmp 
             # calculate elastic strains & spins
             mpD.ϵᵢⱼ[:,:,p] .= 0.5.*(mpD.ΔFᵢⱼ[:,:,p]+mpD.ΔFᵢⱼ[:,:,p]').-mpD.I
