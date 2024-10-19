@@ -75,7 +75,7 @@ function shpTest(ξ::Real=0.90)
     instr = require(:instr)
     paths = Dict(:plot=>joinpath(elastoPlasm.sys.out,first(fid)))
     @info "partition of unity (PoU) testset with ξ = $(round(ξ,digits=2))"
-    for shp ∈ [:bsmpm,:smpm,:gimpm]
+    for shp ∈ ["bsmpm","smpm","gimpm"]
         instr[:basis] = shp
         @testset "$(shp): PoU > $(round(ξ,digits=2))" verbose = true begin
             PoU = shpfunCheck(shp,instr,paths)

@@ -21,9 +21,8 @@ function D(E,ν,nD)
     end
     return Kc,Gc,D
 end
-function cm(dim,instr)
+function cm(dim,instr; E::Real=1.0e6,ν::Real=0.3)
     # independant physical constant          
-    E,ν     = 1.0e6,0.3                                                         # Young's mod. [Pa], Poisson's ratio [-]
     K,G,Del = D(E,ν,dim)                                                  # elastic matrix D(E,ν) Young's mod. [Pa] + Poisson's ratio [-]    
     ρ0      = 2700.0                                                            # density [kg/m^3]
     c       = sqrt((K+4.0/3.0*G)/ρ0)                                            # elastic wave speed [m/s]

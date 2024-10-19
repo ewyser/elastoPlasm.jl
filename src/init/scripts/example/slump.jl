@@ -6,15 +6,16 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     instr  = kwargser(:instr,kwargs)
     fid    = splitext(basename(@__FILE__))
     paths  = setPaths(first(fid), sys.out)
-    @info "init slump geometry"
     # independant physical constant
-    g       = 9.81                                                              # gravitationnal acceleration [m/s^2]            
+    g       = 9.81   
+    ni      = 2                                            
     # constitutive model
     cmParam = cm(length(L),instr)
-    T,te,tg = 15.0,10.0,15.0/1.5                                                # simulation time [s], elastic loading [s], gravity load
+    T,te,tg = 15.0,10.0,15.0/1.5                                 
     # mesh & mp setup
-    meD     = meshSetup(nel,L,instr)                                            # mesh geometry setup
-    mpD     = pointSetup(meD,L,cmParam,instr)                      # material point geometry setup
+    meD     = meshSetup(nel,L,instr)      
+    setgeom = inislump(meD,cmParam,ni,instr)                       
+    mpD     = pointSetup(meD,cmParam,instr;define=setgeom)                      
     # plot initial cohesion field
     plotcoh(mpD,cmParam,paths)
     # action
