@@ -28,7 +28,7 @@ function mapsto!(mpD,meD,g,Δt,instr,whereto)
         instr[:cairn].p2n!(mpD,meD,g; ndrange=mpD.nmp);sync(CPU())
     elseif whereto == "p<n"
         instr[:cairn].n2p!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())
-        if instr[:trsfr] == :mUSL
+        if instr[:trsfr] == "mUSL"
             DM!(mpD,meD,Δt,instr)
         end
     end
