@@ -1,4 +1,4 @@
-function setKwargs(type::Symbol,kwargs)
+function kwargser(type::Symbol,kwargs)
     ref  = require(type)
     key0 = collect(keys(kwargs))
     

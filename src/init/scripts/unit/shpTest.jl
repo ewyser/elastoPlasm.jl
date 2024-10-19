@@ -70,16 +70,16 @@ function shpfunCheck(shp,instr,paths)
     end
     return PoU
 end
-function shpTest()
+function shpTest(ξ::Real=0.90)
     fid   = splitext(basename(@__FILE__))
     instr = require(:instr)
     paths = Dict(:plot=>joinpath(elastoPlasm.sys.out,first(fid)))
-    @info "partition of unity (PoU) testset"
+    @info "partition of unity (PoU) testset with ξ = $(round(ξ,digits=2))"
     for shp ∈ [:bsmpm,:smpm,:gimpm]
         instr[:basis] = shp
-        @testset "PoU: $(shp)" verbose = true begin
+        @testset "$(shp): PoU > $(round(ξ,digits=2))" verbose = true begin
             PoU = shpfunCheck(shp,instr,paths)
-            @test minimum(PoU) > 0.90
+            @test minimum(PoU) > ξ
         end
     end
     return true

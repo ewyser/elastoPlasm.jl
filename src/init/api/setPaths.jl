@@ -42,7 +42,7 @@ function setPaths(newDir::String,path::String;interactive::Bool=true)
     # select subfolder(s) to be created
     options   = ["plot","dat","geo"]
     if interactive
-        select    = request("select folder(s) you'd like to generate:",MultiSelectMenu(options))
+        select = request("select folder(s) you'd like to generate:",MultiSelectMenu(options))
     else
         select = Set([1])
     end
