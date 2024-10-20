@@ -1,9 +1,9 @@
 using Test,Plots,LaTeXStrings,Revise
 
 
-using elastoPlasm
+using ElastoPlasm
 
-@testset "elastoPlasm.jl" verbose = true begin
+@testset "ElastoPlasm.jl" verbose = true begin
     @testset "└ shpTest.jl" verbose = true begin
         shpTest()
     end
