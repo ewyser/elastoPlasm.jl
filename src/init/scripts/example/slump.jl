@@ -3,7 +3,7 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     @info "execution of slump()"
     configPlot()
     # init & kwargs
-    instr  = kwargser(:instr,kwargs)
+    instr  = kwargser(:instr,kwargs;dim=length(L))
     fid    = splitext(basename(@__FILE__))
     paths  = setPaths(first(fid), sys.out)
     # independant physical constant

@@ -31,7 +31,7 @@ end
     end
 
 end
-function DM(trsfr)
+function init_DM(trsfr)
     if trsfr=="mUSL"
         p2n!   = kernel_momentum(CPU())
         solve! = kernel_velocity(CPU())
@@ -46,10 +46,10 @@ function DM!(mpD,meD,Δt,instr)
     meD.pn.= 0.0
     meD.vn.= 0.0
     # accumulate material point contributions
-    instr[:cairn][:augm].p2n!(mpD,meD; ndrange=mpD.nmp);sync(CPU())
+    instr[:cairn][:augm!].p2n!(mpD,meD; ndrange=mpD.nmp);sync(CPU())
     # solve for nodal incremental displacement
-    instr[:cairn][:augm].solve!(meD; ndrange=meD.nno[end]);sync(CPU())
+    instr[:cairn][:augm!].solve!(meD; ndrange=meD.nno[end]);sync(CPU())
     # update material point's displacement
-    instr[:cairn][:augm].Δu!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())
+    instr[:cairn][:augm!].Δu!(mpD,meD,Δt; ndrange=mpD.nmp);sync(CPU())
     return nothing
 end

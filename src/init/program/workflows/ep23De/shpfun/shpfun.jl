@@ -1,4 +1,4 @@
-function shpfun(dim::Number,basis::String)
+function init_shpfun(dim::Number,basis::String)
     if !@isdefined(tplgy!)
         if dim == 1
             tplgy! = p2e1D!(CPU())

@@ -1,4 +1,4 @@
-function mapsto(dim::Number,trsfr::String) 
+function init_mapsto(dim::Number,trsfr::String) 
     if trsfr == "mUSL"
         if dim == 2
             p2n! = flip2Dp2n(CPU())

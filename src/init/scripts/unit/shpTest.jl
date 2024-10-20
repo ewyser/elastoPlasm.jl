@@ -15,8 +15,8 @@ function shpfunCheck(shp,instr,paths)
         p2e  = zeros(Int64,nmp),
         p2n  = zeros(Int64,meD.nn,nmp),
     )
-    instr[:cairn] = (;tplgy! = shpfun(meD.nD,instr[:basis])[1],
-                      ϕ∂ϕ!   = shpfun(meD.nD,instr[:basis])[2],
+    instr[:cairn] = (;tplgy! = init_shpfun(meD.nD,instr[:basis])[1],
+                      ϕ∂ϕ!   = init_shpfun(meD.nD,instr[:basis])[2],
                     )
     # calculate tplgy and shpfun
     shpfun!(mpD,meD,instr)
@@ -34,9 +34,8 @@ function shpfunCheck(shp,instr,paths)
     end
 
     ϕmax  = maximum(abs.(ϕ))
-    ∂ϕmax = maximum(abs.(∂ϕ))
-
     ϕ[ϕ.<1e-4].=NaN
+    ∂ϕmax = maximum(abs.(∂ϕ))
     ∂ϕ[isnan.(ϕ)].=NaN
 
     configPlot()

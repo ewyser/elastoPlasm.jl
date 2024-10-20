@@ -1,4 +1,4 @@
-function kwargser(type::Symbol,kwargs)
+function kwargser(type::Symbol,kwargs::Any;dim::Number = 2)
     ref  = require(type)
     key0 = collect(keys(kwargs))
     
@@ -25,6 +25,14 @@ function kwargser(type::Symbol,kwargs)
         elseif bits == 32
             instr[:type] = (;T1=Int32,T2=Float32,bits=32,precision="single")
         end
+        # add cairns (abstract kernels) to instr set
+        instr[:cairn] = (;
+            tplgy! = init_shpfun(dim,instr[:basis])[1],
+            ϕ∂ϕ!   = init_shpfun(dim,instr[:basis])[2],
+            p2n!   = init_mapsto(dim,instr[:trsfr])[1],
+            n2p!   = init_mapsto(dim,instr[:trsfr])[2],
+            augm!  = init_DM(instr[:trsfr]),
+        )
         return instr
     else
         for (i,var) ∈ enumerate(key)
