@@ -1,10 +1,10 @@
-module elastoPlasm
+module ElastoPlasm
 # define module location as const
 const ROOT = dirname(@__FILE__)
 # include startup file
 include(joinpath(ROOT,"init/startup.jl"))
 # include .jl files
-sucess = ["welcome to elastoPlasm:\nsucessful superInclude()"]
+sucess = ["welcome to ϵlastσPlasm 👻:\nsucessful superInclude()"]
 for (k,child) ∈ enumerate(sys.lib)
 	list = superInc(joinpath(sys.init,child))
 	if isempty(list)

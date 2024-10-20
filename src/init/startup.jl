@@ -54,7 +54,7 @@ import Adapt.@adapt_structure as @user_struct
 const typeD     = Float64  
 # instantiate sys & create out folder 
 sys = moduleCore()
-out = ["elastoPlasm location:\n\t- "*sys.root,]
+out = ["ElastoPlasm.jl location:\n\t- "*sys.root,]
 if !isdir(sys.out)
 	mkpath(sys.out) 
 	push!(out,"\n\tcreating directory at:\n- "*sys.out)
