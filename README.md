@@ -29,6 +29,15 @@ It addresses the following key aspects throughout a modern and easy-to-use MPM f
 
 The solver relies on random gaussian fields to generate initial fields $\psi(\boldsymbol{x})$, *e.g.,* the cohesion $c(\boldsymbol{x}_p)$ or the internal friction angle $\phi(\boldsymbol{x}_p)$, with $\boldsymbol{x}_p$ the material point's coordinates.
 
+## Performance Hierarchy in HPC
+In the context of High-Performance Computing (HPC), it’s essential to understand the different tiers of performance based on the computational resources available:
+
+- *standard*: This tier is characterized by single-core CPU usage, suitable for basic tasks like light simulations and data processing.
+- moderate: This level utilizes multi-core CPUs and a single GPU, allowing for medium-scale simulations and machine learning tasks.
+- **high** Performance: This tier represents the use of multi-node systems with multiple CPUs and GPUs, ideal for large-scale simulations and deep learning applications.
+
+The stylized term $_s\mathrm{m}^\mathbf{H}\mathrm{PC}$ captures this hierarchy, where &ₛ indicates Standard, mᴴ represents the transition to Moderate and High performance, and PC signifies High-Performance Computing. This notation reflects our commitment to providing scalable solutions that adapt to various performance needs.
+
 ### How to ```plasmazing``` ?  
 
 0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
