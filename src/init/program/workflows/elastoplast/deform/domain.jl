@@ -4,7 +4,7 @@
         # update material point's domain length using symmetric material stretch tensor U
         λ,n         = eigen(mpD.Fᵢⱼ[:,:,p]'*mpD.Fᵢⱼ[:,:,p],sortby=nothing)
         U           = (n*diagm(sqrt.(λ))*n')
-        mpD.ℓ[p,:] .= U*mpD.ℓ₀[p,:]
+        #mpD.ℓ[p,:] .= U*mpD.ℓ₀[p,:]
     end
 end
 function domain!(mpD,instr)

@@ -5,7 +5,7 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     # init & kwargs
     instr  = kwargser(:instr,kwargs;dim=length(L))
     fid    = splitext(basename(@__FILE__))
-    paths  = setPaths(first(fid), sys.out)
+    paths  = setPaths(first(fid), sys.out;interactive=false)
     # independant physical constant
     g       = 9.81   
     ni      = 2                                            
@@ -15,7 +15,7 @@ function slump(L::Vector{Float64},nel::Int64; kwargs...)
     # mesh & mp setup
     meD     = meshSetup(nel,L,instr)      
     setgeom = inislump(meD,cmParam,ni,instr)                       
-    mpD     = pointSetup(meD,cmParam,instr;define=setgeom)                      
+    mpD     = pointSetup(meD,cmParam,instr;define=setgeom)
     # plot initial cohesion field
     plotcoh(mpD,cmParam,paths)
     # action

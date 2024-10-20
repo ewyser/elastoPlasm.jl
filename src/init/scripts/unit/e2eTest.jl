@@ -1,25 +1,24 @@
 function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     configPlot()
     # init & kwargs
-    instr  = setKwargs(:instr,kwargs)
-    @info "init slump geometry"
+    instr  = kwargser(:instr,kwargs)
     # independant physical constant
     g       = 9.81                                                              # gravitationnal acceleration [m/s^2]            
+    ni      = 2    
     # constitutive model
     cmParam = cm(length(L),instr)
     # mesh & mp setup
     meD     = meshSetup(nel,L,instr)                                            # mesh geometry setup
-    mpD     = pointSetup(meD,L,cmParam,instr)                                   # material point geometry setup
+    setgeom = inislump(meD,cmParam,ni,instr)                       
+    mpD     = pointSetup(meD,cmParam,instr;define=setgeom)
 
-    instr[:cairn] = (;tplgy! = shpfun(meD.nD,instr[:basis])[1],)
+    instr[:cairn] = (;tplgy! = init_shpfun(meD.nD,instr[:basis])[1],)
     instr[:cairn].tplgy!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
     for p ∈ 1:mpD.nmp
         for el ∈ findall(!iszero,meD.e2e[:,mpD.p2e[p]])
             mpD.e2p[p,el] = p       
         end
     end
-
-
 
     fSize = (2.0*250,2*125)
     mSize = 0.25*fSize[1]/meD.nel[1]
@@ -38,3 +37,4 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     return msg("(✓) Done! exiting...")
 end
 export e2eTest
+#e2eTest([64.1584,12.80],40;basis="bsmpm")

@@ -57,7 +57,7 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
     # independant physical constant
     instr  = kwargser(:instr,kwargs)
     fid    = splitext(basename(@__FILE__))
-    paths  = setPaths(first(fid), sys.out)
+    paths  = setPaths(first(fid), sys.out;interactive=false)
     # independant physical constant
     g       = 9.81                      
     ni      = 2                         
@@ -98,7 +98,7 @@ end
             ϵ         = 1.0
             for (it,nel) in enumerate(nel)
                 #action
-                DAT,h,err = compactTest(dim,nel,"P",ν,E,ρ0,l0;basis=ϕ∂ϕType,fwrk=fwrkDeform,trsfr=trsfrAp,vollock=true)
+                DAT,h,err = compactTest(dim,nel,"P",ν,E,ρ0,l0;basis=ϕ∂ϕType,fwrk=fwrkDeform,trsfr=trsfrAp,vollock=false)
                 push!(store,DAT )
                 push!(H ,h[end])
                 push!(error,err)
@@ -126,7 +126,7 @@ end
 =#
 export compacTest
 
-#runCompacTest(2,"mUSL")
+#compacTest(2,"mUSL")
 
 
 

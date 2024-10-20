@@ -15,7 +15,7 @@ function meshGeom(L,nel)
     end
     return L,h,nD
 end
-function meshCoord(nD,L,h)
+function meshCoord(nD,L,h;drift=0.0)
     nn = 4^nD
     if nD == 1
         xn = collect(0.0:h[1]:L[1])
@@ -29,7 +29,8 @@ function meshCoord(nD,L,h)
         nel = [nno[1]-1,nno[1]-1    ]
         x,t = xn,xt
     elseif nD == 2
-        xn,zn = collect(0.0:h[1]:L[1]),collect(0.0:h[2]:L[2]+2.0*h[2])
+        x0,z0 = [0.0-drift[1],L[1]+drift[1]],[0.0-drift[2],L[2]+2.0*h[2]+drift[2]]
+        xn,zn = collect(first(x0):h[1]:last(x0)),collect(first(z0):h[2]:last(z0))
         xt,zt = repeat([3],length(xn)),repeat([3],length(zn))
         xt[1] = zt[1] = 1
         xt[2] = zt[2] = 2
@@ -45,9 +46,12 @@ function meshCoord(nD,L,h)
         zt  = (     ones(Int64,nno[1],1     )'.*reverse(zt))
         t   = hcat(vec(xt),vec(zt))
     elseif nD == 3
-        xn  = collect(0.0:h[1]:L[1]) 
-        yn  = collect(0.0:h[2]:L[2]) 
-        zn  = reverse(collect(0.0:h[3]:L[3]+2.0*h[3]))
+        x0 = [0.0-drift[1],L[1]+drift[1]]
+        y0 = [0.0-drift[2],L[2]+drift[2]]
+        z0 = [0.0-drift[3],L[3]+2.0*h[3]+drift[3]]
+        xn  = collect(first(x0): h[1]:last(x0) ) 
+        yn  = collect(first(y0): h[2]:last(y0) ) 
+        zn  = collect(last(z0) :-h[3]:first(z0))
         xt  = repeat([3],length(xn))
         yt  = repeat([3],length(yn))
         zt  = repeat([3],length(zn))
