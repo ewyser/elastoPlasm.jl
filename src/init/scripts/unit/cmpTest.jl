@@ -56,8 +56,7 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
     end
     # independant physical constant
     instr  = kwargser(:instr,kwargs)
-    fid    = splitext(basename(@__FILE__))
-    paths  = setPaths(first(fid), sys.out;interactive=false)
+
     # independant physical constant
     g       = 9.81                      
     ni      = 2                         
@@ -70,7 +69,7 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
     meD     = meshSetup(nel,L,instr)    
     setgeom = inicmp(meD,cmParam,instr,ni;ℓ₀=l0) 
     mpD     = pointSetup(meD,cmParam,instr;define=setgeom)                                        
-    z0      = maximum(mpD.x[:,end])
+    z0      = copy(mpD.x[:,end])
     # action
     out = ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)    
     # analytics
@@ -81,6 +80,7 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
     end
     xA,yA = abs.(cmParam.ρ0.*g.*(l0.-z0)),z0
     err   = sum(sqrt.((xN.-xA).^2).*mpD.Ω₀)/(abs(g[end])*cmParam.ρ0*l0*sum(mpD.Ω₀)) 
+
     return (xN,yN,xA,yA),meD.h,err 
 end
 @views function compacTest(dim,trsfrAp)
@@ -90,7 +90,7 @@ end
     try
         @testset "convergence using $(ϕ∂ϕType), $(fwrkDeform) deformation, $(trsfrAp) mapping" begin
             # geometry
-            n         = [0,1,2,3]#[0,1,2,3,4,5,6]
+            n         = [0,1,2]#[0,1,2,3,4,5,6]
             nel       = 2.0.^n
             # initial parameters 
             l0,ν,E,ρ0 = 50.0,0.0,1.0e4,80.0
@@ -111,8 +111,41 @@ end
 
     end
     xN,yN,xA,yA = store[end]
+
+    fid    = splitext(basename(@__FILE__))
+    paths  = setPaths(first(fid), sys.out;interactive=false)
+
+
+
+    gr(size=(2.0*250,2*125),legend=true,markersize=2.25,markerstrokecolor=:auto)
+    p1 = plot(xN.*1e-3,yN,seriestype=:scatter, label="$(dim)D $(ϕ∂ϕType), $(trsfrAp) mapping")
+    p1 = plot!(xA.*1e-3,yA,label=L"\sum_{p}\dfrac{||\sigma_{yy}^p-\sigma_{yy}^a(x_p)||V_0^p}{(g\rho_0l_0)V_0}",xlabel=L"$\sigma_{yy}$ [kPa]",ylabel=L"$y-$position [m]") 
+    display(plot(p1; layout=(1,1), size=(450,250)))
+    savefig(paths[:plot]*"$(dim)D_numericVsAnalytic_compacTest_$(ϕ∂ϕType)_$(fwrkDeform)_$(trsfrAp).png")
+
     return H,error
 end
+
+#=
+@views function runCompacTest(DIM,TSF)
+    for k ∈ 1:length(DIM)
+        H,error = compacTest(DIM[k],TSF[k])
+        p2 = gr(size=(2.0*250,2*125),legend=true,markersize=2.25,markerstrokecolor=:auto)
+        if DIM[k] == 2 shape = :circle elseif DIM[k] == 3 shape = :star end
+        if k == 1
+            p2 = plot( 1.0./H,error,seriestype=:line,markerize=5.0,markershape=shape,label="$(DIM[1])D, $(TSF[1])") 
+        elseif k<length(DIM)
+            p2 = plot!(1.0./H,error,seriestype=:line,markerize=5.0,markershape=shape,label="$(DIM[k])D, $(TSF[k])") 
+        elseif k == length(DIM)
+            p2 = plot!(1.0./H,error,seriestype=:line,markerize=5.0,markershape=shape,label="$(DIM[k])D, $(TSF[k])",xlabel=L"$1/h$ [m$^{-1}$]",ylabel="error",xaxis=:log10,yaxis=:log10) 
+            display(plot(p2; layout=(1,1), size=(450,250)))
+            savefig(path_test*"23D_convergence_pass_compacTest.png")
+        end
+    end
+    return "all tests passed...exit"
+end
+=#
+
 #=
 if @isdefined(perf)
     if perf
