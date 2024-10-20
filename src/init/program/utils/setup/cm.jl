@@ -21,10 +21,9 @@ function D(E,ν,nD)
     end
     return Kc,Gc,D
 end
-function cm(dim,instr; E::Real=1.0e6,ν::Real=0.3)
+function cm(dim,instr; E::Real=1.0e6,ν::Real=0.3,ρ0::Real= 2700.0)
     # independant physical constant          
     K,G,Del = D(E,ν,dim)                                                  # elastic matrix D(E,ν) Young's mod. [Pa] + Poisson's ratio [-]    
-    ρ0      = 2700.0                                                            # density [kg/m^3]
     c       = sqrt((K+4.0/3.0*G)/ρ0)                                            # elastic wave speed [m/s]
     c0,cr   = 20.0e3,4.0e3                                                      # cohesion [Pa]
     ϕ0,ϕr,ψ0= 20.0*π/180,7.5*π/180,0.0                                          # friction angle [Rad], dilation angle [Rad]                                                              

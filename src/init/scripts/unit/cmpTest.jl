@@ -62,6 +62,7 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
     g       = 9.81                      
     ni      = 2                         
     # constitutive model
+    cm(dim,instr; E=E,ν=ν,ρ0=ρ0)
     cmParam = cm(length(L),instr)
     tg      = ceil((1.0/cmParam.c)*(2.0*l0)*40.0)
     T,te    = 1.25*tg,1.25*tg   
@@ -71,49 +72,7 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
     mpD     = pointSetup(meD,cmParam,instr;define=setgeom)                                        
     z0      = maximum(mpD.x[:,end])
     # action
-    if meD.nD == 2
-        @info "compaction of a two-dimensional column under self weight **"
-    elseif meD.nD == 3
-        @info "compaction of a three-dimensional column under self weight **"
-    end
-    out     = ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
+    out = ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)    
     # analytics
     if meD.nD==2
         xN,yN = abs.(mpD.σᵢ[2,:]),z0
@@ -121,17 +80,17 @@ function compactTest(dim,nel,varPlot,ν,E,ρ0,l0; kwargs...)
         xN,yN = abs.(mpD.σᵢ[3,:]),z0
     end
     xA,yA = abs.(cmParam.ρ0.*g.*(l0.-z0)),z0
-    err   = sum(sqrt.((xN.-xA).^2).*mpD.V0)/(abs(g[end])*cmParam.ρ0*l0*sum(mpD.Ω₀))
-    return (xN,yN,xA,yA),meD.h,err
+    err   = sum(sqrt.((xN.-xA).^2).*mpD.Ω₀)/(abs(g[end])*cmParam.ρ0*l0*sum(mpD.Ω₀)) 
+    return (xN,yN,xA,yA),meD.h,err 
 end
 @views function compacTest(dim,trsfrAp)
-    ϕ∂ϕType    = :gimpm
-    fwrkDeform = :finite
+    ϕ∂ϕType    = "gimpm"
+    fwrkDeform = "finite"
     store,H,error = [],[],[]
     try
         @testset "convergence using $(ϕ∂ϕType), $(fwrkDeform) deformation, $(trsfrAp) mapping" begin
             # geometry
-            n         = [0,1,2,3,4,5,6]
+            n         = [0,1,2,3]#[0,1,2,3,4,5,6]
             nel       = 2.0.^n
             # initial parameters 
             l0,ν,E,ρ0 = 50.0,0.0,1.0e4,80.0
@@ -139,7 +98,7 @@ end
             ϵ         = 1.0
             for (it,nel) in enumerate(nel)
                 #action
-                DAT,h,err = compactTest(dim,nel,"P",ν,E,ρ0,l0;shpfun=ϕ∂ϕType,fwrk=fwrkDeform,trsf=trsfrAp,vollock=true)
+                DAT,h,err = compactTest(dim,nel,"P",ν,E,ρ0,l0;basis=ϕ∂ϕType,fwrk=fwrkDeform,trsfr=trsfrAp,vollock=true)
                 push!(store,DAT )
                 push!(H ,h[end])
                 push!(error,err)
@@ -154,23 +113,6 @@ end
     xN,yN,xA,yA = store[end]
     return H,error
 end
-@views function runCompacTest(DIM,TSF)
-    for k ∈ 1:length(DIM)
-        H,error = compacTest(DIM[k],TSF[k])
-        p2 = gr(size=(2.0*250,2*125),legend=true,markersize=2.25,markerstrokecolor=:auto)
-        if DIM[k] == 2 shape = :circle elseif DIM[k] == 3 shape = :star end
-        if k == 1
-            p2 = plot( 1.0./H,error,seriestype=:line,markerize=5.0,markershape=shape,label="$(DIM[1])D, $(TSF[1])") 
-        elseif k<length(DIM)
-            p2 = plot!(1.0./H,error,seriestype=:line,markerize=5.0,markershape=shape,label="$(DIM[k])D, $(TSF[k])") 
-        elseif k == length(DIM)
-            p2 = plot!(1.0./H,error,seriestype=:line,markerize=5.0,markershape=shape,label="$(DIM[k])D, $(TSF[k])",xlabel=L"$1/h$ [m$^{-1}$]",ylabel="error",xaxis=:log10,yaxis=:log10) 
-            display(plot(p2; layout=(1,1), size=(450,250)))
-            savefig(path_test*"23D_convergence_pass_compacTest.png")
-        end
-    end
-    return "all tests passed...exit"
-end
 #=
 if @isdefined(perf)
     if perf
@@ -182,7 +124,7 @@ else
     runCompacTest([2,3,2,3],[:mUSL,:mUSL,:tpicUSL,:tpicUSL])
 end
 =#
-export runCompacTest
+export compacTest
 
 #runCompacTest(2,"mUSL")
 
