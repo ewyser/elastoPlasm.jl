@@ -73,7 +73,7 @@ end
 function shpTest(ξ::Real=0.90)
     fid   = splitext(basename(@__FILE__))
     instr = require(:instr)
-    paths = Dict(:plot=>joinpath(elastoPlasm.sys.out,first(fid)))
+    paths = Dict(:plot=>joinpath(ElastoPlasm.sys.out,first(fid)))
     @info "partition of unity (PoU) testset with ξ = $(round(ξ,digits=2))"
     for shp ∈ ["bsmpm","smpm","gimpm"]
         instr[:basis] = shp

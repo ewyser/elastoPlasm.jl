@@ -1,5 +1,5 @@
 ```@meta
-CurrentModule = elastoPlasm
+CurrentModule = ElastoPlasm
 ```
 
 # Documentation for [ϵlastσPlasm.jl](https://github.com/ewyser/elastoPlasm.jl) 👻 

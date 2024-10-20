@@ -1,8 +1,8 @@
 push!(LOAD_PATH,"../src/")
 using Documenter
-using elastoPlasm
+using ElastoPlasm
 
-DocMeta.setdocmeta!(elastoPlasm, :DocTestSetup, :(using elastoPlasm); recursive=true)
+DocMeta.setdocmeta!(ElastoPlasm, :DocTestSetup, :(using ElastoPlasm); recursive=true)
 
 format = Documenter.HTML()
 manual = [
@@ -12,12 +12,12 @@ manual = [
 ]
 @info "Making documentation..."
 makedocs(;
-    modules=[elastoPlasm],
+    modules=[ElastoPlasm],
     authors="madmax",
     sitename="elastoPlasm.jl 👻",
     format=Documenter.HTML(;
-        repolink="github.com/ewyser/elastoPlasm.jl",
-        canonical="https://ewyser.github.io/elastoPlasm.jl/",
+        repolink="github.com/ewyser/ElastoPlasm.jl",
+        canonical="https://ewyser.github.io/ElastoPlasm.jl/",
         edit_link="main",
         assets=String[],
     ),
@@ -28,6 +28,6 @@ makedocs(;
 )
 @info "Deploying documentation..."
 deploydocs(
-    repo="github.com/ewyser/elastoPlasm.jl",
+    repo="github.com/ewyser/ElastoPlasm.jl",
     devbranch="main",
 )
