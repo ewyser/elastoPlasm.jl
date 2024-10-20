@@ -2,11 +2,11 @@
     type = what
     
     if type == "P"
-        if size(mpD.σ,1) == 3
-            d   = -(mpD.σ[1,:]+mpD.σ[2,:])/2/1e3
+        if size(mpD.σᵢ,1) == 3
+            d   = -(mpD.σᵢ[1,:]+mpD.σᵢ[2,:])/2/1e3
             lab = L"$p=-\left(\sigma_{xx,p}+\sigma_{yy,p}\right)/2$"
-        elseif size(mpD.σ,1) == 6
-            d   = -(mpD.σ[1,:]+mpD.σ[2,:]+mpD.σ[3,:])/3/1e3
+        elseif size(mpD.σᵢ,1) == 6
+            d   = -(mpD.σᵢ[1,:]+mpD.σᵢ[2,:]+mpD.σᵢ[3,:])/3/1e3
             lab = L"$p=-\left(\sigma_{xx,p}+\sigma_{yy,p}+\sigma_{zz,p}\right)/3$"
         end            
         tit   = "pressure, "*temp
@@ -47,7 +47,7 @@
             cblim = (0.0,maximum(d))
         end
     elseif type == "z0"
-        d     = mpD.z0
+        d     = mpD.z₀
         lab   = L"$z_p(t_0)$"
         tit   = "initial vertical position, "*temp
         cb    = palette(:grayC,5) 
@@ -83,7 +83,7 @@ end
 
 @views function savlot(mpD,meD,t,instr) 
     if !first(instr[:plast]) 
-        mpD.z0 .= mpD.x[:,end] 
+        mpD.z₀ .= mpD.x[:,end] 
     end
     if instr[:plot][:cond]
         P,tit = [],L"$t = $"*string(round(t,digits=1))*" [s]"

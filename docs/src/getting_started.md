@@ -3,7 +3,7 @@
 ### How to ```plasmazing``` ?  
 
 0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
-1. ``cd`` to the local repo ```./elastoPlasm ``` 
+1. ```cd``` to the local repo ```./elastoPlasm ``` 
 2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal)
 ```julia
 manuwyser@mBp elastoPlasm.jl % julia --project=. --threads=1
@@ -16,7 +16,7 @@ manuwyser@mBp elastoPlasm.jl % julia --project=. --threads=1
  _/ |\__'_|_|_|\__'_|  |  Official https://julialang.org/ release
 |__/                   |
 ```
-3. Enter pkg mode ``` ] ```, then ``activate .`` the project ``elastoPlasm`` and ``instantiate`` its environment and related packages. You can ``st`` to check package status.
+3. Enter pkg mode ``` ] ```, then ```activate .``` the project ```elastoPlasm``` and ```instantiate``` its environment and related packages. You can ```st``` to check package status.
 ```julia
 (elastoPlasm) pkg> st
 Project elastoPlasm v0.3.5
@@ -63,29 +63,15 @@ julia>
 julia> 
 ```
 
-5. Input parameters: ``L`` is a vector of the Eulerian mesh dimensions $\ell_{x,z|x,y,z}$ (two- and three-dimensional geometries are now supported since ``v0.3.0``), the argument ``nel`` defines the elements along the $x$ dim., ``varPlot`` defines state variable to be displayed in plot (``"P"`` for pressure, ``"du"`` for displacement or ``"epII"`` for plastic strain), and ``cmType`` defines the constitutive model being used. 
+5. Input parameters: ```L``` is a vector of the Eulerian mesh dimensions $\ell_{x,z|x,y,z}$[^1], the argument ```nel``` defines the elements along the $x$ dim., ```varPlot``` defines state variable to be displayed in plot (```"P"``` for pressure, ```"du"``` for displacement or ```"epII"``` for plastic strain), and ```cmType``` defines the constitutive model being used. 
 
-6. Optional ``kwargs`` are: ``shpfun={:smpm,:gimpm,:bsmpm}`` defining shape functions, ``fwrk={:infinitesimal,:finite}`` defining the deformation framework, ``trsf={:picflipUSL,:mUSL,:tpicUSL}`` defining the mapping scheme, ``vollock={true|false}`` is a boolean controlling volumetric locking corrections using the $\Delta\bar{F}$ method (see [1,2]), and ``GRF={true|false}`` is a boolean switching on/off gaussian random cohesion fields (see [3,4]). An illustrative example with ``kwargs`` is given below
+6. Optional ```kwargs``` are: ```shpfun={:smpm,:gimpm,:bsmpm}``` defining shape functions, ```fwrk={:infinitesimal,:finite}``` defining the deformation framework, ```trsf={:picflipUSL,:mUSL,:tpicUSL}``` defining the mapping scheme, ```vollock={true|false}``` is a boolean controlling volumetric locking corrections using the $\Delta\bar{F}$ method (see [1,2]), and ```GRF={true|false}``` is a boolean switching on/off gaussian random cohesion fields (see [3,4]). An illustrative example with ```kwargs``` is given below
 ```julia
 ϵp23De([64.1584,12.80],40,"P","MC";shpfun=:bsmpm,fwrk=:finite,trsf=:mUSL,vollock=true)
 ```
 
 7. Outputs (figs, gif, etc.) are saved in the folder ```./docs/out/ ```
 
-8. (**final note**): ``ϵp23De`` automatically infers whether the two- or three-dimensional solver should be compiled, solely based on the dimension of ``L``, *i.e.,* ``length(L)={2|3}``.
+8. (**final note**): ```ϵp23De``` automatically infers whether the two- or three-dimensional solver should be compiled, solely based on the dimension of ```L```, *i.e.,* ```length(L)={2|3}```.
 
-## **References**
-For useful references, the reader can have a look in the folder ```./docs/refs```, where some of the following references can be found
-
-1. Xie M., Navas P., López-Querol S. An implicit locking-free B-spline Material Point
-Method for large strain geotechnical modelling. Int J Numer Anal Methods Geomech. 2023;1-21.
-https://doi.org/10.1002/nag.3599
-
-2. Zhao Y., Jiang C., Choo J. Circumventing volumetric locking in explicit material point
-methods: A simple, efficient, and general approach. Int J Numer Methods Eng. 2023;1-22. https://doi.org/10.1002/nme.7347
-
-3. Räss, L., Kolyukhin D., and Minakov, A. Efficient parallel random field generator for large 3-D geophysical problems. Computers & Geosciences. 2019;158-169. https://doi.org/10.1016/j.cageo.2019.06.007
-
-4. Ma, G., Rezania, M., Mousavi Nezhad, M. et al. Uncertainty quantification of landslide runout motion considering soil interdependent anisotropy and fabric orientation. Landslides 12022:1231–1247. https://doi.org/10.1007/s10346-021-01795-2
-</div>
-
+[^1]: Two- and three-dimensional geometries are now supported since ```v0.3.0```.

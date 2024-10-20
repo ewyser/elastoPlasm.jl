@@ -1,4 +1,11 @@
-# ϵlastσPlasm.jl 👻 
+```@meta
+CurrentModule = ElastoPlasm
+```
+
+# Documentation for [ϵlastσPlasm.jl](https://github.com/ewyser/elastoPlasm.jl) 👻 
+
+```@index
+```
 
 ## Overview
 This project originates from [`ep2-3De v1.0`](https://github.com/ewyser/ep2-3De) and is fully witten in Julia. It solves explicit elasto-plastic problems within a finite deformation framework (*i.e.,* adopting logarithmic strains and Kirchoff stresses, which allows the use of conventional small-strain stress integration algorithms within a finite deformation framework), using the **m**aterial **p**oint **m**ethod (MPM) with b-spline shape functions alongside with a mUSL approach.

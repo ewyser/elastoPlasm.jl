@@ -1,7 +1,11 @@
 function D(E,ν,nD)
-    Gc = E/(2.0*(1.0+ν))                                                   # shear modulus               [Pa]
-    Kc = E/(3.0*(1.0-2.0*ν))                                               # bulk modulus                [Pa]
-    if nD == 2
+    Kc,Gc = E/(3.0*(1.0-2.0*ν)),E/(2.0*(1.0+ν))                                # bulk & shear modulus               [Pa]
+    if nD == 1
+        D  = [ 
+            Kc+4/3*Gc 0.0;
+            0.0       Gc ;
+            0.0       0.0]
+    elseif nD == 2
         D  = [ 
             Kc+4/3*Gc Kc-2/3*Gc 0.0 ;
             Kc-2/3*Gc Kc+4/3*Gc 0.0 ;
@@ -17,9 +21,8 @@ function D(E,ν,nD)
     end
     return Kc,Gc,D
 end
-function cm(dim,instr)
+function cm(dim,instr; E::Real=1.0e6,ν::Real=0.3)
     # independant physical constant          
-    E,ν     = 1.0e6,0.3                                                         # Young's mod. [Pa], Poisson's ratio [-]
     K,G,Del = D(E,ν,dim)                                                  # elastic matrix D(E,ν) Young's mod. [Pa] + Poisson's ratio [-]    
     ρ0      = 2700.0                                                            # density [kg/m^3]
     c       = sqrt((K+4.0/3.0*G)/ρ0)                                            # elastic wave speed [m/s]

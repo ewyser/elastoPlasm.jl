@@ -2,20 +2,20 @@
 ## start-up function definition
 ####################################################################################################################################
 function superInc(DIR::String)
-	msg,included = ["method(s) sucessfully included:"],[]
-	for (root, dirs, files) in walkdir(DIR)
-		for file in files
-			f = joinpath(root, file) # path to files
+	msg,inc = ["method(s) sucessfully included:"],[]
+	for (root, dirs, files) ∈ walkdir(DIR)
+		for file ∈ files
+			f = joinpath(root, file)
 			if !occursin("/mpi/",f) && last(splitext(f)) == ".jl" 
 				include(f)
-				push!(included,file)
-				push!(msg   ,"\n\t(✓) "*file)
+				push!(inc,file           )
+				push!(msg,"\n\t(✓) "*file)
 			end
 		end
 	end
-	return included
+	return inc
 end
-function treeLike(sucess, prefix="\n\t", level=0, max_level=1)
+function tree(sucess, prefix="\n\t", level=0, max_level=1)
     if level > max_level
         return nothing
     end
@@ -29,7 +29,6 @@ end
 ####################################################################################################################################
 ## start-up info struct definition and instanciation
 ####################################################################################################################################
-
 Base.@kwdef mutable struct moduleCore
 	cpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
 	gpu::NamedTuple = (name=nothing,lab=nothing,mtp=nothing)
@@ -42,12 +41,24 @@ end
 ####################################################################################################################################
 ## conditional list of source code include and external packages deps
 ####################################################################################################################################
-# include dependencies & function call(s)
+# include dependencies
 using Revise,Pkg,Test
-using LinearAlgebra,SparseArrays, KernelAbstractions, Plots, LaTeXStrings, Random, Base.Threads,ProgressMeter,REPL.TerminalMenus
+using Plots,LaTeXStrings,ProgressMeter,REPL.TerminalMenus
+using LinearAlgebra,SparseArrays,Random
+using KernelAbstractions,Adapt,Base.Threads
 import KernelAbstractions.@atomic as @atom
 import KernelAbstractions.synchronize as sync
-# instantiate sys
-sys    = moduleCore()
+import Adapt.adapt as user_adapt
+import Adapt.@adapt_structure as @user_struct
 # arithmetic precision & relative path for figs & data
 const typeD     = Float64  
+# instantiate sys & create out folder 
+sys = moduleCore()
+out = ["ElastoPlasm.jl location:\n\t- "*sys.root,]
+if !isdir(sys.out)
+	mkpath(sys.out) 
+	push!(out,"\n\tcreating directory at:\n- "*sys.out)
+else
+	push!(out,"\n\talready existing directory at:\n- "*sys.out)
+end
+@info join(out)

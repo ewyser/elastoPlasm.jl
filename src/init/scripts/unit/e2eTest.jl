@@ -7,12 +7,12 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     g       = 9.81                                                              # gravitationnal acceleration [m/s^2]            
     # constitutive model
     cmParam = cm(length(L),instr)
-    T,te,tg = 15.0,10.0,15.0/1.5                                                # simulation time [s], elastic loading [s], gravity load
     # mesh & mp setup
     meD     = meshSetup(nel,L,instr)                                            # mesh geometry setup
-    mpD     = pointSetup(meD,L,cmParam,instr[:GRF],typeD)                      # material point geometry setup
+    mpD     = pointSetup(meD,L,cmParam,instr)                                   # material point geometry setup
 
-    twoDtplgy!(mpD,meD)
+    instr[:cairn] = (;tplgy! = shpfun(meD.nD,instr[:basis])[1],)
+    instr[:cairn].tplgy!(mpD,meD; ndrange=(mpD.nmp));sync(CPU())
     for p ∈ 1:mpD.nmp
         for el ∈ findall(!iszero,meD.e2e[:,mpD.p2e[p]])
             mpD.e2p[p,el] = p       

@@ -1,16 +1,50 @@
-# ϵlastσPlasm.jl 👻 
+# ϵlastσPlasm.jl 👻
+[![Build Status](https://github.com/ewyser/elastoPlasm.jl/workflows/CI/badge.svg)](https://github.com/ewyser/elastoPlasm.jl/actions)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://ewyser.github.io/elastoPlasm.jl/)
+<!---
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaci.github.io/PkgTemplates.jl/stable)
+[![](https://img.shields.io/badge/docs-stable-blue.svg?logo=quicklook)](https://github.com/LandslideSIM/MaterialPointSolver.jl/wiki)
+[![](https://img.shields.io/badge/version-v0.3.0-926116)]()
+
+[![](https://img.shields.io/badge/NVIDIA-CUDA-green.svg?logo=nvidia)](https://developer.nvidia.com/cuda-toolkit)
+[![](https://img.shields.io/badge/AMD-ROCm-red.svg?logo=amd)](https://www.amd.com/en/products/software/rocm.html)
+[![](https://img.shields.io/badge/Intel-oneAPI-blue.svg?logo=intel)](https://www.intel.com/content/www/us/en/developer/tools/oneapi/overview.html)
+[![](https://img.shields.io/badge/Apple-Metal-purple.svg?logo=apple)](https://developer.apple.com/metal/)
+-->
 
 ## Overview
-This project originates from [`ep2-3De v1.0`](https://github.com/ewyser/ep2-3De) and is fully witten in Julia. It solves explicit elasto-plastic problems within a finite deformation framework (*i.e.,* adopting logarithmic strains and Kirchoff stresses, which allows the use of conventional small-strain stress integration algorithms within a finite deformation framework), using the **m**aterial **p**oint **m**ethod (MPM) with b-spline shape functions alongside with a mUSL approach.
+This package originates from the non-trivial to use [`ep2-3De v1.0`](https://github.com/ewyser/ep2-3De), and it is fully witten in Julia. It aims at fast prototyping with decent production capabilities.
 
-![Slumping dynamics (without any volumetric locking corrections) showing the accumulated plastic strain $\epsilon_p^{\mathrm{acc}}$ after an elastic load of 8 s and an additional elasto-plastic load of $\approx$ 7 s.](./assets/img/epII.png) 
+It addresses the following key aspects throughout a modern and easy-to-use MPM framework that considers:
+- solves elastoplastic problems under the following:
+    - an Updated Lagrangian explicit formulation
+    - a finite or infinitesimal deformation framework; adopting logarithmic strains and Kirchoff stresses for finite deformation and Jaumann rate formulation for infinitesimal deformation
+- uses the following shape function basis:
+    - standard linear shape function $N_n(\mathbf{x}_p)$
+    - GIMP shape function $S_n(\mathbf{x}_p)$
+    - boundary modified cubic B-spline shape function $\phi_n(\mathbf{x}_p)$
+- uses the following mapping between nodes (denoted $n$ or $v$) and material points (denoted $p$)
+    - FLIP with augmented mUSL procedure
+    - TPIC with standard USL procedure
 
-The solver relies on random gaussian fields to generate initial fields $\psi(\boldsymbol{x})$, *e.g.,* the cohesion $c(\boldsymbol{x}_p)$ or the internal friction angle $\phi(\boldsymbol{x}_p)$, with $\boldsymbol{x}_p$ the material point's coordinates. 
+The solver relies on random gaussian fields to generate initial fields $\psi(\boldsymbol{x})$, *e.g.,* the cohesion $c(\boldsymbol{x}_p)$ or the internal friction angle $\phi(\boldsymbol{x}_p)$, with $\boldsymbol{x}_p$ the material point's coordinates.
 
-![Initial cohesion field $c_0(\boldsymbol{x}_p)$ with average $\mu=20$ kPa with a variance $\sigma\pm5$ kPa.](./assets/img/c0.png)
+## Performance Hierarchy in HPC
+In the context of High-Performance Computing (HPC), it’s essential to understand the different tiers of performance based on the computational resources available:
 
-## **Content**
-1. [Usage](#id-section2)
-<div id='id-section2'/> 
+- *standard*: This tier is characterized by single-core CPU usage, suitable for basic tasks like light simulations and data processing.
+- moderate: This level utilizes multi-core CPUs and a single GPU, allowing for medium-scale simulations and machine learning tasks.
+- **high** Performance: This tier represents the use of multi-node systems with multiple CPUs and GPUs, ideal for large-scale simulations and deep learning applications.
 
+The stylized term $_s\mathrm{m}^\mathbf{H}\mathrm{PC}$ captures this hierarchy, where &ₛ indicates Standard, mᴴ represents the transition to Moderate and High performance, and PC signifies High-Performance Computing. This notation reflects our commitment to providing scalable solutions that adapt to various performance needs.
+
+### How to ```plasmazing``` ?  
+
+0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
+
+1. Clone [```elastoPlasm.jl```](https://github.com/ewyser/elastoPlasm.jl/tree/main)  and ```cd``` to your local repo 
+
+2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal) and enter pkg mode ``` ] ```, then ```activate .``` the project ```elastoPlasm``` and ```instantiate``` its environment and related packages.
+
+4. Once ```elastoPlasm``` has been correctly instantiated, you can ```using elastoPlasm```
 
