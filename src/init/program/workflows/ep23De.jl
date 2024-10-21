@@ -22,7 +22,7 @@ function ϵp23De!(mpD,meD,cmParam,g,T,te,tg,instr)
             # mpm cycle
             shpfun!(mpD,meD,instr)
             mapsto!(mpD,meD,g,Δt,instr,"p>n")    
-            solve!(meD,Δt)
+            solve!(meD,Δt,instr)
             mapsto!(mpD,meD,g,Δt,instr,"p<n")
             ηmax = elastoplast!(mpD,meD,cmParam,Δt,instr)
             # update sim time

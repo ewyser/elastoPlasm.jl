@@ -1,4 +1,4 @@
-@kernel inbounds = true function p2e1D!(mpD,meD)
+@kernel inbounds = true function p2e2n1D!(mpD,meD)
     p = @index(Global)
     if p≤mpD.nmp 
         mpD.p2e[p] = cld(mpD.x[p,1]-meD.x₀[1],meD.h[1])
@@ -7,7 +7,7 @@
         end
     end
 end
-@kernel inbounds = true function p2e2D!(mpD,meD)
+@kernel inbounds = true function p2e2n2D!(mpD,meD)
     p = @index(Global)
     if p≤mpD.nmp 
         elx        = fld(mpD.x[p,1]-meD.x₀[1],meD.h[1])#floor(Int64,(mpD.x[p,1]-meD.minC[1])*1.0/meD.h[1])
@@ -18,7 +18,7 @@ end
         end
     end
 end
-@kernel inbounds = true function p2e3D!(mpD,meD)
+@kernel inbounds = true function p2e2n3D!(mpD,meD)
     p = @index(Global)
     if p≤mpD.nmp 
         mpD.p2e[p] = (floor(Int64,(mpD.x[p,3]-meD.x₀[3])*1.0/meD.h[3])+1)+(meD.nel[3])*floor(Int64,(mpD.x[p,1]-meD.x₀[1])*1.0/meD.h[1])+(meD.nel[3]*meD.nel[1])*floor(Int64,(mpD.x[p,2]-meD.x₀[2])*1.0/meD.h[2])

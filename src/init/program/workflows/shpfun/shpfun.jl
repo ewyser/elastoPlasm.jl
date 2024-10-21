@@ -1,14 +1,14 @@
-function init_shpfun(dim::Number,basis::String)
-    if !@isdefined(tplgy!)
+function init_shpfun(dim::Number,basis::String;what::String="nothing")
+    if what == "tplgy!"
         if dim == 1
-            tplgy! = p2e1D!(CPU())
+            tplgy! = p2e2n1D!(CPU())
         elseif dim == 2
-            tplgy! = p2e2D!(CPU())
+            tplgy! = p2e2n2D!(CPU())
         elseif dim == 3
-            tplgy! = p2e3D!(CPU())
+            tplgy! = p2e2n3D!(CPU())
         end
-    end
-    if !@isdefined(ϕ∂ϕ!)
+        return tplgy!
+    elseif what == "ϕ∂ϕ!"
         if basis == "bsmpm"
             if dim == 1
                 ϕ∂ϕ! = bsmpm1D(CPU())    
@@ -36,8 +36,10 @@ function init_shpfun(dim::Number,basis::String)
         else
             return throw(ArgumentError("$(basis) is not a supported shape function basis"))
         end
+        return ϕ∂ϕ!
+    else
+        return throw(ArgumentError("$(what) is not a supported shape function nor topology initializer"))
     end
-    return tplgy!,ϕ∂ϕ!
 end
 function shpfun!(mpD,meD,instr)
     # get topological relations, i.e., mps-to-elements and elements-to-nodes

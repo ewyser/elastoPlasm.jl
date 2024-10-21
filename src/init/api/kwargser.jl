@@ -27,11 +27,12 @@ function kwargser(type::Symbol,kwargs::Any;dim::Number = 2)
         end
         # add cairns (abstract kernels) to instr set
         instr[:cairn] = (;
-            tplgy! = init_shpfun(dim,instr[:basis])[1],
-            ϕ∂ϕ!   = init_shpfun(dim,instr[:basis])[2],
+            tplgy! = init_shpfun(dim,instr[:basis];what="tplgy!"),
+            ϕ∂ϕ!   = init_shpfun(dim,instr[:basis];what="ϕ∂ϕ!"),
             p2n!   = init_mapsto(dim,instr[:trsfr])[1],
             n2p!   = init_mapsto(dim,instr[:trsfr])[2],
             augm!  = init_DM(instr[:trsfr]),
+            solveEuler! = init_solve(),
         )
         return instr
     else

@@ -10,7 +10,13 @@
         end
     end
 end
-@views function solve!(meD,Δt)
+function init_solve()
+    if !@isdefined(solveEuler!)
+        solveEuler! = forwardEuler(CPU())
+    end
+    return solveEuler!
+end
+@views function solve!(meD,Δt,instr)
     # viscous damping
     η      = 0.1
     # initialize
@@ -18,7 +24,6 @@ end
     meD.an.= 0.0
     meD.vn.= 0.0
     # solve momentum equation on the mesh using backend-agnostic kernel
-    @isdefined(solve!) ? nothing : solve! = forwardEuler(CPU())
-    solve!(meD,Δt,η; ndrange=meD.nno[end]);sync(CPU())
+    instr[:cairn].solveEuler!(meD,Δt,η; ndrange=meD.nno[end]);sync(CPU())
     return nothing
 end

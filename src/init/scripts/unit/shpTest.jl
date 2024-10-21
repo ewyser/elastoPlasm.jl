@@ -18,8 +18,8 @@ function shpfunCheck(shp,instr,paths,cond)
         p2e  = zeros(Int64,nmp),
         p2n  = zeros(Int64,meD.nn,nmp),
     )
-    instr[:cairn] = (;tplgy! = init_shpfun(meD.nD,instr[:basis])[1],
-                      ϕ∂ϕ!   = init_shpfun(meD.nD,instr[:basis])[2],
+    instr[:cairn] = (;tplgy! = init_shpfun(meD.nD,instr[:basis];what="tplgy!"),
+                      ϕ∂ϕ!   = init_shpfun(meD.nD,instr[:basis];what="ϕ∂ϕ!"),
                     )
     # calculate tplgy and shpfun
     shpfun!(mpD,meD,instr)
@@ -64,18 +64,14 @@ function shpfunCheck(shp,instr,paths,cond)
         yscale     = :log10,
         title      = T[3],
     )
-    try
-        display(plot(p0,p1,p2;layout=(3,1))) 
-        savefig(joinpath(paths[:plot],"summary_$(shp)"))
-    catch
-        @warn "unable to display plot and save"
-    end
+    display(plot(p0,p1,p2;layout=(3,1))) 
+    savefig(joinpath(paths[:plot],"summary_$(shp)"))
     return PoU
 end
 function shpTest(ξ::Real=0.90)
     fid   = splitext(basename(@__FILE__))
     instr = require(:instr)
-    paths = Dict(:plot=>joinpath(ElastoPlasm.sys.out,first(fid)))
+    paths  = setPaths(first(fid), sys.out;interactive=false)
     @info "partition of unity (PoU) testset with ξ = $(round(ξ,digits=2))"
     for shp ∈ ["bsmpm","smpm","gimpm"]
         instr[:basis] = shp
