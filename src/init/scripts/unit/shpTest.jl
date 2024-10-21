@@ -1,7 +1,10 @@
-function shpfunCheck(shp,instr,paths)
+function shpfunCheck(shp,instr,paths,cond)
     nel,L  = 5,[1.0]
-    meD,ni = meshSetup(nel,L,instr),10
+
+    meD,ni = meshSetup(nel,L,instr;ghost=cond),10
+
     xp     = collect(meD.xB[1]+(0.5*meD.h[1]/ni):meD.h[1]/ni:meD.xB[2])
+    nel    = meD.nel[end]
     nmp    = length(xp)
     # constructor
     mpD = (
@@ -77,10 +80,11 @@ function shpTest(ξ::Real=0.90)
     for shp ∈ ["bsmpm","smpm","gimpm"]
         instr[:basis] = shp
         @testset "$(shp): PoU > $(round(ξ,digits=2))" verbose = true begin
-            PoU = shpfunCheck(shp,instr,paths)
+            ghost = true
+            PoU = shpfunCheck(shp,instr,paths,ghost)
             @test minimum(PoU) > ξ
         end
     end
-    return true
+    return 1
 end
 export shpTest

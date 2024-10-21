@@ -1,8 +1,11 @@
-function meshBCs(xn,h,nno,nD;drift=0.0)
-    l = minimum(xn,dims=1).+drift
-    L = maximum(xn,dims=1).-drift
+function meshBCs(xn,h,nno,nD;ghosts=0.0)
+    l = minimum(xn,dims=1).+ghosts
+    L = maximum(xn,dims=1).-ghosts
     if nD == 1
-        xB  = [minimum(xn)+drift*h,maximum(xn)-drift*h]
+        l = first(xn).+ghosts
+        L = last(xn).-ghosts
+
+        xB  = vcat(l,L)
         bcX = ones(Float64,nno[end])
         bcX[1]  = 0.0
         bcX[end]= 0.0

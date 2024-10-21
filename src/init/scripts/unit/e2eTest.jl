@@ -8,7 +8,7 @@ function e2eTest(L::Vector{Float64},nel::Int64; kwargs...)
     # constitutive model
     cmParam = cm(length(L),instr)
     # mesh & mp setup
-    meD     = meshSetup(nel,L,instr)                                            # mesh geometry setup
+    meD     = meshSetup(nel,L,instr;ghost=true)
     setgeom = inislump(meD,cmParam,ni,instr)                       
     mpD     = pointSetup(meD,cmParam,instr;define=setgeom)
 
