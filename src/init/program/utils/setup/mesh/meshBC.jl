@@ -2,9 +2,6 @@ function meshBCs(xn,h,nno,nD;ghosts=0.0)
     l = minimum(xn,dims=1).+ghosts
     L = maximum(xn,dims=1).-ghosts
     if nD == 1
-        l = first(xn).+ghosts
-        L = last(xn).-ghosts
-
         xB  = vcat(l,L)
         bcX = ones(Float64,nno[end])
         bcX[1]  = 0.0

@@ -12,7 +12,7 @@ function meshSetup(nel,L,instr;ghost::Bool=false)
     # boundary conditions
     bc,xB        = meshBCs(x,h,nno,nD;ghosts=buffer)
     if nD>1
-        minC = minimum(x,dims=2)
+        minC = minimum(x,dims=1)
     else
         minC = minimum(x)
     end
@@ -24,8 +24,8 @@ function meshSetup(nel,L,instr;ghost::Bool=false)
         nn   = nn,
         L    = L,
         h    = h,
-        minC = minC,
         # nodal quantities
+        x₀   = minC,
         xn   = x,
         tn   = Int64.(t),
         mn   = zeros(nno[end]            ), # lumped mass vector
