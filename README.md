@@ -13,38 +13,44 @@
 -->
 
 ## Overview
-This package originates from the non-trivial to use [`ep2-3De v1.0`](https://github.com/ewyser/ep2-3De), and it is fully witten in Julia. It aims at fast prototyping with decent production capabilities.
+This package is an evolution of the non-trivial-to-use [`ep2-3De v1.0`](https://github.com/ewyser/ep2-3De), and it is fully written in **Julia**. It is designed for **fast prototyping** with **decent production capabilities** in mind. It addresses the following key aspects:
 
-It addresses the following key aspects throughout a modern and easy-to-use MPM framework that considers:
-- solves elastoplastic problems under the following:
-    - an Updated Lagrangian explicit formulation
-    - a finite or infinitesimal deformation framework; adopting logarithmic strains and Kirchoff stresses for finite deformation and Jaumann rate formulation for infinitesimal deformation
-- uses the following shape function basis:
-    - standard linear shape function $N_n(\mathbf{x}_p)$
-    - GIMP shape function $S_n(\mathbf{x}_p)$
-    - boundary modified cubic B-spline shape function $\phi_n(\mathbf{x}_p)$
-- uses the following mapping between nodes (denoted $n$ or $v$) and material points (denoted $p$)
+- **Updated Lagrangian explicit formulation** for elastoplastic simulations.
+- Handles **finite** or **infinitesimal deformation** frameworks:
+  - **finite deformation**: uses logarithmic strains and Kirchoff stresses.
+  - **infinitesimal deformation**: uses a **Jaumann rate formulation**.
+- Supports multiple **shape function bases**:
+    - standard linear shape function $N_n(\boldsymbol{x}_p)$
+    - GIMP shape function $S_n(\boldsymbol{x}_p)$
+    - boundary modified cubic B-spline shape function $\phi_n(\boldsymbol{x}_p)$
+- Uses the following mapping between nodes (denoted $n$ or $v$) and material points (denoted $p$)
     - FLIP with augmented mUSL procedure
     - TPIC with standard USL procedure
 
-The solver relies on random gaussian fields to generate initial fields $\psi(\boldsymbol{x})$, *e.g.,* the cohesion $c(\boldsymbol{x}_p)$ or the internal friction angle $\phi(\boldsymbol{x}_p)$, with $\boldsymbol{x}_p$ the material point's coordinates.
+The solver relies on random gaussian fields to generate initial fields $f(\boldsymbol{x})$, *e.g.,* the cohesion $c(\boldsymbol{x}_p)$ or the internal friction angle $\varphi(\boldsymbol{x}_p)$, with $\boldsymbol{x}_p$ the material point's coordinates.
 
 ## Performance Hierarchy
-In the context of High-Performance Computing (HPC), it’s essential to understand the different tiers of performance based on the computational resources available:
+Understanding the computational hierarchy is key when working with `ϵlastσPlasm.jl`, as it scales from standard to high-performance computing environments:
 
-- *standard*: This tier is characterized by single-core CPU usage, suitable for basic tasks like light simulations and data processing.
-- moderate: This level utilizes multi-core CPUs and a single GPU, allowing for medium-scale simulations and machine learning tasks.
-- **high** Performance: This tier represents the use of multi-node systems with multiple CPUs and GPUs, ideal for large-scale simulations.
+- **Standard**: Single-core CPU usage, suitable for basic tasks such as light simulations or data processing.
+- **Moderate**: Utilizes **multi-core CPUs** and a **single GPU** for medium-scale simulations and machine learning tasks.
+- **High Performance**: Employs **multi-node systems** with multiple CPUs and GPUs, enabling large-scale simulations and deep learning applications.
 
-The stylized term $_s\mathrm{m}^\mathbf{H}\mathrm{PC}$ captures this hierarchy, where &ₛ indicates Standard, mᴴ represents the transition to Moderate and High performance, and PC signifies High-Performance Computing. This notation reflects the commitment to providing scalable solutions that adapt to various performance needs.
+The stylized term $_s\mathrm{m}^\mathbf{H}\mathrm{PC}$ represents this performance hierarchy:
+- $_s$ for **Standard** performance.
+- $\mathrm{m}^\mathbf{H}$ for transitioning to **Moderate** and **High** performance.
+- $\mathrm{PC}$ for **High-Performance Computing**.
+
+This notation emphasizes the package’s ability to adapt across various computational environments.
+
 
 ### How to ```plasmazing``` ?  
 
 0. (opt.) Get Julia [here](https://julialang.org/downloads/) and follow instructions for installation
 
-1. Clone [```elastoPlasm.jl```](https://github.com/ewyser/elastoPlasm.jl/tree/main)  and ```cd``` to your local repo 
+1. Clone [```ElastoPlasm.jl```](https://github.com/ewyser/elastoPlasm.jl/tree/main)  and ```cd``` to your local repo 
 
-2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal) and enter pkg mode ``` ] ```, then ```activate .``` the project ```elastoPlasm``` and ```instantiate``` its environment and related packages.
+2. Launch Julia (on macOS, drag & drop ```start_macOS.sh``` in the terminal) and enter pkg mode ``` ] ```, then ```activate .``` the project ```ElastoPlasm``` and ```instantiate``` its environment and related packages.
 
-4. Once ```elastoPlasm``` has been correctly instantiated, you can ```using elastoPlasm```
+4. Once ```ElastoPlasm``` has been correctly instantiated, you can ```using ElastoPlasm```
 
