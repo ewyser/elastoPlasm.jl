@@ -32,6 +32,8 @@ function meshCoord(nD,L,h;ghosts=0.0)
     elseif nD == 2
         x0,z0 = [0.0-ghosts[1],L[1]+ghosts[1]],[0.0-ghosts[2],L[2]+2.0*h[2]+ghosts[2]]
         xn,zn = collect(first(x0):h[1]:last(x0)),collect(first(z0):h[2]:last(z0))
+        xe,ze = xn[1:end-1].+h[1]/2.0,zn[1:end-1].+.+h[2]/2.0
+
         xt,zt = repeat([3],length(xn)),repeat([3],length(zn))
         xt[1] = zt[1] = 1
         xt[2] = zt[2] = 2
@@ -42,10 +44,18 @@ function meshCoord(nD,L,h;ghosts=0.0)
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         xn  = (xn'.*ones(typeD,nno[2],1     ))     
         zn  = (     ones(typeD,nno[1],1     )'.*reverse(zn))
-        x   = hcat(vec(xn),vec(zn))
+        xn  = hcat(vec(xn),vec(zn))
+        xe  = (xe'.*ones(typeD,nno[2]-1,1     ))     
+        ze  = (     ones(typeD,nno[1]-1,1     )'.*reverse(ze))
+        xe  = hcat(vec(xe),vec(ze))
+
+        
+
         xt  = (xt'.*ones(Int64,nno[2],1     ))     
         zt  = (     ones(Int64,nno[1],1     )'.*reverse(zt))
-        t   = hcat(vec(xt),vec(zt))
+        xt  = hcat(vec(xt),vec(zt))
+
+
     elseif nD == 3
         x0 = [0.0-ghosts[1],L[1]+ghosts[1]]
         y0 = [0.0-ghosts[2],L[2]+ghosts[2]]
@@ -69,7 +79,7 @@ function meshCoord(nD,L,h;ghosts=0.0)
         xt  = (xt'.*ones(Int64,nno[3],1     ))     .*ones(Int64,1,1,nno[2])
         zt  = (     ones(Int64,nno[1],1     )'.*zt).*ones(Int64,1,1,nno[2])
         yt  = (     ones(Int64,nno[3],nno[1]))     .*reshape(yt,1,1,nno[2])
-        t   = hcat(vec(xt),vec(yt),vec(zt))
+        xt  = hcat(vec(xt),vec(yt),vec(zt))
     end
-    return x,t,nn,nel,nno
+    return xn,xe,xt,nn,nel,nno
 end

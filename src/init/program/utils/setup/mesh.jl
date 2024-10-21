@@ -8,13 +8,13 @@ function meshSetup(nel,L,instr;ghost::Bool=false)
         buffer = 0.0.*h
     end
     # mesh 
-    x,t,nn,nel,nno = meshCoord(nD,L,h;ghosts=buffer)
+    xn,xe,t,nn,nel,nno = meshCoord(nD,L,h;ghosts=buffer)
     # boundary conditions
-    bc,xB        = meshBCs(x,h,nno,nD;ghosts=buffer)
+    bc,xB        = meshBCs(xn,h,nno,nD;ghosts=buffer)
     if nD>1
-        minC = minimum(x,dims=1)
+        minC = minimum(xn,dims=1)
     else
-        minC = minimum(x)
+        minC = minimum(xn)
     end
     # constructor 
     meD = (
@@ -26,7 +26,8 @@ function meshSetup(nel,L,instr;ghost::Bool=false)
         h    = h,
         # nodal quantities
         x₀   = minC,
-        xn   = x,
+        xn   = xn,
+        xe   = xe,
         tn   = Int64.(t),
         mn   = zeros(nno[end]            ), # lumped mass vector
         Mn   = zeros(nno[end],nno[end]   ), # consistent mass matrix
