@@ -20,6 +20,7 @@ function meshCoord(nD,L,h;ghosts=0.0)
     if nD == 1
         x0 = [0.0-ghosts[1],L[1]+ghosts[1]]
         xn = collect(first(x0):h[1]:last(x0))
+        xe = xn[1:end-1].+h[1]/2.0
         xt = repeat([3],length(xn))
         xt[1]     = 1
         xt[2]     = 2

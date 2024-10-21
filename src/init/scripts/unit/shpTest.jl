@@ -72,13 +72,16 @@ function shpTest(ξ::Real=0.90)
     fid   = splitext(basename(@__FILE__))
     instr = require(:instr)
     paths  = setPaths(first(fid), sys.out;interactive=false)
-    @info "partition of unity (PoU) testset with ξ = $(round(ξ,digits=2))"
-    for shp ∈ ["bsmpm","smpm","gimpm"]
-        instr[:basis] = shp
-        @testset "$(shp): PoU > $(round(ξ,digits=2))" verbose = true begin
-            ghost = true
-            PoU = shpfunCheck(shp,instr,paths,ghost)
-            @test minimum(PoU) > ξ
+    for (k,ξ) ∈ enumerate([0.9,0.95,0.98,0.99])
+        @testset "partition of unity (PoU) testset ξ = $(round(ξ,digits=2))" verbose = true begin 
+            for shp ∈ ["bsmpm","smpm","gimpm"]
+                instr[:basis] = shp
+                @testset "$(shp): PoU > $(round(ξ,digits=2))" verbose = true begin
+                    ghost = true
+                    PoU = shpfunCheck(shp,instr,paths,ghost)
+                    @test minimum(PoU) > ξ
+                end
+            end
         end
     end
     return 1
