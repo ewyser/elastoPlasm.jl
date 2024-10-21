@@ -1,4 +1,4 @@
-function meshGeom(L,nel)
+function mesh_info(L,nel)
     nD = length(L)
     if nD == 1
         L   = L
@@ -15,7 +15,7 @@ function meshGeom(L,nel)
     end
     return L,h,nD
 end
-function meshCoord(nD,L,h;ghosts=0.0)
+function mesh_coord(nD,L,h;ghosts=0.0)
     nn = 4^nD
     if nD == 1
         x0 = [0.0-ghosts[1],L[1]+ghosts[1]]
@@ -45,12 +45,15 @@ function meshCoord(nD,L,h;ghosts=0.0)
         nel = [nno[1]-1,nno[2]-1,(nno[1]-1)*(nno[2]-1)]
         xn  = (xn'.*ones(typeD,nno[2],1     ))     
         zn  = (     ones(typeD,nno[1],1     )'.*reverse(zn))
+        println(size(xn))
+        println(size(zn))
+
         xn  = hcat(vec(xn),vec(zn))
         xe  = (xe'.*ones(typeD,nno[2]-1,1     ))     
         ze  = (     ones(typeD,nno[1]-1,1     )'.*reverse(ze))
         xe  = hcat(vec(xe),vec(ze))
 
-        
+
 
         xt  = (xt'.*ones(Int64,nno[2],1     ))     
         zt  = (     ones(Int64,nno[1],1     )'.*reverse(zt))
